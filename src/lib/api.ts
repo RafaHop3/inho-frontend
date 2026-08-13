@@ -232,3 +232,6 @@ export const pcoApi = {
     apiFetch<any>('/api/v1/pco/', { method: 'POST', body: JSON.stringify(payload) }),
   get: (id: string) => apiFetch<any>(`/api/v1/pco/${id}`),
 };
+
+export const adminApi: any = {};
+export const accountsApi: any = {};
