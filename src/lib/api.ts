@@ -95,6 +95,7 @@ async function apiFetch<T>(
     ...options,
     headers,
     credentials: 'include', // always send cookies (refresh token)
+    cache: 'no-store',
   });
 
   // ── 401 Interception ────────────────────────────────────────────
@@ -157,6 +158,21 @@ export const usersApi = {
 export const auditApi = {
   listMyLogs: () => apiFetch<any[]>('/api/v1/audit/me'),
   listAllLogs: () => apiFetch<any[]>('/api/v1/audit/all'),
+};
+
+// ── WhatsApp Bot ───────────────────────────────────────────────────
+const BAILEYS_URL = process.env.NEXT_PUBLIC_BAILEYS_URL ?? 'http://localhost:3001';
+
+export const whatsappApi = {
+  send: async (payload: { phone: string; message: string }) => {
+    const res = await fetch(`${BAILEYS_URL}/send`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Falha ao disparar WhatsApp. Verifique se o Baileys bot está acessível.');
+    return res.json();
+  },
 };
 
 // ── Contracts ─────────────────────────────────────────────────────
