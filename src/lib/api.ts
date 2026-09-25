@@ -161,7 +161,9 @@ export const auditApi = {
 };
 
 // ── WhatsApp Bot ───────────────────────────────────────────────────
-const BAILEYS_URL = process.env.NEXT_PUBLIC_BAILEYS_URL ?? 'http://localhost:3001';
+const BAILEYS_URL = typeof window !== 'undefined' && window.location.protocol === 'https:'
+  ? '/api/proxy-baileys'
+  : (process.env.NEXT_PUBLIC_BAILEYS_URL ?? 'http://localhost:3001');
 
 export const whatsappApi = {
   send: async (payload: { phone: string; message: string }) => {
