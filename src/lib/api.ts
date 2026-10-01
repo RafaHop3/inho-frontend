@@ -161,8 +161,8 @@ export const auditApi = {
 };
 
 const BAILEYS_URL = typeof window !== 'undefined' && window.location.protocol === 'https:'
-  ? '/api/v1/crm/whatsapp'  // Routed to Python FastAPI backend mock
-  : (process.env.NEXT_PUBLIC_BAILEYS_URL ?? 'http://localhost:8000/api/v1/crm/whatsapp');
+  ? '/api/proxy-baileys'
+  : (process.env.NEXT_PUBLIC_BAILEYS_URL ?? 'http://localhost:3001');
 
 export const whatsappApi = {
   send: async (payload: { phone: string; message: string }) => {
