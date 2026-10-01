@@ -12,6 +12,7 @@
  */
 
 import { auth } from './auth';
+import DOMPurify from 'dompurify';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
 
@@ -123,7 +124,23 @@ async function apiFetch<T>(
     throw new Error(msg);
   }
 
-  return data as T;
+  // E2E Security: Recursive XSS Sanitization mapping for all incoming data
+  const sanitizePayload = (obj: any): any => {
+    if (typeof obj === 'string' && typeof window !== 'undefined') {
+      return DOMPurify.sanitize(obj);
+    } else if (Array.isArray(obj)) {
+      return obj.map(sanitizePayload);
+    } else if (obj !== null && typeof obj === 'object') {
+      const mapped: any = {};
+      for (const key in obj) {
+        mapped[key] = sanitizePayload(obj[key]);
+      }
+      return mapped;
+    }
+    return obj;
+  };
+
+  return sanitizePayload(data) as T;
 }
 
 // ── Auth endpoints ─────────────────────────────────────────────────
@@ -166,9 +183,12 @@ const BAILEYS_URL = typeof window !== 'undefined' && window.location.protocol ==
 
 export const whatsappApi = {
   send: async (payload: { phone: string; message: string }) => {
-    const res = await fetch(`${BAILEYS_URL}/send`, {
+    const res = await fetch(`${BASE_URL}/api/v1/crm/whatsapp/send`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${auth.getAccessToken()}`
+      },
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error('Falha ao disparar WhatsApp. Verifique se o Baileys bot está acessível.');
