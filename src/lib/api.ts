@@ -14,7 +14,7 @@
 import { auth } from './auth';
 import DOMPurify from 'dompurify';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
+const BASE_URL = 'https://s65ofps3ve.execute-api.us-east-1.amazonaws.com';
 
 // ── Types ──────────────────────────────────────────────────────────
 export interface TokenResponse {
