@@ -7,6 +7,7 @@ import {
     FileText, Clock, UserCheck, CheckCircle2,
     MoreVertical
 } from 'lucide-react';
+import { auth } from '@/lib/auth';
 
 export default function WhatsAppCentralPage() {
     const [messageInput, setMessageInput] = useState("");
@@ -23,9 +24,10 @@ export default function WhatsAppCentralPage() {
     React.useEffect(() => {
         const fetchAllContacts = async () => {
             try {
-                const token = typeof window !== "undefined" ? localStorage.getItem("token") || "dev-bypass" : "dev-bypass";
+                const token = auth.getAccessToken() || (typeof window !== "undefined" ? localStorage.getItem("token") || "" : "");
                 console.log("Fetching contacts with token:", token ? "Token exists" : "No token");
                 const res = await fetch(`https://inho-api.orbesystems.com.br/api/v1/crm/contacts/?limit=100`, {
+                    credentials: "include",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 console.log("Contacts API response status:", res.status);
@@ -47,6 +49,55 @@ export default function WhatsAppCentralPage() {
             }
         };
         fetchAllContacts();
+    }, []);
+
+    // --- HISTÓRICO REAL + FILA DE LEMBRETES ---
+    const [queue, setQueue] = useState<any[]>([]);
+
+    const loadHistory = React.useCallback(async (contact: any) => {
+        if (!contact?.phone) return;
+        const digits = String(contact.phone).replace(/\D/g, "");
+        if (digits.length < 8) return;
+        try {
+            const token = auth.getAccessToken() || localStorage.getItem("token") || "";
+            const res = await fetch(`https://inho-api.orbesystems.com.br/api/v1/crm/whatsapp/history?recipient=${digits.slice(-8)}&limit=100`, {
+                credentials: "include",
+                    headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (!res.ok) return;
+            const logs: any[] = await res.json();
+            setMessages(logs.reverse().map(l => ({
+                id: l.id as any,
+                sender: "Você (Omnichannel)",
+                text: l.message,
+                time: new Date(l.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isOut: true
+            })));
+        } catch (e) { console.error("Falha ao carregar histórico:", e); }
+    }, []);
+
+    React.useEffect(() => {
+        if (!activeContact) return;
+        loadHistory(activeContact);
+        const t = setInterval(() => loadHistory(activeContact), 8000);
+        return () => clearInterval(t);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeContact?.id]);
+
+    React.useEffect(() => {
+        const loadQueue = async () => {
+            try {
+                const token = auth.getAccessToken() || localStorage.getItem("token") || "";
+                const res = await fetch(`https://inho-api.orbesystems.com.br/api/v1/crm/whatsapp/queue`, {
+                    credentials: "include",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (res.ok) setQueue((await res.json()).filter((q: any) => q.state !== 'SENT').slice(0, 8));
+            } catch (e) { console.error("Falha ao carregar fila:", e); }
+        };
+        loadQueue();
+        const t = setInterval(loadQueue, 30000);
+        return () => clearInterval(t);
     }, []);
 
     const filteredContacts = allContacts.filter(c =>
@@ -77,12 +128,13 @@ export default function WhatsAppCentralPage() {
         setMessages((prev) => [...prev, newMsg]);
 
         try {
-            const token = typeof window !== "undefined" ? localStorage.getItem("token") || "dev-bypass" : "dev-bypass";
+            const token = auth.getAccessToken() || (typeof window !== "undefined" ? localStorage.getItem("token") || "" : "");
             console.log("Sending WhatsApp message to:", activeContact.phone);
             console.log("Message content:", outMsg);
             
             const response = await fetch("https://inho-api.orbesystems.com.br/api/v1/crm/whatsapp/send", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
@@ -99,8 +151,10 @@ export default function WhatsAppCentralPage() {
             const data = await response.json();
             console.log("WhatsApp API response:", data);
 
-            // Validate the WhatsApp Payload array for Failures since the Python endpoint routes 502/500 proxy drops under HTTP 200
-            const waStatusAlert = data.whatsapp_delivery_code && data.whatsapp_delivery_code.some((code: string) => code.includes("Erro") || code.includes("500") || code.includes("502"));
+            // Sucesso se ao menos uma variação (com ou sem 9º dígito) retornou 200
+            const codes: string[] = Array.isArray(data.whatsapp_delivery_code) ? data.whatsapp_delivery_code : [];
+            const anyDelivered = codes.some((code: string) => code.endsWith(":200"));
+            const waStatusAlert = codes.length === 0 || !anyDelivered;
 
             if (waStatusAlert || !response.ok) {
                 alert(`⚠️ Falha no disparo E2E:\nO Container do WhatsApp Bot (Baileys) parece estar indisponível ou em crash loop no servidor.\n\nLogs API: ${JSON.stringify(data.whatsapp_delivery_code)}`);
@@ -363,6 +417,21 @@ export default function WhatsAppCentralPage() {
                         ) : (
                             <div className="text-center text-[#8b949e] text-xs">Busque e selecione um contato na lista à esquerda para carregar a Ficha CRM.</div>
                         )}
+
+                        <div className="w-full h-px bg-[#1a1f26]/50"></div>
+                        <div>
+                            <span className="text-[10px] text-[#6e7681] uppercase block mb-2">Fila de Cobranças Automáticas</span>
+                            {queue.length === 0 ? (
+                                <p className="text-xs text-[#6e7681]">Nenhum lembrete na fila.</p>
+                            ) : queue.map((q, i) => (
+                                <div key={`${q.invoice_id}-${q.step}-${i}`} className="text-xs text-white mb-2 flex justify-between gap-2">
+                                    <span className="truncate">{q.step} · {q.customer_name}</span>
+                                    <span className={q.state === 'NO_PHONE' ? 'text-[#f59e0b]' : 'text-[#00fff5]'}>
+                                        {q.state === 'NO_PHONE' ? 'sem telefone' : new Date(q.scheduled_for).toLocaleDateString('pt-BR')}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
 
                     </div>
                 </div>
