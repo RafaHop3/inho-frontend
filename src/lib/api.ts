@@ -464,17 +464,34 @@ export interface CRMContactOut extends CRMContactCreate {
 
 export interface AccountPayableCreate {
   cooperado_id?: string;
-  supplier_name: string;
+  supplier_id?: string;
+  category_id?: string;
+  supplier_name?: string;
   document?: string;
   amount: number;
   due_date: string;
   description?: string;
+  payment_method?: string;
+  notes?: string;
+  status?: 'PENDING' | 'PAID' | 'CANCELLED' | 'OVERDUE';
 }
 
-export interface AccountPayableOut extends AccountPayableCreate {
+export interface AccountPayableOut {
   id: string;
-  status: 'PENDING' | 'PAID' | 'CANCELLED';
-  created_at: string;
+  business_id?: string;
+  supplier_id?: string;
+  category_id?: string;
+  supplier_name?: string;
+  document?: string;
+  description: string;
+  amount: number;
+  due_date: string;
+  paid_date?: string;
+  payment_method?: string;
+  notes?: string;
+  status: 'PENDING' | 'PAID' | 'CANCELLED' | 'OVERDUE';
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const crmApi = {
@@ -522,11 +539,43 @@ export const crmApi = {
   getPayables: () =>
     apiFetch<AccountPayableOut[]>('/api/v1/crm/payable/'),
 
-  createPayable: (payload: AccountPayableCreate) =>
-    apiFetch<AccountPayableOut>('/api/v1/crm/payable/', {
+  createPayable: (payload: AccountPayableCreate) => {
+    const formattedDesc = payload.supplier_name
+      ? payload.description
+        ? `${payload.supplier_name} — ${payload.description}`
+        : payload.supplier_name
+      : payload.description || 'Despesa Operacional';
+    const dueIso = payload.due_date.includes('T')
+      ? payload.due_date
+      : `${payload.due_date}T12:00:00Z`;
+    return apiFetch<AccountPayableOut>('/api/v1/crm/payable/', {
       method: 'POST',
+      body: JSON.stringify({
+        description: formattedDesc,
+        amount: Number(payload.amount),
+        due_date: dueIso,
+        payment_method: payload.payment_method || 'PIX',
+        notes: payload.document ? `Doc: ${payload.document}${payload.notes ? ` | ${payload.notes}` : ''}` : payload.notes || null,
+        supplier_id: payload.supplier_id || null,
+        category_id: payload.category_id || null,
+        status: payload.status || 'PENDING',
+      }),
+    });
+  },
+
+  updatePayable: (id: string, payload: Partial<AccountPayableOut>) =>
+    apiFetch<AccountPayableOut>(`/api/v1/crm/payable/${id}`, {
+      method: 'PUT',
       body: JSON.stringify(payload),
     }),
+
+  deletePayable: (id: string) =>
+    apiFetch<void>(`/api/v1/crm/payable/${id}`, {
+      method: 'DELETE',
+    }),
+
+  getPayableTotals: () =>
+    apiFetch<{ pending: number; overdue: number; paid: number; total: number }>('/api/v1/crm/payable/summary/totals'),
 };
 
 // ── Cooperados (Módulo Cooperativismo) ───────────────────────────────
@@ -730,6 +779,75 @@ export const dealsApi = {
     apiFetch<CRMDealItem>(`/api/v1/crm/deals/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(payload),
+    }),
+};
+
+// ── Relatórios & BI (Reports) ────────────────────────────────────────
+export const reportsApi = {
+  getDre: (params?: { year?: number; month?: number; regime?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.year) q.set('year', String(params.year));
+    if (params?.month) q.set('month', String(params.month));
+    if (params?.regime) q.set('regime', params.regime);
+    const qs = q.toString();
+    return apiFetch<any>(`/api/v1/reports/dre${qs ? `?${qs}` : ''}`);
+  },
+  getAging: () =>
+    apiFetch<{ buckets: { '0_30': number; '31_60': number; '61_90': number; '90_plus': number }; total_overdue: number }>('/api/v1/reports/aging'),
+  getBudget: (params?: { year?: number; month?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.year) q.set('year', String(params.year));
+    if (params?.month) q.set('month', String(params.month));
+    const qs = q.toString();
+    return apiFetch<any>(`/api/v1/reports/budget-vs-actual${qs ? `?${qs}` : ''}`);
+  },
+  getCashflow: () =>
+    apiFetch<{ horizon_months: number; projection: { period: string; inflow: number; outflow: number; net: number }[] }>('/api/v1/reports/cashflow'),
+  getLosses: () =>
+    apiFetch<{ start_date: string; end_date: string; total_loss: number; losses: { invoice_id: string; customer_name: string; amount: number; due_date: string; status: string }[] }>('/api/v1/reports/losses'),
+};
+
+// ── Configurações Globais (API Tokens & Integrações Bancárias) ───────
+export interface ApiTokenItem {
+  id: string;
+  business_id: string;
+  name: string;
+  token_hash: string;
+  created_by_id: string;
+  expires_at?: string;
+  created_at: string;
+  plain_token?: string;
+}
+
+export interface BankIntegrationItem {
+  id: string;
+  business_id: string;
+  bank_name: string;
+  webhook_url?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export const settingsApi = {
+  listTokens: () => apiFetch<ApiTokenItem[]>('/api/v1/settings/api-tokens'),
+  createToken: (name: string) =>
+    apiFetch<ApiTokenItem>('/api/v1/settings/api-tokens', {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    }),
+  revokeToken: (id: string) =>
+    apiFetch<{ message: string }>(`/api/v1/settings/api-tokens/${id}`, {
+      method: 'DELETE',
+    }),
+  listBanks: () => apiFetch<BankIntegrationItem[]>('/api/v1/settings/bank-integrations'),
+  createBank: (payload: { bank_name: string; api_key: string }) =>
+    apiFetch<BankIntegrationItem>('/api/v1/settings/bank-integrations', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  deleteBank: (id: string) =>
+    apiFetch<{ message: string }>(`/api/v1/settings/bank-integrations/${id}`, {
+      method: 'DELETE',
     }),
 };
 
