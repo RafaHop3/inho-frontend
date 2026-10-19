@@ -317,7 +317,7 @@ export default function CooperativaInho() {
           supplier_name: fiscalForm.cooperado_name,
           amount: Number(net.toFixed(2)),
           due_date: new Date(fiscalForm.due_date).toISOString(),
-          description: `[REPASSE LÍQUIDO COOPERADO] Bruto R$ ${gross.toFixed(2)} | Retenções: INSS R$ ${inss.toFixed(2)}, IRRF R$ ${irrf.toFixed(2)}, Taxa Coop R$ ${taxa.toFixed(2)}`,
+          description: `[REPASSE LÍQUIDO COOPERADO - ${fiscalForm.cooperado_name}] Bruto R$ ${gross.toFixed(2)} | Retenções: INSS R$ ${inss.toFixed(2)}, IRRF R$ ${irrf.toFixed(2)}, Taxa Coop R$ ${taxa.toFixed(2)}`,
         });
         alert(`Repasse líquido de R$ ${net.toFixed(2)} (com retenções fiscais deduzidas) lançado em Pagamentos!`);
       }
@@ -891,10 +891,10 @@ export default function CooperativaInho() {
                   <div className="flex justify-between items-start border-b border-terminal-border pb-3">
                     <div>
                       <div className="text-[10px] text-amber-400 font-bold uppercase">
-                        Comprovante de Rendimentos Pagos e de Retenção (Ano {informeData.ano_calendario})
+                        Comprovante de Rendimentos Pagos e de Retenção (Ano {informeData.ano_base || informeData.ano_calendario})
                       </div>
                       <div className="font-extrabold text-white text-sm mt-0.5">
-                        {informeData.beneficiario?.nome} • Doc: {informeData.beneficiario?.documento}
+                        {informeData.cooperado_name || informeData.beneficiario?.nome} • Doc: {informeData.document || informeData.beneficiario?.documento}
                       </div>
                       <div className="text-[10px] text-[#8b949e]">
                         Fonte Pagadora: {informeData.fonte_pagadora?.nome} ({informeData.fonte_pagadora?.cnpj})
@@ -916,25 +916,25 @@ export default function CooperativaInho() {
                     <div className="flex justify-between">
                       <span className="text-[#8b949e]">01. Total dos Rendimentos Brutos (Produção):</span>
                       <span className="font-bold text-white">
-                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.rendimentos_brutos_producao || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {Number(informeData.resumo_fiscal?.rendimentos_brutos_producao ?? informeData.quadro_3_rendimentos_tributaveis?.rendimentos_brutos_producao ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                     <div className="flex justify-between text-amber-400">
                       <span>02. Contribuição Previdenciária Oficial (INSS Retido):</span>
                       <span>
-                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.contribuicao_previdenciaria_inss || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {Number(informeData.resumo_fiscal?.retencao_inss ?? informeData.quadro_3_rendimentos_tributaveis?.contribuicao_previdenciaria_inss ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                     <div className="flex justify-between text-amber-400">
                       <span>03. Imposto sobre a Renda Retido na Fonte (IRRF):</span>
                       <span>
-                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.imposto_renda_retido_irrf || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {Number(informeData.resumo_fiscal?.retencao_irrf ?? informeData.quadro_3_rendimentos_tributaveis?.imposto_renda_retido_irrf ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                     <div className="flex justify-between text-purple-400">
                       <span>04. Taxa Administrativa / FATES Cooperativa:</span>
                       <span>
-                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.taxa_administrativa_fates || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {Number(informeData.resumo_fiscal?.taxa_cooperativa_fates ?? informeData.quadro_3_rendimentos_tributaveis?.taxa_administrativa_fates ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                   </div>
@@ -946,13 +946,13 @@ export default function CooperativaInho() {
                     <div className="flex justify-between">
                       <span className="text-[#8b949e]">Sobras Líquidas Distribuídas em Assembleia (AGO):</span>
                       <span className="font-bold text-neon-green">
-                        R$ {Number(informeData.quadro_4_rendimentos_isentos_exclusivos?.sobras_liquidas_ago_distribuicao || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {Number(informeData.resumo_fiscal?.sobras_distribuidas_ago ?? informeData.quadro_4_rendimentos_isentos_exclusivos?.sobras_liquidas_ago_distribuicao ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#8b949e]">Saldo Acumulado de Quotas-Partes de Capital Social:</span>
                       <span className="font-bold text-neon-cyan">
-                        R$ {Number(informeData.quadro_7_bens_e_direitos?.saldo_quotas_capital_social_acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {Number(informeData.resumo_fiscal?.capital_social_integralizado ?? informeData.quadro_7_bens_e_direitos?.saldo_quotas_capital_social_acumulado ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
                   </div>
