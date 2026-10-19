@@ -15,6 +15,8 @@ import {
   Copy,
   Check,
   RefreshCw,
+  Activity,
+  RotateCw,
 } from 'lucide-react';
 import {
   businessesApi,
@@ -25,7 +27,7 @@ import {
 } from '@/lib/api';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'COMPANY' | 'BANKS' | 'API'>('COMPANY');
+  const [activeTab, setActiveTab] = useState<'COMPANY' | 'BANKS' | 'API' | 'TELEMETRY'>('COMPANY');
   const [loading, setLoading] = useState(true);
 
   // Company / Tenant
@@ -44,19 +46,26 @@ export default function SettingsPage() {
   const [newlyCreatedPlainToken, setNewlyCreatedPlainToken] = useState<string | null>(null);
   const [copiedToken, setCopiedToken] = useState(false);
 
+  // APM Telemetry & Secret Rotation
+  const [telemetry, setTelemetry] = useState<any>(null);
+  const [rotatingSecrets, setRotatingSecrets] = useState(false);
+  const [rotationResult, setRotationResult] = useState<string | null>(null);
+
   const loadSettings = async () => {
     setLoading(true);
     try {
-      const [bizList, bankList, tokenList] = await Promise.all([
+      const [bizList, bankList, tokenList, apmData] = await Promise.all([
         businessesApi.list().catch(() => []),
         settingsApi.listBanks().catch(() => []),
         settingsApi.listTokens().catch(() => []),
+        settingsApi.getTelemetry().catch(() => null),
       ]);
       if (Array.isArray(bizList) && bizList.length > 0) {
         setBusiness(bizList[0]);
       }
       setBanks(Array.isArray(bankList) ? bankList : []);
       setTokens(Array.isArray(tokenList) ? tokenList : []);
+      setTelemetry(apmData);
     } finally {
       setLoading(false);
     }
@@ -120,6 +129,22 @@ export default function SettingsPage() {
     }
   };
 
+  const handleRotateSecrets = async () => {
+    setRotatingSecrets(true);
+    setRotationResult(null);
+    try {
+      const res = await settingsApi.rotateSecrets();
+      setRotationResult(
+        `Rotação MultiFernet concluída (${res.rotated_bank_integrations} integrações bancárias e ${res.rotated_totp_secrets} TOTP re-criptografados com bloqueio SELECT FOR UPDATE).`
+      );
+      await loadSettings();
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao rotacionar chaves.');
+    } finally {
+      setRotatingSecrets(false);
+    }
+  };
+
   const copyPlainToken = () => {
     if (!newlyCreatedPlainToken) return;
     navigator.clipboard.writeText(newlyCreatedPlainToken);
@@ -141,11 +166,11 @@ export default function SettingsPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                Configurações Globais & Integrações
+                Configurações Globais & Governança Técnica
                 <Settings size={22} className="text-gray-400" />
               </h1>
               <p className="text-xs text-inho-muted mt-1">
-                Gerencie os dados da organização, integrações bancárias criptografadas (AES-256 Fernet) e Tokens de API.
+                Gerencie dados do Tenant, integrações bancárias (MultiFernet AES-256), Tokens SHA-256 e Telemetria APM.
               </p>
             </div>
           </div>
@@ -190,6 +215,16 @@ export default function SettingsPage() {
               }`}
             >
               <Key size={16} /> Chaves de API ({tokens.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('TELEMETRY')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'TELEMETRY'
+                  ? 'bg-inho-teal/10 text-inho-teal border border-inho-teal/30'
+                  : 'text-inho-muted hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <Activity size={16} /> Telemetria APM & KMS
             </button>
           </div>
 
@@ -253,7 +288,7 @@ export default function SettingsPage() {
                 <div>
                   <h2 className="text-lg font-bold text-white">Integrações Bancárias & Webhooks PIX/Boleto</h2>
                   <p className="text-xs text-inho-muted mt-0.5">
-                    As credenciais são criptografadas com AES-256 (Fernet) antes de persistirem no banco.
+                    As credenciais são criptografadas com AES-256 (MultiFernet) antes de persistirem no banco.
                   </p>
                 </div>
 
@@ -418,6 +453,76 @@ export default function SettingsPage() {
                               >
                                 <Trash2 size={14} />
                               </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'TELEMETRY' && (
+              <div className="glassmorphism p-6 rounded-2xl border border-inho-border space-y-6 animate-fade-in">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-inho-border pb-4">
+                  <div>
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Activity size={18} className="text-inho-teal" /> Telemetria APM & Rotação MultiFernet
+                    </h2>
+                    <p className="text-xs text-inho-muted mt-0.5">
+                      Monitoramento de latência em tempo real (LRU Eviction max {telemetry?.max_capacity || 300} rotas) e rotação de chaves.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleRotateSecrets}
+                    disabled={rotatingSecrets}
+                    className="bg-inho-teal/15 hover:bg-inho-teal/25 text-inho-teal border border-inho-teal/40 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition-all"
+                  >
+                    <RotateCw size={14} className={rotatingSecrets ? 'animate-spin' : ''} />
+                    {rotatingSecrets ? 'Rotacionando...' : 'Rotacionar Chaves MultiFernet'}
+                  </button>
+                </div>
+
+                {rotationResult && (
+                  <div className="p-3.5 rounded-xl bg-green-500/10 border border-green-500/30 text-xs text-green-300 font-mono">
+                    {rotationResult}
+                  </div>
+                )}
+
+                <div className="overflow-x-auto border border-inho-border rounded-xl">
+                  <table className="w-full text-left text-xs text-inho-text">
+                    <thead className="bg-inho-dark border-b border-inho-border text-inho-muted font-mono text-[10px] uppercase">
+                      <tr>
+                        <th className="px-4 py-3">Rota Normalizada</th>
+                        <th className="px-4 py-3">Req.</th>
+                        <th className="px-4 py-3">Média (ms)</th>
+                        <th className="px-4 py-3">Máx (ms)</th>
+                        <th className="px-4 py-3">&gt;500ms</th>
+                        <th className="px-4 py-3 text-right">Erros 5xx</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-inho-border/40 font-mono">
+                      {!telemetry?.endpoints?.length ? (
+                        <tr>
+                          <td colSpan={6} className="px-4 py-8 text-center text-inho-muted">
+                            Nenhuma métrica registrada ainda.
+                          </td>
+                        </tr>
+                      ) : (
+                        telemetry.endpoints.slice(0, 15).map((ep: any) => (
+                          <tr key={ep.route} className="hover:bg-white/[0.02]">
+                            <td className="px-4 py-2.5 text-white font-bold">{ep.route}</td>
+                            <td className="px-4 py-2.5 text-inho-muted">{ep.requests}</td>
+                            <td className="px-4 py-2.5 text-inho-teal">{ep.avg_ms} ms</td>
+                            <td className="px-4 py-2.5 text-gray-300">{ep.max_ms} ms</td>
+                            <td className="px-4 py-2.5 text-amber-400">{ep.slow_requests_gt_500ms}</td>
+                            <td
+                              className={`px-4 py-2.5 text-right font-bold ${
+                                ep.errors_5xx > 0 ? 'text-red-400' : 'text-green-400'
+                              }`}
+                            >
+                              {ep.errors_5xx}
                             </td>
                           </tr>
                         ))

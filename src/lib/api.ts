@@ -892,6 +892,30 @@ export const settingsApi = {
     apiFetch<{ message: string }>(`/api/v1/settings/bank-integrations/${id}`, {
       method: 'DELETE',
     }),
+  rotateSecrets: () =>
+    apiFetch<{
+      status: string;
+      rotated_bank_integrations: number;
+      rotated_totp_secrets: number;
+      rotated_at: string;
+    }>('/api/v1/settings/rotate-secrets', {
+      method: 'POST',
+    }),
+  getTelemetry: () =>
+    apiFetch<{
+      status: string;
+      timestamp: string;
+      monitored_routes: number;
+      max_capacity?: number;
+      endpoints: {
+        route: string;
+        requests: number;
+        avg_ms: number;
+        max_ms: number;
+        slow_requests_gt_500ms: number;
+        errors_5xx: number;
+      }[];
+    }>('/api/v1/telemetry/metrics'),
 };
 
 
