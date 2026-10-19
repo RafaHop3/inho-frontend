@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Users, Plus, FileSpreadsheet, Search, X, Loader2 } from 'lucide-react';
 import { crmApi, CRMContactOut, CRMContactCreate } from '@/lib/api';
 
@@ -14,10 +15,13 @@ const TABS = [
     { id: 'PARTNER', label: 'Sócios' },
 ];
 
-export default function ContactsPage() {
+function ContactsContent() {
+    const searchParams = useSearchParams();
+    const urlCategory = searchParams.get('category');
+
     const [contacts, setContacts] = useState<CRMContactOut[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('ALL');
+    const [activeTab, setActiveTab] = useState(urlCategory || 'ALL');
     const [searchQuery, setSearchQuery] = useState('');
 
     // Modal State
@@ -30,6 +34,17 @@ export default function ContactsPage() {
         email: '',
         phone: '',
     });
+
+    useEffect(() => {
+        if (urlCategory && TABS.some((t) => t.id === urlCategory)) {
+            setActiveTab(urlCategory);
+            if (urlCategory !== 'ALL' && urlCategory !== 'PARTNER') {
+                setFormData((prev) => ({ ...prev, category: urlCategory as any }));
+            }
+        } else if (!urlCategory) {
+            setActiveTab('ALL');
+        }
+    }, [urlCategory]);
 
     useEffect(() => {
         loadContacts();
@@ -280,5 +295,13 @@ export default function ContactsPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function ContactsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-inho-black p-8 text-inho-muted font-mono text-xs">Carregando contatos...</div>}>
+            <ContactsContent />
+        </Suspense>
     );
 }

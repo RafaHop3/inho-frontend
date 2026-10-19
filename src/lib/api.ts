@@ -529,3 +529,208 @@ export const crmApi = {
     }),
 };
 
+// ── Cooperados (Módulo Cooperativismo) ───────────────────────────────
+export interface CooperadoItem {
+  id: string;
+  business_id: string;
+  name: string;
+  document: string;
+  email?: string;
+  phone?: string;
+  bank_details?: string;
+  notes?: string;
+  status: 'PROPOSTA_CADASTRADA' | 'ANALISE_COMITE' | 'COTAS_LIQUIDADAS' | 'ATIVO' | 'DESLIGADO';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CooperadoBalance {
+  cooperado_id: string;
+  cooperado_name: string;
+  period: string;
+  total_charged: number;
+  total_paid: number;
+  total_overdue: number;
+  total_pending: number;
+  net_balance: number;
+  entries: {
+    id: string;
+    type: string;
+    description?: string;
+    amount: number;
+    due_date: string;
+    status: string;
+  }[];
+}
+
+export const cooperadosApi = {
+  list: (params?: { status?: string; search?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.status) q.set('status', params.status);
+    if (params?.search) q.set('search', params.search);
+    const qs = q.toString();
+    return apiFetch<CooperadoItem[]>(`/api/v1/crm/cooperados/${qs ? `?${qs}` : ''}`);
+  },
+  create: (payload: {
+    name: string;
+    document: string;
+    email?: string;
+    phone?: string;
+    bank_details?: string;
+    notes?: string;
+    status?: string;
+  }) =>
+    apiFetch<CooperadoItem>('/api/v1/crm/cooperados/', {
+      method: 'POST',
+      body: JSON.stringify({
+        ...payload,
+        email: payload.email || null,
+        phone: payload.phone || null,
+        bank_details: payload.bank_details || null,
+        notes: payload.notes || null,
+      }),
+    }),
+  update: (id: string, payload: Partial<CooperadoItem>) =>
+    apiFetch<CooperadoItem>(`/api/v1/crm/cooperados/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),
+  delete: (id: string) =>
+    apiFetch<void>(`/api/v1/crm/cooperados/${id}`, {
+      method: 'DELETE',
+    }),
+  getBalance: (id: string) =>
+    apiFetch<CooperadoBalance>(`/api/v1/crm/cooperados/${id}/balance`),
+};
+
+// ── Recurrences (Agendamentos de Recebimentos e Pagamentos) ──────────
+export interface RecurrenceItem {
+  id: string;
+  business_id: string;
+  category_id?: string;
+  crm_contact_id?: string;
+  cooperado_id?: string;
+  description: string;
+  amount: number;
+  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'ANNUAL';
+  first_due_date: string;
+  next_due_date?: string;
+  parcel_total?: number;
+  parcel_current: number;
+  status: 'ACTIVE' | 'PAUSED' | 'CANCELLED' | 'COMPLETED';
+  payment_method: 'PIX' | 'BOLETO' | 'CREDIT_CARD' | 'CASH';
+  created_at: string;
+  updated_at: string;
+}
+
+export const recurrencesApi = {
+  list: (status?: string) =>
+    apiFetch<RecurrenceItem[]>(`/api/v1/recurrences/${status ? `?status=${status}` : ''}`),
+  create: (payload: {
+    description: string;
+    amount: number;
+    frequency: string;
+    first_due_date: string;
+    parcel_total?: number;
+    payment_method?: string;
+    crm_contact_id?: string;
+    cooperado_id?: string;
+    category_id?: string;
+  }) =>
+    apiFetch<RecurrenceItem>('/api/v1/recurrences/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  pause: (id: string) =>
+    apiFetch<RecurrenceItem>(`/api/v1/recurrences/${id}/pause`, { method: 'POST' }),
+  resume: (id: string) =>
+    apiFetch<RecurrenceItem>(`/api/v1/recurrences/${id}/resume`, { method: 'POST' }),
+  cancel: (id: string) =>
+    apiFetch<{ message: string }>(`/api/v1/recurrences/${id}`, { method: 'DELETE' }),
+  getProjection: (id: string, cycles: number = 6) =>
+    apiFetch<{ projection: { parcel: number; due_date: string; amount: number }[] }>(
+      `/api/v1/recurrences/${id}/projection?cycles=${cycles}`
+    ),
+};
+
+// ── Plano de Contas (Categories) ─────────────────────────────────────
+export interface AccountCategoryItem {
+  id: string;
+  business_id: string;
+  parent_id?: string;
+  name: string;
+  type: 'REVENUE' | 'COST' | 'EXPENSE' | 'TAX' | 'TRANSFER';
+  is_active: boolean;
+  created_at: string;
+}
+
+export const categoriesApi = {
+  list: (catType?: string) =>
+    apiFetch<AccountCategoryItem[]>(`/api/v1/categories/${catType ? `?cat_type=${catType}` : ''}`),
+  create: (payload: { name: string; type: string; parent_id?: string }) =>
+    apiFetch<AccountCategoryItem>('/api/v1/categories/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  update: (id: string, payload: { name?: string; type?: string; is_active?: boolean }) =>
+    apiFetch<AccountCategoryItem>(`/api/v1/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),
+  delete: (id: string) =>
+    apiFetch<void>(`/api/v1/categories/${id}`, { method: 'DELETE' }),
+};
+
+// ── Contabilidade & Fechamento de Mês (Accounting) ───────────────────
+export interface MonthCloseItem {
+  id: string;
+  business_id: string;
+  period_year: number;
+  period_month: number;
+  closed_by_id: string;
+  closed_by_name: string;
+  checksum: string;
+  summary_json: string;
+  closed_at: string;
+}
+
+export const accountingApi = {
+  listMonthCloses: () =>
+    apiFetch<MonthCloseItem[]>('/api/v1/accounting/month-closes'),
+  createMonthClose: (payload: { period_year: number; period_month: number }) =>
+    apiFetch<MonthCloseItem>('/api/v1/accounting/month-close', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+};
+
+// ── Funil de Vendas Kanban (CRM Deals) ───────────────────────────────
+export interface CRMDealItem {
+  id: string;
+  business_id: string;
+  contact_id?: string;
+  title: string;
+  value: number;
+  stage: 'PROSPECTING' | 'PRESENTATION' | 'NEGOTIATION' | 'WON' | 'LOST';
+  status: 'ACTIVE' | 'ARCHIVED';
+  loss_reason?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const dealsApi = {
+  list: (stage?: string) =>
+    apiFetch<CRMDealItem[]>(`/api/v1/crm/deals${stage ? `?stage=${stage}` : ''}`),
+  create: (payload: { title: string; value: number; stage?: string; contact_id?: string }) =>
+    apiFetch<CRMDealItem>('/api/v1/crm/deals', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  update: (id: string, payload: Partial<CRMDealItem>) =>
+    apiFetch<CRMDealItem>(`/api/v1/crm/deals/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+};
+
+
