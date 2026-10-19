@@ -142,7 +142,7 @@ export default function PayablePage() {
   const handleBatchSettle = async () => {
     if (selectedIds.length === 0) return;
     try {
-      await Promise.all(selectedIds.map((id) => crmApi.updatePayable(id, { status: 'PAID' })));
+      await crmApi.batchSettlePayables(selectedIds);
       setSelectedIds([]);
       await loadData();
     } catch (err: any) {

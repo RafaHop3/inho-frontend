@@ -102,7 +102,7 @@ export default function CooperativaInho() {
     }
   }, [activeTab, statusFilter]);
 
-  // Auto-Fill CNPJ via BrasilAPI
+  // Auto-Fill CNPJ via Backend Cache + Fallback (BrasilAPI -> CNPJ.ws)
   async function handleLookupCnpj() {
     const clean = socioForm.document.replace(/\D/g, '');
     if (clean.length !== 14) {
@@ -111,14 +111,18 @@ export default function CooperativaInho() {
     }
     setLoadingCnpj(true);
     try {
-      const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${clean}`);
-      if (!res.ok) throw new Error('CNPJ não localizado na BrasilAPI.');
-      const data = await res.json();
+      const data = await crmApi.lookupCnpj(clean).catch(async () => {
+        const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${clean}`);
+        if (!res.ok) throw new Error('CNPJ não localizado na BrasilAPI.');
+        return res.json();
+      });
       setSocioForm((prev) => ({
         ...prev,
         name: data.razao_social || prev.name,
         nomeFantasia: data.nome_fantasia || '',
-        cnae: data.cnae_fiscal_descricao || '',
+        cnae: (data as any).cnae_fiscal_descricao || prev.cnae || '',
+        email: data.email || prev.email,
+        phone: data.ddd_telefone_1 || prev.phone,
         cep: (data.cep || '').replace(/\D/g, ''),
         endereco: `${data.logradouro || ''} ${data.numero || ''}`.trim(),
         bairro: data.bairro || '',
@@ -132,7 +136,7 @@ export default function CooperativaInho() {
     }
   }
 
-  // Auto-Fill CEP via BrasilAPI
+  // Auto-Fill CEP via Backend Cache + Fallback (BrasilAPI -> ViaCEP)
   async function handleLookupCep() {
     const clean = socioForm.cep.replace(/\D/g, '');
     if (clean.length !== 8) {
@@ -141,9 +145,11 @@ export default function CooperativaInho() {
     }
     setLoadingCep(true);
     try {
-      const res = await fetch(`https://brasilapi.com.br/api/cep/v1/${clean}`);
-      if (!res.ok) throw new Error('CEP não encontrado.');
-      const data = await res.json();
+      const data = await crmApi.lookupCep(clean).catch(async () => {
+        const res = await fetch(`https://brasilapi.com.br/api/cep/v1/${clean}`);
+        if (!res.ok) throw new Error('CEP não encontrado.');
+        return res.json();
+      });
       setSocioForm((prev) => ({
         ...prev,
         endereco: data.street || prev.endereco,

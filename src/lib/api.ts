@@ -576,6 +576,49 @@ export const crmApi = {
 
   getPayableTotals: () =>
     apiFetch<{ pending: number; overdue: number; paid: number; total: number }>('/api/v1/crm/payable/summary/totals'),
+
+  batchSettlePayables: (payableIds: string[], idempotencyKey?: string) => {
+    const key = idempotencyKey || `batch-${payableIds.slice().sort().join('-')}-${Math.floor(Date.now() / 60000)}`;
+    return apiFetch<{
+      settled_count: number;
+      settled_ids: string[];
+      skipped_already_paid: number;
+      idempotency_key: string | null;
+      cached_replay: boolean;
+    }>('/api/v1/crm/payable/batch-settle', {
+      method: 'POST',
+      headers: { 'Idempotency-Key': key },
+      body: JSON.stringify({ payable_ids: payableIds, idempotency_key: key }),
+    });
+  },
+
+  lookupCnpj: (cnpj: string) =>
+    apiFetch<{
+      cnpj: string;
+      razao_social: string;
+      nome_fantasia: string;
+      email: string;
+      ddd_telefone_1: string;
+      cep: string;
+      logradouro: string;
+      numero: string;
+      bairro: string;
+      municipio: string;
+      uf: string;
+      provider: string;
+      cached: boolean;
+    }>(`/api/v1/crm/lookup/cnpj/${encodeURIComponent(cnpj.replace(/\D/g, ''))}`),
+
+  lookupCep: (cep: string) =>
+    apiFetch<{
+      cep: string;
+      street: string;
+      neighborhood: string;
+      city: string;
+      state: string;
+      provider: string;
+      cached: boolean;
+    }>(`/api/v1/crm/lookup/cep/${encodeURIComponent(cep.replace(/\D/g, ''))}`),
 };
 
 // ── Cooperados (Módulo Cooperativismo) ───────────────────────────────
