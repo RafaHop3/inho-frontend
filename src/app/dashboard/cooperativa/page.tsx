@@ -10,7 +10,7 @@ import {
   crmApi, AccountPayableOut, billingApi
 } from '@/lib/api';
 
-type TabView = 'ASSOCIADOS' | 'COTAS_FISCAL' | 'FINANCE';
+type TabView = 'ASSOCIADOS' | 'COTAS_FISCAL' | 'FINANCE' | 'RATEIO_INFORMES';
 
 const STATUS_META: Record<string, { label: string; style: string }> = {
   PROPOSTA_CADASTRADA: { label: 'Proposta Cadastrada', style: 'bg-neon-blue/10 text-neon-blue border-neon-blue/30' },
@@ -68,6 +68,17 @@ export default function CooperativaInho() {
     due_date: new Date().toISOString().split('T')[0],
   });
 
+  // Fase 2 (4C): Rateio de Sobras (AGO) & Informe de Rendimentos
+  const [rateioValor, setRateioValor] = useState('50000');
+  const [rateioAno, setRateioAno] = useState(new Date().getFullYear());
+  const [rateioPreview, setRateioPreview] = useState<any>(null);
+  const [loadingRateio, setLoadingRateio] = useState(false);
+  const [applyingRateio, setApplyingRateio] = useState(false);
+  const [informeSocioId, setInformeSocioId] = useState('');
+  const [informeAno, setInformeAno] = useState(new Date().getFullYear());
+  const [informeData, setInformeData] = useState<any>(null);
+  const [loadingInforme, setLoadingInforme] = useState(false);
+
   async function loadCooperados() {
     setLoading(true);
     try {
@@ -94,9 +105,58 @@ export default function CooperativaInho() {
     }
   }
 
+  async function handleSimulateRateio() {
+    setLoadingRateio(true);
+    try {
+      const data = await cooperadosApi.previewRateioSobras(Number(rateioValor || 0), Number(rateioAno));
+      setRateioPreview(data);
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao simular rateio de sobras');
+    } finally {
+      setLoadingRateio(false);
+    }
+  }
+
+  async function handleApplyRateio() {
+    setApplyingRateio(true);
+    try {
+      const idemKey = `ago-sobras-${rateioAno}-${rateioValor}`;
+      const res = await cooperadosApi.applyRateioSobras(
+        { valor_total_sobras: Number(rateioValor || 0), ano_exercicio: Number(rateioAno) },
+        idemKey
+      );
+      alert(
+        res.cached_replay
+          ? `Rateio de Sobras já aplicado anteriormente (${res.created_payables_count} créditos gerados).`
+          : `Rateio AGO homologado! ${res.created_payables_count} créditos lançados em Contas a Pagar (Total R$ ${Number(res.total_distributed || 0).toFixed(2)}).`
+      );
+      await handleSimulateRateio();
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao aplicar rateio de sobras');
+    } finally {
+      setApplyingRateio(false);
+    }
+  }
+
+  async function handleLoadInforme(coopId: string, ano?: number) {
+    if (!coopId) return;
+    setLoadingInforme(true);
+    try {
+      const data = await cooperadosApi.getInformeRendimentos(coopId, ano || informeAno);
+      setInformeData(data);
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao gerar Informe de Rendimentos');
+    } finally {
+      setLoadingInforme(false);
+    }
+  }
+
   useEffect(() => {
-    if (activeTab === 'ASSOCIADOS' || activeTab === 'COTAS_FISCAL') {
+    if (activeTab === 'ASSOCIADOS' || activeTab === 'COTAS_FISCAL' || activeTab === 'RATEIO_INFORMES') {
       loadCooperados();
+      if (activeTab === 'RATEIO_INFORMES') {
+        handleSimulateRateio();
+      }
     } else if (activeTab === 'FINANCE') {
       loadFinance();
     }
@@ -301,6 +361,7 @@ export default function CooperativaInho() {
             {[
               { id: 'ASSOCIADOS', label: 'Base Associada (Sócios)', icon: Users },
               { id: 'COTAS_FISCAL', label: 'Liquidação de Cotas & Fiscal', icon: Calculator },
+              { id: 'RATEIO_INFORMES', label: 'Rateio de Sobras & Informes', icon: Receipt },
               { id: 'FINANCE', label: 'Fila Financeira', icon: DollarSign },
             ].map((tab) => (
               <button
@@ -649,6 +710,259 @@ export default function CooperativaInho() {
                 )}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* ─── ABA 4: RATEIO DE SOBRAS (AGO) & INFORME DE RENDIMENTOS (IRPF/DIRF) ─── */}
+        {activeTab === 'RATEIO_INFORMES' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Bloco Esquerdo: Rateio de Sobras (AGO) */}
+            <div className="bg-[#090D14] border border-terminal-border rounded-2xl p-6 space-y-5">
+              <div className="border-b border-terminal-border pb-4 flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-extrabold uppercase tracking-wider text-neon-cyan flex items-center gap-2">
+                    <Calculator size={18} /> Motor de Rateio de Sobras (AGO)
+                  </h2>
+                  <p className="text-xs text-[#8b949e] mt-1">
+                    Distribuição proporcional à movimentação financeira de 12 meses (Aportes + Repasses).
+                  </p>
+                </div>
+                <span className="px-2.5 py-1 rounded bg-neon-green/10 text-neon-green border border-neon-green/30 text-[10px] font-bold uppercase">
+                  Idempotente
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div>
+                  <label className="block text-[#8b949e] mb-1 uppercase">Sobras Líquidas AGO (R$)</label>
+                  <input
+                    type="number"
+                    step="100"
+                    value={rateioValor}
+                    onChange={(e) => setRateioValor(e.target.value)}
+                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#8b949e] mb-1 uppercase">Exercício Base</label>
+                  <input
+                    type="number"
+                    value={rateioAno}
+                    onChange={(e) => setRateioAno(Number(e.target.value))}
+                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                  />
+                </div>
+                <div className="flex items-end gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSimulateRateio}
+                    disabled={loadingRateio}
+                    className="flex-1 py-2.5 rounded-xl bg-neon-cyan/15 border border-neon-cyan/40 text-neon-cyan font-bold uppercase text-xs hover:bg-neon-cyan/25"
+                  >
+                    {loadingRateio ? 'Calculando...' : 'Simular'}
+                  </button>
+                </div>
+              </div>
+
+              {rateioPreview && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-[#04060A] border border-terminal-border">
+                      <div className="text-[10px] text-[#8b949e] uppercase">Movimentação 12M</div>
+                      <div className="text-sm font-extrabold text-white mt-0.5">
+                        R$ {Number(rateioPreview.movimentacao_global_12m || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#04060A] border border-terminal-border">
+                      <div className="text-[10px] text-[#8b949e] uppercase">Sócios Elegíveis</div>
+                      <div className="text-sm font-extrabold text-neon-cyan mt-0.5">
+                        {rateioPreview.total_cooperados_elegiveis} sócio(s)
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[#04060A] border border-terminal-border">
+                      <div className="text-[10px] text-[#8b949e] uppercase">Total a Ratear</div>
+                      <div className="text-sm font-extrabold text-neon-green mt-0.5">
+                        R$ {Number(rateioPreview.valor_total_sobras || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border border-terminal-border rounded-xl overflow-hidden max-h-64 overflow-y-auto">
+                    <table className="w-full text-left text-[11px]">
+                      <thead className="bg-white/5 border-b border-terminal-border text-[#8b949e] uppercase">
+                        <tr>
+                          <th className="px-4 py-2.5">Cooperado</th>
+                          <th className="px-4 py-2.5 text-right">Mov. 12M</th>
+                          <th className="px-4 py-2.5 text-right">% Part.</th>
+                          <th className="px-4 py-2.5 text-right">Cota Sobras</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-terminal-border">
+                        {(rateioPreview.itens || []).map((it: any) => (
+                          <tr key={it.cooperado_id} className="hover:bg-white/5">
+                            <td className="px-4 py-2.5 font-bold text-white">{it.cooperado_name}</td>
+                            <td className="px-4 py-2.5 text-right text-[#8b949e]">
+                              R$ {Number(it.movimentacao_total_12m || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td className="px-4 py-2.5 text-right text-neon-cyan font-bold">
+                              {Number(it.participacao_percentual || 0).toFixed(2)}%
+                            </td>
+                            <td className="px-4 py-2.5 text-right font-extrabold text-neon-green">
+                              R$ {Number(it.cota_sobras || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleApplyRateio}
+                    disabled={applyingRateio || (rateioPreview.itens || []).length === 0}
+                    className="w-full py-3 rounded-xl bg-neon-green text-black font-extrabold uppercase tracking-wider text-xs hover:opacity-90"
+                  >
+                    {applyingRateio
+                      ? 'Homologando Rateio AGO...'
+                      : 'Homologar Assembleia (AGO) & Gerar Créditos em Contas a Pagar'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Bloco Direito: Informe de Rendimentos Anual (IRPF/DIRF) */}
+            <div className="bg-[#090D14] border border-terminal-border rounded-2xl p-6 space-y-5">
+              <div className="border-b border-terminal-border pb-4">
+                <h2 className="text-base font-extrabold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                  <Receipt size={18} /> Informe Anual de Rendimentos (IRPF / DIRF)
+                </h2>
+                <p className="text-xs text-[#8b949e] mt-1">
+                  Consolidação fiscal automática de Produção Cooperada, INSS, IRRF, FATES e Quotas de Capital Social.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div className="md:col-span-2">
+                  <label className="block text-[#8b949e] mb-1 uppercase">Selecionar Cooperado</label>
+                  <select
+                    value={informeSocioId}
+                    onChange={(e) => {
+                      setInformeSocioId(e.target.value);
+                      if (e.target.value) handleLoadInforme(e.target.value, informeAno);
+                    }}
+                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                  >
+                    <option value="">-- Escolha um sócio cooperado --</option>
+                    {cooperados.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} ({c.document})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[#8b949e] mb-1 uppercase">Ano-Calendário</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      value={informeAno}
+                      onChange={(e) => setInformeAno(Number(e.target.value))}
+                      className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleLoadInforme(informeSocioId, informeAno)}
+                      disabled={!informeSocioId || loadingInforme}
+                      className="px-3 rounded-xl bg-amber-400 text-black font-bold text-xs"
+                    >
+                      Gerar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {loadingInforme ? (
+                <div className="py-12 text-center text-xs text-[#8b949e]">
+                  <Loader2 className="animate-spin mx-auto mb-2 text-amber-400" size={20} />
+                  Consolidando retenções fiscais e quotas de capital...
+                </div>
+              ) : informeData ? (
+                <div className="space-y-3 text-xs bg-[#04060A] border border-terminal-border rounded-xl p-4">
+                  <div className="flex justify-between items-start border-b border-terminal-border pb-3">
+                    <div>
+                      <div className="text-[10px] text-amber-400 font-bold uppercase">
+                        Comprovante de Rendimentos Pagos e de Retenção (Ano {informeData.ano_calendario})
+                      </div>
+                      <div className="font-extrabold text-white text-sm mt-0.5">
+                        {informeData.beneficiario?.nome} • Doc: {informeData.beneficiario?.documento}
+                      </div>
+                      <div className="text-[10px] text-[#8b949e]">
+                        Fonte Pagadora: {informeData.fonte_pagadora?.nome} ({informeData.fonte_pagadora?.cnpj})
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase"
+                    >
+                      Imprimir / PDF
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="text-[10px] font-bold uppercase text-neon-cyan">
+                      3. Rendimentos Tributáveis e Retenções na Fonte
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#8b949e]">01. Total dos Rendimentos Brutos (Produção):</span>
+                      <span className="font-bold text-white">
+                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.rendimentos_brutos_producao || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-amber-400">
+                      <span>02. Contribuição Previdenciária Oficial (INSS Retido):</span>
+                      <span>
+                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.contribuicao_previdenciaria_inss || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-amber-400">
+                      <span>03. Imposto sobre a Renda Retido na Fonte (IRRF):</span>
+                      <span>
+                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.imposto_renda_retido_irrf || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-purple-400">
+                      <span>04. Taxa Administrativa / FATES Cooperativa:</span>
+                      <span>
+                        R$ {Number(informeData.quadro_3_rendimentos_tributaveis?.taxa_administrativa_fates || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5 border-t border-terminal-border pt-2.5">
+                    <div className="text-[10px] font-bold uppercase text-neon-green">
+                      4. Rendimentos Isentos / Sobras AGO & 7. Bens e Direitos
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#8b949e]">Sobras Líquidas Distribuídas em Assembleia (AGO):</span>
+                      <span className="font-bold text-neon-green">
+                        R$ {Number(informeData.quadro_4_rendimentos_isentos_exclusivos?.sobras_liquidas_ago_distribuicao || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#8b949e]">Saldo Acumulado de Quotas-Partes de Capital Social:</span>
+                      <span className="font-bold text-neon-cyan">
+                        R$ {Number(informeData.quadro_7_bens_e_direitos?.saldo_quotas_capital_social_acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-12 text-center text-xs text-[#6e7681] border border-dashed border-terminal-border rounded-xl">
+                  Selecione um sócio cooperado acima para emitir o Informe Anual de Rendimentos.
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>

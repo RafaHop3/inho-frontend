@@ -1,0 +1,41 @@
+﻿
+> inho-frontend@0.1.0 lint
+> next lint
+
+node.exe : `next 
+lint` is deprecated 
+and will be removed 
+in Next.js 16.
+No C:\Program Files\n
+odejs\npm.ps1:29 
+caractere:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (`next l   
+ int` is ... in N    
+ext.js 16.:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+For new projects, 
+use create-next-app 
+to choose your 
+preferred linter.
+For existing 
+projects, migrate to 
+the ESLint CLI:
+npx 
+@next/codemod@canary 
+next-lint-to-eslint-c
+li .
+
+? How would you like to configure ESLint? https://nextjs.org/docs/app/api-reference/config/eslint
+[?25lÔØ»  Strict (recommended)
+   Base

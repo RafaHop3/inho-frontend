@@ -125,6 +125,21 @@ export default function ContractsPage() {
     }
   };
 
+  const handleGenerateSchedule = async (c: ContractOut) => {
+    try {
+      const res = await contractsApi.generateSchedule(c.id, `sched-${c.id}`);
+      const destino = res.record_type === 'RECEIVABLE' ? 'Contas a Receber (PIX)' : 'Contas a Pagar';
+      alert(
+        res.cached_replay
+          ? `Cronograma já gerado anteriormente (${res.generated_count} parcelas em ${destino}).`
+          : `Cronograma gerado com sucesso! ${res.generated_count} parcela(s) lançadas automaticamente em ${destino}.`
+      );
+      await loadContracts();
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao gerar parcelas do contrato');
+    }
+  };
+
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
@@ -228,7 +243,14 @@ export default function ContractsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => handleGenerateSchedule(c)}
+                            className="px-3 py-1.5 bg-purple-500/15 text-purple-300 border border-purple-500/30 hover:bg-purple-500/25 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
+                            title="Converter Contrato em Parcelas no Financeiro (1-Clique Idempotente)"
+                          >
+                            Gerar Parcelas (1-Click)
+                          </button>
                           {c.status !== 'ACTIVE' && (
                             <button
                               onClick={() => handleAction(c.id, 'activate')}

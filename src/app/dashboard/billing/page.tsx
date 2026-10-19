@@ -31,6 +31,8 @@ export default function BillingPage() {
     const [notifyingId, setNotifyingId] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [formError, setFormError] = useState('');
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [batchSettling, setBatchSettling] = useState(false);
 
     // New Invoice Form
     const [form, setForm] = useState({
@@ -130,6 +132,44 @@ export default function BillingPage() {
         }
     };
 
+    const handleWebhookSettle = async (inv: BillingInvoice) => {
+        setNotifyingId(inv.id);
+        try {
+            const idemKey = `wh-ui-${inv.id}`;
+            const res = await billingApi.simulateBankWebhook(
+                'CORA',
+                { invoice_id: inv.id, status: 'PAID', payment_method: inv.payment_method || 'PIX', amount: Number(inv.amount) },
+                idemKey
+            );
+            alert(`Webhook Bancário (${res.provider}) processado! Fatura liquidada e comprovante OrBrick WhatsApp disparado.`);
+            await loadData();
+        } catch (e: any) {
+            alert(e?.message || 'Erro ao processar webhook bancário');
+        } finally {
+            setNotifyingId(null);
+        }
+    };
+
+    const handleBatchSettle = async () => {
+        if (selectedIds.length === 0) return;
+        setBatchSettling(true);
+        try {
+            const sortedKey = [...selectedIds].sort().join('-').slice(0, 80);
+            const res = await billingApi.batchSettle(selectedIds, `batch-recv-${sortedKey}`);
+            alert(`Baixa em lote concluída: ${res.settled_count} recebíveis liquidados (R$ ${Number(res.total_amount_settled || 0).toFixed(2)}).`);
+            setSelectedIds([]);
+            await loadData();
+        } catch (e: any) {
+            alert(e?.message || 'Erro na baixa em lote');
+        } finally {
+            setBatchSettling(false);
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    };
+
     const copyPixCode = (code: string) => {
         navigator.clipboard.writeText(code);
         setCopiedPix(true);
@@ -180,12 +220,24 @@ export default function BillingPage() {
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => setShowCreateModal(true)}
-                        className="flex items-center gap-2 bg-inho-gold text-inho-black font-bold px-5 py-3 rounded-xl hover:-translate-y-0.5 transition-transform text-sm shadow-glow-gold"
-                    >
-                        <Plus size={18} /> Nova Cobrança
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {selectedIds.length > 0 && (
+                            <button
+                                onClick={handleBatchSettle}
+                                disabled={batchSettling}
+                                className="flex items-center gap-2 bg-green-500 text-inho-black font-bold px-4 py-3 rounded-xl hover:bg-emerald-400 transition-colors text-xs"
+                            >
+                                <CheckCircle2 size={16} />
+                                {batchSettling ? 'Liquidando Lote...' : `Baixar Lote (${selectedIds.length})`}
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setShowCreateModal(true)}
+                            className="flex items-center gap-2 bg-inho-gold text-inho-black font-bold px-5 py-3 rounded-xl hover:-translate-y-0.5 transition-transform text-sm shadow-glow-gold"
+                        >
+                            <Plus size={18} /> Nova Cobrança
+                        </button>
+                    </div>
                 </div>
 
                 {/* KPI Cards */}
@@ -282,6 +334,7 @@ export default function BillingPage() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-inho-dark text-inho-muted text-[10px] font-mono uppercase tracking-widest border-b border-inho-border">
+                                        <th className="px-4 py-4 w-10 text-center">Lote</th>
                                         <th className="px-6 py-4">Cliente</th>
                                         <th className="px-6 py-4">Contatos</th>
                                         <th className="px-6 py-4">Valor</th>
@@ -294,6 +347,16 @@ export default function BillingPage() {
                                 <tbody className="divide-y divide-inho-border/50 text-sm">
                                     {filteredInvoices.map((inv) => (
                                         <tr key={inv.id} className="hover:bg-white/[0.02] transition-colors">
+                                            <td className="px-4 py-4 text-center">
+                                                {inv.status !== 'PAID' && (
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.includes(inv.id)}
+                                                        onChange={() => toggleSelect(inv.id)}
+                                                        className="w-4 h-4 accent-amber-400 cursor-pointer"
+                                                    />
+                                                )}
+                                            </td>
                                             <td className="px-6 py-4">
                                                 <p className="font-bold text-white">{inv.customer_name}</p>
                                                 <p className="text-xs text-inho-muted truncate max-w-[200px]">
@@ -360,14 +423,24 @@ export default function BillingPage() {
                                                         <QrCode size={16} />
                                                     </button>
 
-                                                    {/* Mark as Paid */}
+                                                    {/* Mark as Paid / Webhook */}
                                                     {inv.status !== 'PAID' && (
-                                                        <button
-                                                            onClick={() => handleMarkAsPaid(inv.id)}
-                                                            className="px-3 py-1.5 rounded-xl bg-green-500 text-inho-black font-bold text-xs hover:bg-emerald-400 transition-colors flex items-center gap-1"
-                                                        >
-                                                            <Check size={14} /> Dar Baixa
-                                                        </button>
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleWebhookSettle(inv)}
+                                                                disabled={notifyingId === inv.id}
+                                                                className="px-2.5 py-1.5 rounded-xl bg-purple-500/15 text-purple-300 border border-purple-500/30 font-bold text-xs hover:bg-purple-500/25 transition-colors flex items-center gap-1"
+                                                                title="Liquidar via Webhook Bancário (HMAC/Idempotente + Comprovante OrBrick)"
+                                                            >
+                                                                <ShieldCheck size={14} /> Webhook PIX
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleMarkAsPaid(inv.id)}
+                                                                className="px-3 py-1.5 rounded-xl bg-green-500 text-inho-black font-bold text-xs hover:bg-emerald-400 transition-colors flex items-center gap-1"
+                                                            >
+                                                                <Check size={14} /> Dar Baixa
+                                                            </button>
+                                                        </>
                                                     )}
                                                 </div>
                                             </td>

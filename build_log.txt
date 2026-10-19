@@ -1,0 +1,15 @@
+
+> inho-frontend@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.18
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+next-app-loader?page=%2F_not-found%2Fpage&name=app%2F_not-found%2Fpage&pagePath=D%3A%5COrbeSystems%5Cinho_frontend%5Cnode_modules%5Cnext%5Cdist%5Cclient%5Ccomponents%5Cbuiltin%5Cglobal-not-found.js&appDir=D%3A%5COrbeSystems%5Cinho_frontend%5Csrc%5Capp&appPaths=D%3A%2FOrbeSystems%2Finho_frontend%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fbuiltin%2Fglobal-not-found&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:949
+Error: Image import "next-metadata-image-loader?type=favicon&segment=&basePath=&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js!D:\OrbeSystems\inho_frontend\src\app\favicon.ico?__next_metadata__" is not a valid image file. The image may be corrupted or an unsupported format.
+
+
+> Build failed because of webpack errors

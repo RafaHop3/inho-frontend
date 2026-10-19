@@ -269,6 +269,22 @@ export const contractsApi = {
     apiFetch<ContractOut>(`/api/v1/contracts/${id}/activate`, { method: 'POST' }),
   updateStatus: (id: string, new_status: ContractStatus) =>
     apiFetch<ContractOut>(`/api/v1/contracts/${id}/status?new_status=${new_status}`, { method: 'PATCH' }),
+  generateSchedule: (id: string, idempotencyKey?: string) => {
+    const key = idempotencyKey || `sched-${id}-${Math.floor(Date.now() / 60000)}`;
+    return apiFetch<{
+      contract_id: string;
+      record_type: string;
+      generated_count: number;
+      skipped_existing: number;
+      installment_ids: string[];
+      recurrence_id: string | null;
+      cached_replay: boolean;
+      message?: string;
+    }>(`/api/v1/contracts/${id}/generate-schedule`, {
+      method: 'POST',
+      headers: { 'Idempotency-Key': key },
+    });
+  },
 };
 
 // ── Sales Orders ───────────────────────────────────────────────────
@@ -440,6 +456,29 @@ export const billingApi = {
 
   getStats: () =>
     apiFetch<BillingStats>('/api/v1/billing/stats'),
+
+  batchSettle: (invoice_ids: string[], idempotencyKey?: string) =>
+    apiFetch<{ status: string; settled_count: number; skipped_already_paid: number; total_amount_settled: number; invoice_ids: string[]; cached_replay?: boolean }>(
+      '/api/v1/billing/batch-settle',
+      {
+        method: 'POST',
+        headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
+        body: JSON.stringify({ invoice_ids }),
+      }
+    ),
+
+  simulateBankWebhook: (provider: string, payload: { invoice_id: string; event_id?: string; status?: string; payment_method?: string; amount?: number }, idempotencyKey?: string) =>
+    apiFetch<{ status: string; provider: string; invoice_id: string; new_status: string; event_id: string; whatsapp_dispatched: boolean; cached_replay?: boolean }>(
+      `/api/v1/webhooks/banking/${encodeURIComponent(provider)}`,
+      {
+        method: 'POST',
+        headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
+        body: JSON.stringify({
+          status: 'PAID',
+          ...payload,
+        }),
+      }
+    ),
 };
 
 // ── Accounts (Mocked for Build) ────────────────────────────────────
@@ -693,6 +732,54 @@ export const cooperadosApi = {
     }),
   getBalance: (id: string) =>
     apiFetch<CooperadoBalance>(`/api/v1/crm/cooperados/${id}/balance`),
+  previewRateioSobras: (valorTotalSobras: number, anoExercicio?: number) => {
+    const params = new URLSearchParams({ valor_total_sobras: String(valorTotalSobras) });
+    if (anoExercicio) params.set('ano_exercicio', String(anoExercicio));
+    return apiFetch<{
+      ano_exercicio: number;
+      periodo_inicio: string;
+      periodo_fim: string;
+      valor_total_sobras: number;
+      movimentacao_global_12m: number;
+      total_cooperados_elegiveis: number;
+      itens: {
+        cooperado_id: string;
+        cooperado_name: string;
+        document: string;
+        status: string;
+        aportes_pagos_12m: number;
+        repasses_recebidos_12m: number;
+        movimentacao_total_12m: number;
+        participacao_percentual: number;
+        cota_sobras: number;
+      }[];
+    }>(`/api/v1/crm/cooperados/rateio-sobras?${params.toString()}`);
+  },
+  applyRateioSobras: (payload: { valor_total_sobras: number; ano_exercicio?: number; due_date?: string; description_prefix?: string }, idempotencyKey?: string) =>
+    apiFetch<{
+      status: string;
+      ano_exercicio: number;
+      valor_total_sobras: number;
+      created_payables_count: number;
+      total_distributed: number;
+      payable_ids: string[];
+      cached_replay?: boolean;
+    }>('/api/v1/crm/cooperados/rateio-sobras/aplicar', {
+      method: 'POST',
+      headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : undefined,
+      body: JSON.stringify(payload),
+    }),
+  getInformeRendimentos: (cooperadoId: string, anoCalendario?: number) =>
+    apiFetch<{
+      ano_calendario: number;
+      fonte_pagadora: { nome: string; cnpj: string; regime: string };
+      beneficiario: { id: string; nome: string; documento: string; matricula_nis: string; email?: string; status: string };
+      quadro_3_rendimentos_tributaveis: { rendimentos_brutos_producao: number; contribuicao_previdenciaria_inss: number; imposto_renda_retido_irrf: number; taxa_administrativa_fates: number; rendimentos_liquidos_pagos: number };
+      quadro_4_rendimentos_isentos_exclusivos: { sobras_liquidas_ago_distribuicao: number; capital_social_integralizado_no_ano: number };
+      quadro_7_bens_e_direitos: { saldo_quotas_capital_social_acumulado: number; discriminacao: string };
+      historico_repasses_ano: { id: string; date: string; description: string; valor_bruto: number; inss_retido: number; irrf_retido: number; taxa_adm: number; valor_liquido: number; status: string }[];
+      gerado_em: string;
+    }>(`/api/v1/crm/cooperados/${cooperadoId}/informe-rendimentos${anoCalendario ? `?ano_calendario=${anoCalendario}` : ''}`),
 };
 
 // ── Recurrences (Agendamentos de Recebimentos e Pagamentos) ──────────

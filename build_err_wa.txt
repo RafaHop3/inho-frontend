@@ -1,0 +1,91 @@
+﻿
+> inho-frontend@0.1.0 build
+> next build
+
+   Ôû▓ Next.js 15.5.18
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Ô£ô Compiled successfully in 4.7s
+   Skipping linting
+   Checking validity of types ...
+node.exe : Failed to 
+compile.
+No C:\Program Files\n
+odejs\npm.ps1:29 
+caractere:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo   
+           : 
+NotSpecified:     
+(Failed to compile.: 
+   String) [], 
+RemoteEx    ception
+    + 
+FullyQualifiedErro   
+ rId : 
+NativeCommandE    
+rror
+ 
+
+./src/app/dashboard/w
+hatsapp/page.tsx:115:
+14
+Type error: Type 
+'{}' is missing the 
+following properties 
+from type 
+'SidebarProps': 
+mobileOpen, 
+setMobileOpen
+
+[0m [90m 113 
+|[39m     
+[36mreturn[39m (
+ [90m 114 |[39m    
+     [33m<[39m[33m
+div[39m className[3
+3m=[39m[32m"flex 
+h-screen 
+bg-[#06080A] 
+text-[#e6edf3] 
+font-mono selection:b
+g-[#00fff5]/30 
+overflow-hidden relat
+ive"[39m[33m>[39m
+[31m[1m>[22m[39m
+[90m 115 |[39m      
+       [33m<[39m[3
+3mSidebar[39m [33m/
+[39m[33m>[39m
+ [90m     |[39m    
+          
+[31m[1m^[22m[39m
+ [90m 116 |[39m
+ [90m 117 |[39m    
+         [33m<[39m
+[33mmain[39m classNa
+me[33m=[39m[32m"fl
+ex-1 flex flex-col 
+p-6 relative 
+bg-[#030406] shadow-[
+-10px_0_30px_rgba(0,0
+,0,0.5)] z-10 w-full 
+overflow-hidden"[39m
+[33m>[39m
+ [90m 118 |[39m    
+             [33m<[
+39m[33mdiv[39m clas
+sName[33m=[39m[32m
+"flex items-center 
+justify-between mb-4 
+border-b 
+border-[#1a1f26]/50 p
+b-4"[39m[33m>[39m
+[0m
+Next.js build worker 
+exited with code: 1 
+and signal: null
