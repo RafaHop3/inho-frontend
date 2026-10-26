@@ -7,10 +7,11 @@ import {
 } from 'lucide-react';
 import {
   cooperadosApi, CooperadoItem, CooperadoBalance,
-  crmApi, AccountPayableOut, billingApi
+  crmApi, AccountPayableOut, billingApi,
+  openFinanceApi, OpenFinanceBankMeta, OpenFinanceConsentItem
 } from '@/lib/api';
 
-type TabView = 'ASSOCIADOS' | 'COTAS_FISCAL' | 'FINANCE' | 'RATEIO_INFORMES';
+type TabView = 'ASSOCIADOS' | 'COTAS_FISCAL' | 'FINANCE' | 'RATEIO_INFORMES' | 'OPEN_FINANCE';
 
 const STATUS_META: Record<string, { label: string; style: string }> = {
   PROPOSTA_CADASTRADA: { label: 'Proposta Cadastrada', style: 'bg-neon-blue/10 text-neon-blue border-neon-blue/30' },
@@ -78,6 +79,28 @@ export default function CooperativaInho() {
   const [informeAno, setInformeAno] = useState(new Date().getFullYear());
   const [informeData, setInformeData] = useState<any>(null);
   const [loadingInforme, setLoadingInforme] = useState(false);
+
+  // Fase 3: Open Finance Brasil (BACEN) & Conciliação Bancária Cooperativa
+  const [ofBanks, setOfBanks] = useState<OpenFinanceBankMeta[]>([]);
+  const [ofConsents, setOfConsents] = useState<OpenFinanceConsentItem[]>([]);
+  const [ofConsentForm, setOfConsentForm] = useState({
+    bank_code: '756',
+    aggregator: 'PLUGGY',
+    client_secret_or_token: '',
+    account_branch: '0001',
+    account_number: '',
+  });
+  const [ofAccountForm, setOfAccountForm] = useState({
+    cooperado_id: '',
+    bank_code: '756',
+    branch: '0001',
+    account_number: '',
+    account_type: 'CONTA_CAPITAL_COOP',
+    pix_key: '',
+    pix_key_type: 'CPF_CNPJ',
+  });
+  const [ofSyncResult, setOfSyncResult] = useState<any>(null);
+  const [loadingOf, setLoadingOf] = useState(false);
 
   async function loadCooperados() {
     setLoading(true);
@@ -159,8 +182,81 @@ export default function CooperativaInho() {
       }
     } else if (activeTab === 'FINANCE') {
       loadFinance();
+    } else if (activeTab === 'OPEN_FINANCE') {
+      loadCooperados();
+      loadOpenFinanceHub();
     }
   }, [activeTab, statusFilter]);
+
+  async function loadOpenFinanceHub() {
+    setLoadingOf(true);
+    try {
+      const [dirRes, consentsRes] = await Promise.all([
+        openFinanceApi.getDirectory(),
+        openFinanceApi.listConsents(),
+      ]);
+      setOfBanks(dirRes.items || []);
+      setOfConsents(consentsRes || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingOf(false);
+    }
+  }
+
+  async function handleCreateOfConsent(e: React.FormEvent) {
+    e.preventDefault();
+    if (!ofConsentForm.client_secret_or_token.trim()) return;
+    setLoadingOf(true);
+    try {
+      await openFinanceApi.createConsent(ofConsentForm);
+      setOfConsentForm({ ...ofConsentForm, client_secret_or_token: '' });
+      await loadOpenFinanceHub();
+      alert('Consentimento Open Finance (BACEN) criptografado com MultiFernet AES-256 e ativado!');
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao conectar instituição Open Finance');
+    } finally {
+      setLoadingOf(false);
+    }
+  }
+
+  async function handleLinkCooperadoAccount(e: React.FormEvent) {
+    e.preventDefault();
+    if (!ofAccountForm.cooperado_id || !ofAccountForm.pix_key) {
+      alert('Selecione o cooperado e informe os dados bancários/PIX.');
+      return;
+    }
+    setLoadingOf(true);
+    try {
+      const res = await openFinanceApi.linkCooperadoAccount(ofAccountForm.cooperado_id, {
+        bank_code: ofAccountForm.bank_code,
+        branch: ofAccountForm.branch,
+        account_number: ofAccountForm.account_number,
+        account_type: ofAccountForm.account_type,
+        pix_key: ofAccountForm.pix_key,
+        pix_key_type: ofAccountForm.pix_key_type,
+      });
+      await loadCooperados();
+      alert(`Domicílio Bancário Open Finance vinculado a ${res.cooperado_name}!`);
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao vincular conta bancária do cooperado');
+    } finally {
+      setLoadingOf(false);
+    }
+  }
+
+  async function handleSyncOpenFinanceStatement() {
+    setLoadingOf(true);
+    try {
+      const res = await openFinanceApi.syncStatement({ auto_reconcile_pending_cotas: true });
+      setOfSyncResult(res);
+      await loadCooperados();
+    } catch (err: any) {
+      alert(err?.message || 'Erro ao sincronizar extrato Open Finance');
+    } finally {
+      setLoadingOf(false);
+    }
+  }
 
   // Auto-Fill CNPJ via Backend Cache + Fallback (BrasilAPI -> CNPJ.ws)
   async function handleLookupCnpj() {
@@ -362,6 +458,7 @@ export default function CooperativaInho() {
               { id: 'ASSOCIADOS', label: 'Base Associada (Sócios)', icon: Users },
               { id: 'COTAS_FISCAL', label: 'Liquidação de Cotas & Fiscal', icon: Calculator },
               { id: 'RATEIO_INFORMES', label: 'Rateio de Sobras & Informes', icon: Receipt },
+              { id: 'OPEN_FINANCE', label: 'Open Finance & Bancos', icon: CreditCard },
               { id: 'FINANCE', label: 'Fila Financeira', icon: DollarSign },
             ].map((tab) => (
               <button
@@ -962,6 +1059,210 @@ export default function CooperativaInho() {
                   Selecione um sócio cooperado acima para emitir o Informe Anual de Rendimentos.
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ─── ABA 5: OPEN FINANCE BRASIL (BACEN) & CONCILIAÇÃO BANCÁRIA ─── */}
+        {activeTab === 'OPEN_FINANCE' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Card 1: Consentimentos Open Finance da Cooperativa */}
+              <div className="p-6 rounded-2xl bg-[#090D14] border border-terminal-border space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] text-neon-cyan font-bold uppercase tracking-widest">
+                      BACEN Fase 2 (Dados) & Fase 3 (ITP PIX)
+                    </span>
+                    <h2 className="text-base font-extrabold text-white mt-0.5">
+                      1. Conexão Bancária da Cooperativa (Open Finance)
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSyncOpenFinanceStatement}
+                    disabled={loadingOf}
+                    className="px-3.5 py-2 rounded-xl bg-neon-green text-black font-extrabold text-[11px] uppercase tracking-wider hover:opacity-90"
+                  >
+                    {loadingOf ? 'Sincronizando...' : 'Sincronizar Extrato & Conciliar Cotas'}
+                  </button>
+                </div>
+
+                {ofSyncResult && (
+                  <div className="p-3 rounded-xl bg-neon-green/10 border border-neon-green/30 text-xs text-neon-green">
+                    Extrato Open Finance sincronizado: <strong>{ofSyncResult.reconciled_count}</strong> fatura(s) de cota conciliada(s) e <strong>{ofSyncResult.upgraded_cooperado_ids?.length || 0}</strong> cooperado(s) ativado(s) automaticamente.
+                  </div>
+                )}
+
+                <form onSubmit={handleCreateOfConsent} className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <label className="block text-[#8b949e] mb-1 uppercase">Instituição Participante (COMPE/ISPB)</label>
+                    <select
+                      value={ofConsentForm.bank_code}
+                      onChange={(e) => setOfConsentForm({ ...ofConsentForm, bank_code: e.target.value })}
+                      className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    >
+                      {(ofBanks.length > 0 ? ofBanks : [
+                        { code: '756', name: 'SICOOB - Banco Cooperativo Sicoob (756)' },
+                        { code: '748', name: 'SICREDI - Banco Cooperativo Sicredi (748)' },
+                        { code: '136', name: 'UNICRED Cooperativa (136)' },
+                        { code: '133', name: 'CRESOL Cooperativa (133)' },
+                        { code: '085', name: 'AILOS / Viacredi (085)' },
+                        { code: '001', name: 'Banco do Brasil (001)' },
+                        { code: '077', name: 'Banco Inter (077)' },
+                      ]).map((b: any) => (
+                        <option key={b.code} value={b.code}>
+                          {b.code} - {b.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[#8b949e] mb-1 uppercase">Provedor / Agregador Homologado</label>
+                    <select
+                      value={ofConsentForm.aggregator}
+                      onChange={(e) => setOfConsentForm({ ...ofConsentForm, aggregator: e.target.value })}
+                      className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    >
+                      <option value="PLUGGY">Pluggy Open Finance</option>
+                      <option value="BELVO">Belvo Open Finance</option>
+                      <option value="OPEN_FINANCE_BACEN_DIRECT">API FAPI / mTLS Direta (BACEN)</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-[#8b949e] mb-1 uppercase">Token OAuth2/FAPI ou Chave de Consentimento *</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="password"
+                        required
+                        value={ofConsentForm.client_secret_or_token}
+                        onChange={(e) => setOfConsentForm({ ...ofConsentForm, client_secret_or_token: e.target.value })}
+                        placeholder="Token criptografado com MultiFernet AES-256..."
+                        className="flex-1 bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2 text-white"
+                      />
+                      <button
+                        type="submit"
+                        disabled={loadingOf}
+                        className="px-4 py-2 rounded-xl bg-neon-cyan text-black font-extrabold uppercase text-xs"
+                      >
+                        Conectar Banco
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <div className="space-y-2 pt-2">
+                  {ofConsents.map((c) => (
+                    <div key={c.id} className="p-3 rounded-xl bg-[#05070B] border border-terminal-border flex items-center justify-between text-xs">
+                      <div>
+                        <div className="font-bold text-white flex items-center gap-2">
+                          <CheckCircle2 size={14} className="text-neon-green" />
+                          {c.compe_code} — {c.institution_full_name}
+                        </div>
+                        <div className="text-[10px] text-[#8b949e] mt-0.5">
+                          ISPB: {c.ispb} • Consent URN: {c.consent_urn}
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-lg bg-neon-green/10 text-neon-green border border-neon-green/30 text-[10px] font-bold">
+                        ATIVO (AES-256)
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Card 2: Domicílio Bancário & Chave PIX do Sócio Cooperado */}
+              <div className="p-6 rounded-2xl bg-[#090D14] border border-terminal-border space-y-4">
+                <div>
+                  <span className="text-[10px] text-amber-400 font-bold uppercase tracking-widest">
+                    Domicílio Bancário & Recebimento de Sobras/Repasses
+                  </span>
+                  <h2 className="text-base font-extrabold text-white mt-0.5">
+                    2. Vincular Conta Bancária & PIX do Cooperado
+                  </h2>
+                </div>
+
+                <form onSubmit={handleLinkCooperadoAccount} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-[#8b949e] mb-1 uppercase">Sócio Cooperado *</label>
+                    <select
+                      required
+                      value={ofAccountForm.cooperado_id}
+                      onChange={(e) => setOfAccountForm({ ...ofAccountForm, cooperado_id: e.target.value })}
+                      className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    >
+                      <option value="">Selecione o cooperado...</option>
+                      {cooperados.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name} ({c.document})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[#8b949e] mb-1 uppercase">Banco (COMPE)</label>
+                      <input
+                        value={ofAccountForm.bank_code}
+                        onChange={(e) => setOfAccountForm({ ...ofAccountForm, bank_code: e.target.value })}
+                        placeholder="756 (Sicoob)"
+                        className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#8b949e] mb-1 uppercase">Agência / Cooperativa</label>
+                      <input
+                        required
+                        value={ofAccountForm.branch}
+                        onChange={(e) => setOfAccountForm({ ...ofAccountForm, branch: e.target.value })}
+                        placeholder="0001"
+                        className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#8b949e] mb-1 uppercase">Conta Corrente / Capital</label>
+                      <input
+                        required
+                        value={ofAccountForm.account_number}
+                        onChange={(e) => setOfAccountForm({ ...ofAccountForm, account_number: e.target.value })}
+                        placeholder="12345-6"
+                        className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[#8b949e] mb-1 uppercase">Tipo de Conta</label>
+                      <select
+                        value={ofAccountForm.account_type}
+                        onChange={(e) => setOfAccountForm({ ...ofAccountForm, account_type: e.target.value })}
+                        className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2 text-white"
+                      >
+                        <option value="CONTA_CAPITAL_COOP">Conta Capital Cooperativa</option>
+                        <option value="CONTA_CORRENTE">Conta Corrente</option>
+                        <option value="CONTA_POUPANCA">Conta Poupança</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[#8b949e] mb-1 uppercase">Chave PIX p/ Repasses (ITP) *</label>
+                      <input
+                        required
+                        value={ofAccountForm.pix_key}
+                        onChange={(e) => setOfAccountForm({ ...ofAccountForm, pix_key: e.target.value })}
+                        placeholder="CPF/CNPJ, E-mail ou Celular"
+                        className="w-full bg-[#05070B] border border-terminal-border rounded-xl px-3 py-2 text-white"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={loadingOf}
+                    className="w-full py-3 rounded-xl bg-neon-cyan text-black font-extrabold uppercase tracking-wider"
+                  >
+                    Salvar Domicílio Bancário Open Finance no Cooperado
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         )}

@@ -157,30 +157,16 @@ async function apiFetch<T>(
 
 // ── Auth endpoints ─────────────────────────────────────────────────
 export const authApi = {
-  register: (payload: RegisterPayload) =>
-    apiFetch<{ message: string; user_id: string }>('/api/v1/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }),
-
   login: async (payload: LoginPayload) => {
     const cleanPayload: LoginPayload = {
       ...payload,
       email: payload.email.trim().toLowerCase(),
       password: payload.password.trim(),
     };
-    console.log('Login attempt payload:', { email: cleanPayload.email });
-    try {
-      const result = await apiFetch<TokenResponse>('/api/v1/auth/login', {
-        method: 'POST',
-        body: JSON.stringify(cleanPayload),
-      });
-      console.log('Login successful, response:', result);
-      return result;
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
+    return apiFetch<TokenResponse>('/api/v1/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(cleanPayload),
+    });
   },
 
   me: () => apiFetch<UserMe>('/api/v1/users/me'),
@@ -1005,4 +991,104 @@ export const settingsApi = {
     }>('/api/v1/telemetry/metrics'),
 };
 
+// ── Open Finance Brasil (BACEN Fase 2 & Fase 3 ITP) ──────────────────
+export interface OpenFinanceBankMeta {
+  code: string;
+  ispb: string;
+  name: string;
+  short_name: string;
+  is_cooperative: boolean;
+  open_finance_phases: string[];
+}
 
+export interface OpenFinanceConsentItem {
+  id: string;
+  business_id: string;
+  bank_name: string;
+  institution_full_name: string;
+  compe_code: string;
+  ispb: string;
+  is_cooperative_bank: boolean;
+  consent_urn: string;
+  webhook_url?: string;
+  is_active: boolean;
+  scopes: string[];
+  created_at: string;
+}
+
+export const openFinanceApi = {
+  getDirectory: (params?: { search?: string; only_cooperativas?: boolean }) => {
+    const q = new URLSearchParams();
+    if (params?.search) q.set('search', params.search);
+    if (params?.only_cooperativas) q.set('only_cooperativas', 'true');
+    const qs = q.toString();
+    return apiFetch<{ total: number; items: OpenFinanceBankMeta[] }>(
+      `/api/v1/open-finance/directory${qs ? `?${qs}` : ''}`
+    );
+  },
+  listConsents: () =>
+    apiFetch<OpenFinanceConsentItem[]>('/api/v1/open-finance/consents'),
+  createConsent: (payload: {
+    bank_code: string;
+    aggregator?: string;
+    client_secret_or_token: string;
+    account_branch?: string;
+    account_number?: string;
+  }) =>
+    apiFetch<OpenFinanceConsentItem>('/api/v1/open-finance/consents', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  linkCooperadoAccount: (
+    cooperadoId: string,
+    payload: {
+      bank_code: string;
+      bank_name?: string;
+      ispb?: string;
+      branch: string;
+      account_number: string;
+      account_type?: string;
+      pix_key: string;
+      pix_key_type?: string;
+    }
+  ) =>
+    apiFetch<{
+      status: string;
+      cooperado_id: string;
+      cooperado_name: string;
+      bank_details: string;
+    }>(`/api/v1/open-finance/cooperado-account/${cooperadoId}`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  syncStatement: (payload?: { auto_reconcile_pending_cotas?: boolean }) =>
+    apiFetch<{
+      status: string;
+      business_id: string;
+      reconciled_count: number;
+      reconciled_invoice_ids: string[];
+      upgraded_cooperado_ids: string[];
+      synced_at: string;
+    }>('/api/v1/open-finance/sync-statement', {
+      method: 'POST',
+      body: JSON.stringify(payload || { auto_reconcile_pending_cotas: true }),
+    }),
+  initiatePixPayout: (payload: {
+    cooperado_id: string;
+    payable_id?: string;
+    amount?: number;
+    description?: string;
+  }) =>
+    apiFetch<{
+      status: string;
+      end_to_end_id: string;
+      cooperado_id: string;
+      cooperado_name: string;
+      amount: number;
+      bank_details: string;
+      settled_at: string;
+    }>('/api/v1/open-finance/pix-payout', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+};
