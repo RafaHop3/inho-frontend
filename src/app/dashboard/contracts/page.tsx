@@ -14,7 +14,7 @@ const StatusBadge = ({ status }: { status: ContractStatus }) => {
   const styles: Record<ContractStatus, string> = {
     ACTIVE: 'text-inho-green bg-inho-green/10 border-inho-green/30',
     SUSPENDED: 'text-inho-gold bg-inho-gold/10 border-inho-gold/30',
-    CANCELLED: 'text-red-400 bg-red-400/10 border-red-400/30',
+    CANCELLED: 'text-red-700 bg-red-400/10 border-red-400/30',
     EXPIRED: 'text-inho-muted bg-inho-muted/10 border-inho-border',
   };
   const icons: Record<ContractStatus, React.ReactNode> = {
@@ -41,7 +41,7 @@ const StatusBadge = ({ status }: { status: ContractStatus }) => {
 const TypeBadge = ({ type }: { type: RecordType }) => {
   const isPayable = type === 'PAYABLE';
   return (
-    <span className={`flex items-center gap-1 text-xs font-mono font-bold ${isPayable ? 'text-red-400' : 'text-inho-green'}`}>
+    <span className={`flex items-center gap-1 text-xs font-mono font-bold ${isPayable ? 'text-red-700' : 'text-inho-green'}`}>
       {isPayable ? <ArrowDownRight size={14} /> : <ArrowUpRight size={14} />}
       {isPayable ? 'A Pagar' : 'A Receber'}
     </span>
@@ -159,11 +159,11 @@ export default function ContractsPage() {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                <FileSignature size={16} className="text-purple-400" />
+                <FileSignature size={16} className="text-purple-700" />
               </div>
               <span className="text-inho-muted text-[10px] font-mono uppercase tracking-widest">Gestão Organizacional</span>
             </div>
-            <h1 className="text-3xl font-black text-inho-text">Base de <span className="text-purple-400">Contratos</span></h1>
+            <h1 className="text-3xl font-black text-inho-text">Base de <span className="text-purple-700">Contratos</span></h1>
             <p className="text-inho-muted text-sm mt-1">Gerencie vínculos recorrentes a pagar e a receber.</p>
           </div>
 
@@ -267,7 +267,7 @@ export default function ContractsPage() {
                               Suspender
                             </button>
                           )}
-                          <button className="p-1.5 text-inho-muted hover:text-inho-text hover:bg-white/5 rounded-lg transition-colors">
+                          <button className="p-1.5 text-inho-muted hover:text-inho-text hover:bg-[#FAF8F2] rounded-lg transition-colors">
                             <MoreVertical size={16} />
                           </button>
                         </div>
@@ -283,12 +283,12 @@ export default function ContractsPage() {
         {/* Creation Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !submitting && setIsModalOpen(false)} />
+            <div className="absolute inset-0 bg-white backdrop-blur-sm" onClick={() => !submitting && setIsModalOpen(false)} />
             <div className="relative w-full max-w-2xl bg-inho-dark border border-inho-border rounded-2xl shadow-2xl p-6 lg:p-8 animate-slide-up overflow-y-auto max-h-[90vh]">
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-2xl font-black text-inho-text flex items-center gap-2">
-                    <Plus size={20} className="text-purple-400" /> Registrar Contrato
+                    <Plus size={20} className="text-purple-700" /> Registrar Contrato
                   </h2>
                   <p className="text-sm text-inho-muted mt-1">Insira os dados do vínculo com o cliente ou fornecedor.</p>
                 </div>
@@ -298,7 +298,7 @@ export default function ContractsPage() {
               </div>
 
               {error && (
-                <div className="mb-6 p-3 bg-red-400/10 border border-red-500/30 rounded-xl text-xs font-mono text-red-400 flex items-center gap-2">
+                <div className="mb-6 p-3 bg-red-400/10 border border-red-500/30 rounded-xl text-xs font-mono text-red-700 flex items-center gap-2">
                   <Ban size={14} /> {error}
                 </div>
               )}
@@ -371,10 +371,10 @@ export default function ContractsPage() {
                 </div>
 
                 <div className="pt-6 border-t border-inho-border flex justify-end gap-3">
-                  <button type="button" onClick={() => setIsModalOpen(false)} disabled={submitting} className="px-6 py-3 rounded-xl font-bold text-sm text-inho-muted hover:text-inho-text hover:bg-white/5 transition-colors">
+                  <button type="button" onClick={() => setIsModalOpen(false)} disabled={submitting} className="px-6 py-3 rounded-xl font-bold text-sm text-inho-muted hover:text-inho-text hover:bg-[#FAF8F2] transition-colors">
                     Cancelar
                   </button>
-                  <button type="submit" disabled={submitting} className="group flex items-center gap-2 px-8 py-3 bg-purple-500 text-white rounded-xl font-bold text-sm hover:bg-purple-400 hover:shadow-lg hover:shadow-purple-500/20 transition-all disabled:opacity-50">
+                  <button type="submit" disabled={submitting} className="group flex items-center gap-2 px-8 py-3 bg-purple-500 text-[#0F172A] rounded-xl font-bold text-sm hover:bg-purple-400 hover:shadow-lg hover:shadow-purple-500/20 transition-all disabled:opacity-50">
                     {submitting ? 'Registrando...' : 'Confirmar Contrato'}
                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>

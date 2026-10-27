@@ -102,12 +102,12 @@ export default function ReportsPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="text-inho-muted hover:text-white transition-colors bg-inho-dark p-2 rounded-xl"
+              className="text-inho-muted hover:text-[#0F172A] transition-colors bg-inho-dark p-2 rounded-xl"
             >
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-[#0F172A] flex items-center gap-2">
                 Relatórios Financeiros & DRE
                 <BarChart3 size={22} className="text-inho-teal" />
               </h1>
@@ -121,7 +121,7 @@ export default function ReportsPage() {
             <select
               value={month}
               onChange={(e) => setMonth(Number(e.target.value))}
-              className="bg-inho-dark border border-inho-border rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-inho-teal"
+              className="bg-inho-dark border border-inho-border rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-inho-teal"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((m) => (
                 <option key={m} value={m}>
@@ -132,7 +132,7 @@ export default function ReportsPage() {
             <select
               value={year}
               onChange={(e) => setYear(Number(e.target.value))}
-              className="bg-inho-dark border border-inho-border rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-inho-teal"
+              className="bg-inho-dark border border-inho-border rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-inho-teal"
             >
               {[2025, 2026, 2027].map((y) => (
                 <option key={y} value={y}>
@@ -146,8 +146,8 @@ export default function ReportsPage() {
                 onClick={() => setRegime('competencia')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   regime === 'competencia'
-                    ? 'bg-inho-teal text-inho-black shadow-glow-teal'
-                    : 'text-inho-muted hover:text-white'
+                    ? 'bg-inho-teal text-white shadow-glow-teal'
+                    : 'text-inho-muted hover:text-[#0F172A]'
                 }`}
               >
                 Competência
@@ -156,8 +156,8 @@ export default function ReportsPage() {
                 onClick={() => setRegime('caixa')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   regime === 'caixa'
-                    ? 'bg-inho-teal text-inho-black shadow-glow-teal'
-                    : 'text-inho-muted hover:text-white'
+                    ? 'bg-inho-teal text-white shadow-glow-teal'
+                    : 'text-inho-muted hover:text-[#0F172A]'
                 }`}
               >
                 Caixa
@@ -166,7 +166,7 @@ export default function ReportsPage() {
 
             <button
               onClick={loadAllReports}
-              className="bg-white/5 hover:bg-white/10 text-white border border-white/10 p-2 rounded-xl transition-colors"
+              className="bg-[#FAF8F2] hover:bg-[#FAF8F2] text-[#0F172A] border border-[#E5DEC9] p-2 rounded-xl transition-colors"
               title="Atualizar dados"
             >
               <RefreshCw size={15} className={loading ? 'animate-spin text-inho-teal' : ''} />
@@ -188,12 +188,12 @@ export default function ReportsPage() {
               <p className="text-xs uppercase font-mono tracking-wider text-inho-muted">
                 Receitas ({year}-{String(month).padStart(2, '0')})
               </p>
-              <div className="p-2 bg-green-500/10 rounded-lg text-green-400">
+              <div className="p-2 bg-green-500/10 rounded-lg text-emerald-700">
                 <TrendingUp size={18} />
               </div>
             </div>
-            <p className="text-3xl font-black font-mono text-white">{fmtCurrency(revTotal)}</p>
-            <p className="text-[10px] text-green-400 mt-2 font-mono uppercase">
+            <p className="text-3xl font-black font-mono text-[#0F172A]">{fmtCurrency(revTotal)}</p>
+            <p className="text-[10px] text-emerald-700 mt-2 font-mono uppercase">
               Regime de {regime === 'competencia' ? 'Competência' : 'Caixa'}
             </p>
           </div>
@@ -203,24 +203,24 @@ export default function ReportsPage() {
               <p className="text-xs uppercase font-mono tracking-wider text-inho-muted">
                 Despesas ({year}-{String(month).padStart(2, '0')})
               </p>
-              <div className="p-2 bg-red-500/10 rounded-lg text-red-400">
+              <div className="p-2 bg-red-500/10 rounded-lg text-red-700">
                 <TrendingDown size={18} />
               </div>
             </div>
-            <p className="text-3xl font-black font-mono text-white">{fmtCurrency(expTotal)}</p>
-            <p className="text-[10px] text-red-400 mt-2 font-mono uppercase">
+            <p className="text-3xl font-black font-mono text-[#0F172A]">{fmtCurrency(expTotal)}</p>
+            <p className="text-[10px] text-red-700 mt-2 font-mono uppercase">
               Contas a Pagar & Custos Operacionais
             </p>
           </div>
 
-          <div className="glassmorphism p-6 rounded-2xl border border-inho-teal/30 relative overflow-hidden shadow-[0_0_25px_rgba(0,255,245,0.05)]">
+          <div className="glassmorphism p-6 rounded-2xl border border-inho-teal/30 relative overflow-hidden shadow-[0_0_25px_rgba(184,134,11,0.05)]">
             <div className="flex justify-between items-start mb-2">
               <p className="text-xs uppercase font-mono tracking-wider text-inho-teal">Resultado Líquido (DRE)</p>
               <div className="p-2 bg-inho-teal/10 rounded-lg text-inho-teal">
                 <DollarSign size={18} />
               </div>
             </div>
-            <p className={`text-3xl font-black font-mono ${netProfit >= 0 ? 'text-inho-teal' : 'text-red-400'}`}>
+            <p className={`text-3xl font-black font-mono ${netProfit >= 0 ? 'text-inho-teal' : 'text-red-700'}`}>
               {fmtCurrency(netProfit)}
             </p>
             <p className="text-[10px] text-inho-muted mt-2 font-mono">Margem Líquida: {marginPct}%</p>
@@ -242,7 +242,7 @@ export default function ReportsPage() {
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === t.id
                   ? 'bg-inho-teal/20 text-inho-teal border border-inho-teal/40'
-                  : 'text-inho-muted hover:text-white'
+                  : 'text-inho-muted hover:text-[#0F172A]'
               }`}
             >
               {t.label}
@@ -259,15 +259,15 @@ export default function ReportsPage() {
         ) : activeTab === 'DRE' ? (
           <div className="glassmorphism rounded-2xl border border-inho-border overflow-hidden">
             <div className="p-5 bg-inho-dark border-b border-inho-border flex justify-between items-center">
-              <h2 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
+              <h2 className="text-sm font-bold text-[#0F172A] uppercase font-mono tracking-wider">
                 Estrutura DRE — {year}/{String(month).padStart(2, '0')} ({regime.toUpperCase()})
               </h2>
               <span className="text-xs text-inho-muted font-mono">Valores em BRL (R$)</span>
             </div>
             <div className="divide-y divide-inho-border/40 text-sm">
-              <div className="p-4 flex justify-between items-center bg-white/[0.02] font-bold text-white">
+              <div className="p-4 flex justify-between items-center bg-white/[0.02] font-bold text-[#0F172A]">
                 <span>1. RECEITA OPERACIONAL BRUTA</span>
-                <span className="font-mono text-green-400">{fmtCurrency(revTotal)}</span>
+                <span className="font-mono text-emerald-700">{fmtCurrency(revTotal)}</span>
               </div>
               {(dre?.revenues || []).map((r: any, idx: number) => (
                 <div key={idx} className="p-3 pl-8 flex justify-between items-center text-inho-muted text-xs">
@@ -275,9 +275,9 @@ export default function ReportsPage() {
                   <span className="font-mono">{fmtCurrency(r.amount)}</span>
                 </div>
               ))}
-              <div className="p-4 flex justify-between items-center bg-white/[0.02] font-bold text-white">
+              <div className="p-4 flex justify-between items-center bg-white/[0.02] font-bold text-[#0F172A]">
                 <span>2. CUSTOS E DESPESAS OPERACIONAIS</span>
-                <span className="font-mono text-red-400">- {fmtCurrency(expTotal)}</span>
+                <span className="font-mono text-red-700">- {fmtCurrency(expTotal)}</span>
               </div>
               {(dre?.expenses || []).map((e: any, idx: number) => (
                 <div key={idx} className="p-3 pl-8 flex justify-between items-center text-inho-muted text-xs">
@@ -285,9 +285,9 @@ export default function ReportsPage() {
                   <span className="font-mono">- {fmtCurrency(e.amount)}</span>
                 </div>
               ))}
-              <div className="p-5 flex justify-between items-center bg-inho-teal/5 border-t-2 border-inho-teal/30 font-black text-base text-white">
+              <div className="p-5 flex justify-between items-center bg-inho-teal/5 border-t-2 border-inho-teal/30 font-black text-base text-[#0F172A]">
                 <span>(=) RESULTADO LÍQUIDO DO EXERCÍCIO</span>
-                <span className={`font-mono text-xl ${netProfit >= 0 ? 'text-inho-teal' : 'text-red-400'}`}>
+                <span className={`font-mono text-xl ${netProfit >= 0 ? 'text-inho-teal' : 'text-red-700'}`}>
                   {fmtCurrency(netProfit)}
                 </span>
               </div>
@@ -296,7 +296,7 @@ export default function ReportsPage() {
         ) : activeTab === 'CASHFLOW' ? (
           <div className="glassmorphism rounded-2xl border border-inho-border overflow-hidden">
             <div className="p-5 bg-inho-dark border-b border-inho-border flex justify-between items-center">
-              <h2 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
+              <h2 className="text-sm font-bold text-[#0F172A] uppercase font-mono tracking-wider">
                 Projeção de Fluxo de Caixa ({cashflow?.horizon_months || 6} Meses)
               </h2>
             </div>
@@ -313,12 +313,12 @@ export default function ReportsPage() {
                 <tbody className="divide-y divide-inho-border/40">
                   {(cashflow?.projection || []).map((row: any) => (
                     <tr key={row.period} className="hover:bg-white/[0.02]">
-                      <td className="px-6 py-4 font-mono text-xs font-bold text-white">{row.period}</td>
-                      <td className="px-6 py-4 font-mono text-xs text-green-400">{fmtCurrency(row.inflow)}</td>
-                      <td className="px-6 py-4 font-mono text-xs text-red-400">{fmtCurrency(row.outflow)}</td>
+                      <td className="px-6 py-4 font-mono text-xs font-bold text-[#0F172A]">{row.period}</td>
+                      <td className="px-6 py-4 font-mono text-xs text-emerald-700">{fmtCurrency(row.inflow)}</td>
+                      <td className="px-6 py-4 font-mono text-xs text-red-700">{fmtCurrency(row.outflow)}</td>
                       <td
                         className={`px-6 py-4 font-mono text-xs font-bold text-right ${
-                          row.net >= 0 ? 'text-inho-teal' : 'text-red-400'
+                          row.net >= 0 ? 'text-inho-teal' : 'text-red-700'
                         }`}
                       >
                         {fmtCurrency(row.net)}
@@ -339,27 +339,27 @@ export default function ReportsPage() {
             ].map((b) => (
               <div key={b.key} className="glassmorphism p-5 rounded-2xl border border-inho-border">
                 <div className="flex items-center gap-2 text-xs text-inho-muted font-mono mb-2">
-                  <Clock size={14} className="text-amber-400" />
+                  <Clock size={14} className="text-amber-700" />
                   {b.label}
                 </div>
-                <p className="text-2xl font-black font-mono text-white">{fmtCurrency(b.val)}</p>
+                <p className="text-2xl font-black font-mono text-[#0F172A]">{fmtCurrency(b.val)}</p>
               </div>
             ))}
           </div>
         ) : activeTab === 'BUDGET' ? (
           <div className="glassmorphism rounded-2xl border border-inho-border p-6 space-y-4">
-            <h2 className="text-sm font-bold text-white uppercase font-mono flex items-center gap-2">
+            <h2 className="text-sm font-bold text-[#0F172A] uppercase font-mono flex items-center gap-2">
               <Layers size={16} className="text-inho-teal" />
               Orçado vs Realizado ({budget?.year || year}/{String(budget?.month || month).padStart(2, '0')})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-[#E5DEC9]">
                 <p className="text-xs text-inho-muted font-mono">Total Orçado</p>
-                <p className="text-2xl font-black font-mono text-white mt-1">
+                <p className="text-2xl font-black font-mono text-[#0F172A] mt-1">
                   {fmtCurrency(budget?.total_budgeted || 0)}
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-[#E5DEC9]">
                 <p className="text-xs text-inho-muted font-mono">Total Realizado (Pago)</p>
                 <p className="text-2xl font-black font-mono text-inho-teal mt-1">
                   {fmtCurrency(budget?.total_actual || 0)}
@@ -370,8 +370,8 @@ export default function ReportsPage() {
         ) : (
           <div className="glassmorphism rounded-2xl border border-inho-border overflow-hidden">
             <div className="p-5 bg-inho-dark border-b border-inho-border flex justify-between items-center">
-              <h2 className="text-sm font-bold text-white uppercase font-mono flex items-center gap-2">
-                <AlertTriangle size={16} className="text-red-400" />
+              <h2 className="text-sm font-bold text-[#0F172A] uppercase font-mono flex items-center gap-2">
+                <AlertTriangle size={16} className="text-red-700" />
                 Relatório de Perdas e Inadimplência — Total: {fmtCurrency(losses?.total_loss || 0)}
               </h2>
             </div>
@@ -395,12 +395,12 @@ export default function ReportsPage() {
                   ) : (
                     (losses?.losses || []).map((item: any) => (
                       <tr key={item.invoice_id} className="hover:bg-white/[0.02]">
-                        <td className="px-6 py-4 font-bold text-white text-xs">{item.customer_name}</td>
+                        <td className="px-6 py-4 font-bold text-[#0F172A] text-xs">{item.customer_name}</td>
                         <td className="px-6 py-4 font-mono text-xs text-inho-muted">
                           {new Date(item.due_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
                         </td>
-                        <td className="px-6 py-4 text-xs text-red-400 font-mono">{item.status}</td>
-                        <td className="px-6 py-4 font-mono text-xs font-bold text-red-400 text-right">
+                        <td className="px-6 py-4 text-xs text-red-700 font-mono">{item.status}</td>
+                        <td className="px-6 py-4 font-mono text-xs font-bold text-red-700 text-right">
                           {fmtCurrency(item.amount)}
                         </td>
                       </tr>

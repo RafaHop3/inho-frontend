@@ -2,11 +2,9 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ShieldCheck, ArrowRight, User, Users } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Users, Crown } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { addLoginLog } from '@/lib/loginLog';
-import { businessesApi } from '@/lib/api';
-import Image from 'next/image';
 
 function LoginContent() {
   const router = useRouter();
@@ -27,8 +25,6 @@ function LoginContent() {
       router.push('/dashboard');
     }
   }, [searchParams, router]);
-
-
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,48 +64,53 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-inho-black grid-bg flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      {/* Ambient lights */}
+    <div className="min-h-screen bg-[#F6F4EE] grid-bg flex flex-col items-center justify-center px-4 relative overflow-hidden font-sans">
+      {/* Ambient Executive Gold Lights */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/3 right-1/4 w-64 h-64 bg-inho-gold/10 rounded-full blur-3xl animate-float-delayed" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D4AF37]/12 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-emerald-500/8 rounded-full blur-3xl animate-float-delayed" />
       </div>
 
       <div className="relative w-full max-w-md">
         {/* Brand Header */}
         <div className="text-center mb-8 animate-fade-in flex flex-col items-center">
-          <div className="w-16 h-16 rounded-2xl bg-inho-gold-gradient shadow-inho-gold flex items-center justify-center mb-4 border border-inho-gold/30 relative">
-            <span className="font-sans font-black text-3xl text-inho-black shadow-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">I</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDF7E2] border border-[#D4AF37]/50 text-[#8B6508] text-[10px] font-extrabold uppercase tracking-widest mb-4 shadow-sm">
+            <Crown size={12} className="text-[#B8860B]" />
+            Padrão Executivo Ouro
           </div>
-          <h1 className="text-3xl font-black text-inho-text mb-2 tracking-tight">
+          <div className="w-16 h-16 rounded-2xl bg-inho-gold-gradient shadow-inho-gold flex items-center justify-center mb-4 border border-[#D4AF37]/60 relative">
+            <span className="font-sans font-black text-3xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">I</span>
+          </div>
+          <h1 className="text-3xl font-black text-[#0F172A] mb-1.5 tracking-tight">
             Portal <span className="text-shimmer">INHO</span>
           </h1>
-          <p className="text-inho-muted text-sm font-mono tracking-widest uppercase">
-            Acesso à Plataforma
+          <p className="text-[#57606A] text-xs font-bold tracking-widest uppercase">
+            Plataforma Executiva de Gestão & Governança
           </p>
         </div>
 
-        {/* Card */}
-        <div className="glassmorphism rounded-3xl p-6 md:p-8 border border-white/5 shadow-2xl animate-slide-up relative overflow-hidden">
+        {/* Executive Porcelain Card */}
+        <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#E5DEC9] shadow-[0_20px_50px_-15px_rgba(15,23,42,0.08)] animate-slide-up relative overflow-hidden">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#9A6F0B] via-[#D4AF37] to-[#9A6F0B]" />
 
           {loginMode === 'selection' ? (
             <div className="space-y-4">
               <div className="text-center mb-6">
-                <p className="text-slate-300 text-sm">Selecione o seu perfil de acesso para entrar no sistema.</p>
+                <p className="text-[#475569] text-sm font-medium">Selecione o seu perfil executivo de acesso para entrar no sistema.</p>
               </div>
 
-              {/* Path 1: Proprietário */}
+              {/* Path 1: Proprietário / Diretoria */}
               <button
                 onClick={() => setLoginMode('proprietario')}
-                className="group w-full p-5 bg-cyan-500/5 hover:bg-cyan-500/10 border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl transition-all flex items-start gap-4 text-left"
+                className="group w-full p-5 bg-[#FAF8F2] hover:bg-[#FDF7E2] border border-[#E5DEC9] hover:border-[#D4AF37] rounded-2xl transition-all flex items-start gap-4 text-left shadow-sm"
               >
-                <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                  <ShieldCheck size={20} className="text-cyan-400" />
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FDF7E2] to-[#F3E5AB] border border-[#D4AF37]/50 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <ShieldCheck size={22} className="text-[#8B6508]" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-cyan-300 font-bold text-sm tracking-wide mb-1">Proprietário / Admin</h3>
-                  <p className="text-xs text-inho-muted leading-relaxed">
-                    Acesso administrativo do negócio focado em gestão.
+                  <h3 className="text-[#0F172A] font-extrabold text-sm tracking-wide mb-1">Proprietário / Admin</h3>
+                  <p className="text-xs text-[#57606A] leading-relaxed">
+                    Acesso administrativo e diretoria focado em governança, finanças e visão consolidada.
                   </p>
                 </div>
               </button>
@@ -117,35 +118,35 @@ function LoginContent() {
               {/* Path 2: Equipe / Sub-usuários */}
               <button
                 onClick={() => setLoginMode('colaborador')}
-                className="group w-full p-5 bg-inho-gold/5 hover:bg-inho-gold/10 border border-inho-gold/20 hover:border-inho-gold/50 rounded-2xl transition-all flex items-start gap-4 text-left"
+                className="group w-full p-5 bg-[#FAF8F2] hover:bg-emerald-50/70 border border-[#E5DEC9] hover:border-emerald-400 rounded-2xl transition-all flex items-start gap-4 text-left shadow-sm"
               >
-                <div className="w-10 h-10 rounded-full bg-inho-gold/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                  <Users size={20} className="text-inho-gold" />
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <Users size={22} className="text-emerald-700" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-inho-gold font-bold text-sm tracking-wide mb-1">Equipe / Colaborador</h3>
-                  <p className="text-xs text-inho-muted leading-relaxed">
-                    Acesso exclusivo para funcionários da instituição.
+                  <h3 className="text-[#0F172A] font-extrabold text-sm tracking-wide mb-1">Equipe / Colaborador</h3>
+                  <p className="text-xs text-[#57606A] leading-relaxed">
+                    Acesso operacional para colaboradores e operadores vinculados à instituição.
                   </p>
                 </div>
               </button>
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3 border-b border-[#E5DEC9] pb-4">
                 <button
                   onClick={() => setLoginMode('selection')}
-                  className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-inho-muted hover:text-white hover:bg-white/10 transition-colors"
+                  className="w-8 h-8 rounded-full bg-[#FAF8F2] border border-[#E5DEC9] flex items-center justify-center text-[#475569] hover:text-[#0F172A] hover:border-[#B8860B] transition-colors font-bold"
                 >
                   ←
                 </button>
                 <div>
-                  <h2 className="text-inho-text font-bold text-sm">
+                  <h2 className="text-[#0F172A] font-extrabold text-sm">
                     {loginMode === 'proprietario' ? 'Entrar como Proprietário' : 'Entrar como Colaborador'}
                   </h2>
-                  <p className="text-xs text-inho-muted">
+                  <p className="text-xs text-[#57606A]">
                     {loginMode === 'proprietario'
-                      ? 'Gestão Financeira e Administrativa'
+                      ? 'Gestão Financeira, Cooperativa e Administrativa'
                       : 'Use suas credenciais cadastradas pelo gestor.'}
                   </p>
                 </div>
@@ -153,35 +154,35 @@ function LoginContent() {
 
               <form onSubmit={handleLoginSubmit} className="space-y-5" noValidate>
                 {error && (
-                  <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium">
+                  <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
                     {error}
                   </div>
                 )}
                 <div className="space-y-1.5">
-                  <label className="text-inho-muted text-[11px] font-bold uppercase tracking-wider pl-1">E-mail de Acesso</label>
+                  <label className="text-[#475569] text-[11px] font-extrabold uppercase tracking-wider pl-1">E-mail de Acesso</label>
                   <input
                     type="email"
                     name="email"
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    placeholder="Seu e-mail cadastrado"
-                    className="w-full bg-inho-dark/80 border border-inho-border rounded-xl px-4 py-3.5 text-inho-text text-sm focus:outline-none focus:border-inho-gold/50 transition-colors"
+                    placeholder="Seu e-mail institucional"
+                    className="w-full bg-[#FAF8F2] border border-[#DED6C1] rounded-xl px-4 py-3.5 text-[#0F172A] text-sm focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
                   />
                 </div>
                 <div className="space-y-1.5 pt-1">
-                  <label className="text-inho-muted text-[11px] font-bold uppercase tracking-wider pl-1">Senha de Segurança</label>
+                  <label className="text-[#475569] text-[11px] font-extrabold uppercase tracking-wider pl-1">Senha de Segurança</label>
                   <input
                     type="password"
                     name="password"
                     value={form.password}
                     onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                     placeholder="Sua senha secreta"
-                    className="w-full bg-inho-dark/80 border border-inho-border rounded-xl px-4 py-3.5 text-inho-text text-sm focus:outline-none focus:border-inho-gold/50 transition-colors"
+                    className="w-full bg-[#FAF8F2] border border-[#DED6C1] rounded-xl px-4 py-3.5 text-[#0F172A] text-sm focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
                   />
                 </div>
                 {showMfa && (
                   <div className="space-y-1.5 pt-1 animate-fade-in">
-                    <label className="text-inho-gold text-[11px] font-bold uppercase tracking-wider pl-1 flex items-center gap-1">
+                    <label className="text-[#8B6508] text-[11px] font-extrabold uppercase tracking-wider pl-1 flex items-center gap-1">
                       <ShieldCheck size={14} /> Código 2FA Authenticator (6 dígitos)
                     </label>
                     <input
@@ -190,7 +191,7 @@ function LoginContent() {
                       value={mfaCode}
                       onChange={e => setMfaCode(e.target.value.replace(/\D/g, ''))}
                       placeholder="000000"
-                      className="w-full text-center text-xl font-mono tracking-[0.4em] font-black bg-inho-black border border-inho-gold/50 rounded-xl py-3 text-inho-gold focus:outline-none focus:border-inho-gold shadow-[0_0_15px_rgba(255,200,87,0.15)]"
+                      className="w-full text-center text-xl font-mono tracking-[0.4em] font-black bg-[#FDF7E2] border border-[#D4AF37] rounded-xl py-3 text-[#7A5605] focus:outline-none focus:border-[#B8860B]"
                     />
                   </div>
                 )}
@@ -198,9 +199,9 @@ function LoginContent() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 bg-inho-gold text-inho-black font-black text-sm rounded-xl hover:bg-inho-gold/90 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,200,87,0.15)] disabled:opacity-50"
+                    className="w-full py-4 bg-gradient-to-r from-[#9A6F0B] via-[#C59B27] to-[#9A6F0B] text-white font-extrabold text-sm rounded-xl hover:brightness-105 transition-all flex items-center justify-center gap-2 shadow-inho-gold disabled:opacity-50"
                   >
-                    {loading ? 'Validando Acesso...' : 'Acessar Painel'}
+                    {loading ? 'Validando Acesso...' : 'Acessar Painel Executivo'}
                     {!loading && <ArrowRight size={16} />}
                   </button>
                 </div>
@@ -210,9 +211,9 @@ function LoginContent() {
         </div>
 
         {/* Security Footer */}
-        <div className="mt-8 flex items-center justify-center gap-2 text-inho-muted text-[10px] opacity-60">
-          <ShieldCheck size={12} />
-          <span className="font-mono uppercase tracking-widest">Ambiente Seguro</span>
+        <div className="mt-8 flex items-center justify-center gap-2 text-[#57606A] text-[11px] font-semibold">
+          <ShieldCheck size={14} className="text-[#B8860B]" />
+          <span className="uppercase tracking-widest">Ambiente Institucional Criptografado • Orbe Systems</span>
         </div>
       </div>
     </div>
@@ -221,7 +222,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-inho-black flex items-center justify-center text-inho-gold">Carregando Portal...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F6F4EE] flex items-center justify-center text-[#8B6508] font-bold">Carregando Portal Executivo...</div>}>
       <LoginContent />
     </Suspense>
   );

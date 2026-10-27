@@ -27,13 +27,13 @@ export default function AuditPage() {
   const getActionBadge = (action: string) => {
     switch (action) {
       case 'CREATE':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">Criou</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/10 text-emerald-700 border border-green-500/20">Criou</span>;
       case 'UPDATE':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">Editou</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-700 border border-blue-500/20">Editou</span>;
       case 'DELETE':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">Excluiu</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-700 border border-red-500/20">Excluiu</span>;
       case 'LOGIN':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">Login</span>;
+        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-700 border border-purple-500/20">Login</span>;
       default:
         return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-inho-dark text-inho-muted border border-inho-border">{action}</span>;
     }
@@ -88,11 +88,11 @@ export default function AuditPage() {
                 ) : (
                   logs.map((log) => (
                     <tr key={log.id} className="hover:bg-inho-dark/40 transition-colors">
-                      <td className="px-6 py-4 font-mono text-xs text-white whitespace-nowrap">
+                      <td className="px-6 py-4 font-mono text-xs text-[#0F172A] whitespace-nowrap">
                         {new Date(log.timestamp).toLocaleString('pt-BR')}
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-bold text-white text-xs">{log.user_name || log.user_id || 'Sistema'}</p>
+                        <p className="font-bold text-[#0F172A] text-xs">{log.user_name || log.user_id || 'Sistema'}</p>
                         {log.user_role && (
                           <span className="inline-block mt-0.5 text-[9px] font-mono text-inho-gold bg-inho-gold/10 px-1.5 py-0.5 rounded border border-inho-gold/20">
                             {log.user_role}
@@ -103,7 +103,7 @@ export default function AuditPage() {
                         {getActionBadge(log.action)}
                       </td>
                       <td className="px-6 py-4 font-mono text-xs">
-                        <span className="text-white font-bold">{log.entity}</span>
+                        <span className="text-[#0F172A] font-bold">{log.entity}</span>
                         {log.entity_id && (
                           <span className="block text-[10px] text-inho-muted truncate max-w-[140px]" title={log.entity_id}>
                             ID: {log.entity_id}
@@ -113,9 +113,9 @@ export default function AuditPage() {
                       <td className="px-6 py-4 font-mono text-xs text-inho-muted">
                         {log.ip_address || '127.0.0.1'}
                       </td>
-                      <td className="px-6 py-4 text-xs font-mono text-gray-300 max-w-xs break-all">
+                      <td className="px-6 py-4 text-xs font-mono text-[#0F172A] max-w-xs break-all">
                         {log.detail ? (
-                          <span className="bg-black/30 p-1.5 rounded border border-inho-border block text-[10px]">
+                          <span className="bg-[#FAF8F2] p-1.5 rounded border border-inho-border block text-[10px]">
                             {log.detail}
                           </span>
                         ) : '-'}

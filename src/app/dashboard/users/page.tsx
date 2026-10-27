@@ -117,20 +117,20 @@ export default function UsersPage() {
         }
         if (roleStr === 'operator') {
             return (
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/40">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-700 border border-blue-500/40">
                     {label}
                 </span>
             );
         }
         if (roleStr === 'viewer') {
             return (
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/40">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-700 border border-purple-500/40">
                     {label}
                 </span>
             );
         }
         return (
-            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
+            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white text-zinc-300 border border-[#E5DEC9]">
                 {label}
             </span>
         );
@@ -145,7 +145,7 @@ export default function UsersPage() {
         return (
             <div className="p-8 text-center">
                 <div className="glassmorphism max-w-md mx-auto p-8 rounded-2xl border border-red-500/20">
-                    <h2 className="text-xl font-bold text-red-400 mb-2">Acesso Restrito</h2>
+                    <h2 className="text-xl font-bold text-red-700 mb-2">Acesso Restrito</h2>
                     <p className="text-inho-muted text-sm">
                         Apenas Usuários Mestres (Administradores) possuem permissão para visualizar e gerenciar sub-usuários da equipe.
                     </p>
@@ -166,7 +166,7 @@ export default function UsersPage() {
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-inho-gold text-inho-black font-semibold px-5 py-2.5 rounded-xl hover:bg-inho-gold/90 transition-all shadow-lg hover:shadow-inho-gold/20 flex items-center justify-center gap-2"
+                    className="bg-inho-gold text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-inho-gold/90 transition-all shadow-lg hover:shadow-inho-gold/20 flex items-center justify-center gap-2"
                 >
                     <span>Novo Colaborador</span>
                 </button>
@@ -184,11 +184,11 @@ export default function UsersPage() {
                 </div>
                 <div className="glassmorphism p-5 rounded-2xl border border-blue-500/20">
                     <p className="text-xs text-inho-muted uppercase font-medium">Operadores</p>
-                    <p className="text-2xl font-bold text-blue-400 mt-1">{operatorCount}</p>
+                    <p className="text-2xl font-bold text-blue-700 mt-1">{operatorCount}</p>
                 </div>
                 <div className="glassmorphism p-5 rounded-2xl border border-purple-500/20">
                     <p className="text-xs text-inho-muted uppercase font-medium">Visualizadores</p>
-                    <p className="text-2xl font-bold text-purple-400 mt-1">{viewerCount}</p>
+                    <p className="text-2xl font-bold text-purple-700 mt-1">{viewerCount}</p>
                 </div>
             </div>
 
@@ -197,7 +197,7 @@ export default function UsersPage() {
                 {loading ? (
                     <div className="p-12 text-center text-inho-muted">Carregando colaboradores...</div>
                 ) : error ? (
-                    <div className="p-8 text-center text-red-400">{error}</div>
+                    <div className="p-8 text-center text-red-700">{error}</div>
                 ) : users.length === 0 ? (
                     <div className="p-12 text-center text-inho-muted">Nenhum colaborador cadastrado.</div>
                 ) : (
@@ -221,7 +221,7 @@ export default function UsersPage() {
                                         <td className="py-4 px-6">{getRoleBadge(u.role, u.role_label)}</td>
                                         <td className="py-4 px-6">
                                             {u.is_active ? (
-                                                <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                                <span className="text-xs font-semibold text-emerald-700 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                                                     Ativo
                                                 </span>
                                             ) : (
@@ -253,7 +253,7 @@ export default function UsersPage() {
 
             {/* Modal: Novo Colaborador */}
             {showModal && (
-                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 bg-white backdrop-blur-sm flex items-center justify-center p-4">
                     <div className="glassmorphism w-full max-w-lg rounded-2xl border border-inho-gold/30 p-6 space-y-6 shadow-2xl animate-fade-in">
                         <div className="flex items-center justify-between border-b border-inho-gold/10 pb-4">
                             <h2 className="text-lg font-bold text-inho-text">Cadastrar Novo Colaborador</h2>
@@ -356,7 +356,7 @@ export default function UsersPage() {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="bg-inho-gold text-inho-black font-semibold px-5 py-2 rounded-xl hover:bg-inho-gold/90 transition-all text-sm disabled:opacity-50"
+                                    className="bg-inho-gold text-white font-semibold px-5 py-2 rounded-xl hover:bg-inho-gold/90 transition-all text-sm disabled:opacity-50"
                                 >
                                     {saving ? 'Cadastrando...' : 'Cadastrar Colaborador'}
                                 </button>

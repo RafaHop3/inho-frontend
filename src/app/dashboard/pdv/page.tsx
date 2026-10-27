@@ -39,7 +39,7 @@ function OpenRegisterGate() {
         <p className="text-sm text-inho-muted mb-8">Nenhuma sessão de caixa ativa vinculada ao seu usuário. Abra o caixa para iniciar as operações.</p>
 
         {error && (
-          <div className="mb-6 p-3 bg-red-400/10 border border-red-500/30 rounded-xl text-xs font-mono text-red-400">
+          <div className="mb-6 p-3 bg-red-400/10 border border-red-500/30 rounded-xl text-xs font-mono text-red-700">
             {error}
           </div>
         )}
@@ -60,7 +60,7 @@ function OpenRegisterGate() {
           </div>
           <button
             type="submit" disabled={isLoading || submitting}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-inho-gold text-inho-black rounded-xl font-black uppercase text-sm tracking-wider hover:bg-inho-gold-light hover:shadow-glow-gold transition-all active:scale-95 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-4 bg-inho-gold text-white rounded-xl font-black uppercase text-sm tracking-wider hover:bg-inho-gold-light hover:shadow-glow-gold transition-all active:scale-95 disabled:opacity-50"
           >
             {submitting ? 'Abrindo...' : <><LockOpen size={18} /> Abrir Sessão de Caixa</>}
           </button>
@@ -139,9 +139,9 @@ function POSGrid() {
   };
 
   const paymentButtons: { id: PaymentMethod, label: string, icon: React.ReactNode, color: string }[] = [
-    { id: 'PIX', label: 'Pix', icon: <QrCode size={18} />, color: 'bg-[#25b59b]/20 text-[#25b59b] border-[#25b59b]/40' },
+    { id: 'PIX', label: 'Pix', icon: <QrCode size={18} />, color: 'bg-emerald-50 text-emerald-700 border-emerald-300' },
     { id: 'CREDIT', label: 'Crédito', icon: <CreditCard size={18} />, color: 'bg-inho-blue/20 text-inho-blue border-inho-blue/40' },
-    { id: 'DEBIT', label: 'Débito', icon: <CreditCard size={18} />, color: 'bg-purple-500/20 text-purple-400 border-purple-500/40' },
+    { id: 'DEBIT', label: 'Débito', icon: <CreditCard size={18} />, color: 'bg-purple-500/20 text-purple-700 border-purple-500/40' },
     { id: 'CASH', label: 'Dinheiro', icon: <Wallet size={18} />, color: 'bg-inho-green/20 text-inho-green border-inho-green/40' },
   ];
 
@@ -211,7 +211,7 @@ function POSGrid() {
             <button
               type="submit"
               disabled={!saleAmount || !selectedPayment || isProcessing}
-              className="w-full flex justify-center items-center gap-3 bg-inho-green text-inho-black py-5 rounded-xl font-black text-lg uppercase tracking-wider hover:bg-emerald-400 hover:shadow-glow-green transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+              className="w-full flex justify-center items-center gap-3 bg-inho-green text-white py-5 rounded-xl font-black text-lg uppercase tracking-wider hover:bg-emerald-400 hover:shadow-glow-green transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
             >
               {isProcessing ? 'Processando Autenticação...' : (
                 <>Finalizar Recebimento <ArrowRight size={20} /></>
@@ -274,7 +274,7 @@ function POSGrid() {
         {/* Action Button: Fechar Caixa */}
         <button
           onClick={handleCloseRegister}
-          className="w-full flex items-center justify-center gap-2 px-5 py-4 bg-inho-dark border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-400 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors group"
+          className="w-full flex items-center justify-center gap-2 px-5 py-4 bg-inho-dark border border-red-500/30 text-red-700 hover:bg-red-500/10 hover:border-red-400 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors group"
         >
           <LogOut size={16} />
           Encerrar Sessão & Borderô

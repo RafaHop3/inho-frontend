@@ -2,39 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Google Fonts ──────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+/* ── Google Fonts (Plus Jakarta Sans + Outfit + JetBrains Mono) ──── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-/* ── CSS Custom Properties ─────────────────────────────────────── */
+/* ── CSS Custom Properties — Padrão Executivo Ouro Claro ─────────── */
 :root {
-  --font-outfit: 'Outfit', sans-serif;
+  --font-outfit: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-jetbrains: 'JetBrains Mono', monospace;
 
-  /* ── Orbe Systems Cyberpunk Tokens ───────────────────────── */
-  --terminal-bg: #02040a;
-  --terminal-surface: #0d1117;
-  --terminal-border: #30363d;
-  --neon-cyan: #00fff5;
-  --neon-green: #39ff14;
-  --neon-purple: #bc13fe;
-  --terminal-text: #c9d1d9;
-  --terminal-muted: #8b949e;
+  /* ── Orbe INHO Sovereign Executive Gold Light Tokens ────────── */
+  --terminal-bg: #F6F4EE;
+  --terminal-surface: #FFFFFF;
+  --terminal-border: #E5DEC9;
+  --neon-cyan: #B8860B;
+  --neon-green: #059669;
+  --neon-purple: #7C3AED;
+  --terminal-text: #0F172A;
+  --terminal-muted: #57606A;
 
-  /* Legacy INHO Brand (Fallbacks) */
-  --inho-gold: var(--neon-cyan);
-  --inho-gold-light: #66fffa;
-  --inho-green: var(--neon-green);
-  --inho-blue: #0ea5e9;
-  --inho-black: var(--terminal-bg);
-  --inho-dark: var(--terminal-surface);
-  --inho-surface: #0f172a;
-  --inho-card: var(--terminal-surface);
-  --inho-border: var(--terminal-border);
-  --inho-text: var(--terminal-text);
-  --inho-muted: var(--terminal-muted);
+  /* Brand Tokens */
+  --inho-gold: #B8860B;
+  --inho-gold-light: #D4AF37;
+  --inho-gold-dark: #8B6508;
+  --inho-green: #059669;
+  --inho-blue: #1D4ED8;
+  --inho-black: #F6F4EE;
+  --inho-dark: #FFFFFF;
+  --inho-surface: #FAF8F2;
+  --inho-card: #FFFFFF;
+  --inho-border: #E5DEC9;
+  --inho-text: #0F172A;
+  --inho-muted: #57606A;
 }
 
-/* ── Base Reset ────────────────────────────────────────────────── */
+/* ── Base Reset & Typography ───────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -46,6 +47,7 @@
 html {
   scroll-behavior: smooth;
   font-family: var(--font-outfit);
+  color-scheme: light;
 }
 
 body {
@@ -59,59 +61,115 @@ body {
 
 /* ── Selection ─────────────────────────────────────────────────── */
 ::selection {
-  background: rgba(0, 255, 245, 0.3);
-  color: var(--neon-cyan);
+  background: rgba(212, 175, 55, 0.25);
+  color: #785604;
 }
 
-/* ── Scrollbar ─────────────────────────────────────────────────── */
+/* ── Scrollbar Executiva ───────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--terminal-bg);
+  background: #F3EFE4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--terminal-border);
+  background: #D5CBB0;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-cyan);
+  background: #B8860B;
+}
+
+/* ── Padronização Executiva de Inputs, Selects e Tabelas ───────── */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  background-color: #FFFFFF;
+  color: #0F172A;
+  border-color: #DED6C1;
+  font-family: var(--font-outfit);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8C959F !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #B8860B !important;
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.14);
+}
+
+table thead {
+  background-color: #FAF7EE !important;
+  border-bottom: 1px solid #E5DEC9 !important;
+}
+
+table thead th {
+  color: #57606A !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+table tbody tr {
+  border-color: #EFEAD9 !important;
+  transition: background-color 0.15s ease;
+}
+
+table tbody tr:hover {
+  background-color: #FDFBF5 !important;
 }
 
 /* ── Utility Layer ─────────────────────────────────────────────── */
 @layer utilities {
   .text-shimmer {
-    background: linear-gradient(90deg, var(--inho-gold) 0%, var(--inho-gold-light) 50%, var(--inho-gold) 100%);
+    background: linear-gradient(90deg, #8B6508 0%, #D4AF37 50%, #8B6508 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: shimmer 2.5s linear infinite;
+    animation: shimmer 3s linear infinite;
   }
 
   .glassmorphism {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid #E5DEC9;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(184, 134, 11, 0.07);
+  }
+
+  .executive-card {
+    background: #FFFFFF;
+    border: 1px solid #E5DEC9;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 10px 25px -5px rgba(184, 134, 11, 0.06);
+  }
+
+  .executive-gold-btn {
+    background: linear-gradient(135deg, #9A6F0B 0%, #C59B27 50%, #9A6F0B 100%);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(184, 134, 11, 0.28);
   }
 
   .glow-gold {
-    box-shadow: 0 0 20px rgba(245, 166, 35, 0.4), 0 0 60px rgba(245, 166, 35, 0.15);
+    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.25), 0 2px 6px rgba(184, 134, 11, 0.12);
   }
 
   .glow-green {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 0 60px rgba(16, 185, 129, 0.15);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.22), 0 2px 6px rgba(5, 150, 105, 0.1);
   }
 
   .grid-bg {
     background-image:
-      linear-gradient(rgba(245, 166, 35, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(245, 166, 35, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
+      linear-gradient(rgba(184, 134, 11, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184, 134, 11, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
 
   .border-gradient {
@@ -130,9 +188,9 @@ body {
   }
 
   .calendar-picker-indicator-white::-webkit-calendar-picker-indicator {
-    filter: invert(1);
+    filter: none;
     cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.75;
   }
 
   .calendar-picker-indicator-white::-webkit-calendar-picker-indicator:hover {

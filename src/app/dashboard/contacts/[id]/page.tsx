@@ -40,11 +40,11 @@ export default function ContactProfilePage({ params }: { params: Promise<{ id: s
 
                 {/* Header Ribbon */}
                 <div className="flex items-center gap-4 mb-6">
-                    <Link href="/dashboard/contacts" className="text-inho-muted hover:text-white transition-colors bg-inho-dark p-2 rounded-xl">
+                    <Link href="/dashboard/contacts" className="text-inho-muted hover:text-[#0F172A] transition-colors bg-inho-dark p-2 rounded-xl">
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <h1 className="text-2xl font-bold text-[#0F172A] flex items-center gap-2">
                             {loading ? 'Carregando Dossiê...' : contact.name}
                         </h1>
                         <p className="font-mono text-[10px] text-neon-cyan uppercase tracking-widest mt-1">
@@ -61,7 +61,7 @@ export default function ContactProfilePage({ params }: { params: Promise<{ id: s
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 px-5 py-3 border-b-2 font-bold text-xs transition-colors whitespace-nowrap ${activeTab === tab.id
                                 ? 'border-neon-cyan text-neon-cyan'
-                                : 'border-transparent text-inho-muted hover:text-white'
+                                : 'border-transparent text-inho-muted hover:text-[#0F172A]'
                                 }`}
                         >
                             <tab.icon size={16} />
@@ -80,7 +80,7 @@ export default function ContactProfilePage({ params }: { params: Promise<{ id: s
                         <>
                             {activeTab === 'DATA' && (
                                 <div className="space-y-6 animate-fade-in text-inho-text">
-                                    <h2 className="text-lg font-bold text-white border-b border-inho-border pb-2">Informações Base</h2>
+                                    <h2 className="text-lg font-bold text-[#0F172A] border-b border-inho-border pb-2">Informações Base</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <p className="text-[10px] uppercase text-inho-muted font-bold tracking-wider">Documento</p>
@@ -107,7 +107,7 @@ export default function ContactProfilePage({ params }: { params: Promise<{ id: s
                             {activeTab === 'FINANCIAL' && (
                                 <div className="animate-fade-in text-center py-12">
                                     <DollarSign className="mx-auto h-12 w-12 text-inho-muted opacity-50 mb-4" />
-                                    <h3 className="text-lg font-bold text-white mb-2">Motor Financeiro Inativo</h3>
+                                    <h3 className="text-lg font-bold text-[#0F172A] mb-2">Motor Financeiro Inativo</h3>
                                     <p className="text-inho-muted text-sm max-w-sm mx-auto">
                                         Não há transações (boletos ou repasses) processadas para este contato neste período contábil.
                                     </p>
@@ -117,8 +117,8 @@ export default function ContactProfilePage({ params }: { params: Promise<{ id: s
                             {activeTab === 'NOTES' && (
                                 <div className="animate-fade-in">
                                     <div className="flex justify-between items-center mb-6">
-                                        <h2 className="text-lg font-bold text-white">Log de Anotações</h2>
-                                        <button className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2 text-xs font-bold rounded-lg transition-colors">
+                                        <h2 className="text-lg font-bold text-[#0F172A]">Log de Anotações</h2>
+                                        <button className="bg-[#FAF8F2] hover:bg-white/20 border border-[#E5DEC9] text-[#0F172A] px-4 py-2 text-xs font-bold rounded-lg transition-colors">
                                             + Adicionar Nota
                                         </button>
                                     </div>
@@ -132,7 +132,7 @@ export default function ContactProfilePage({ params }: { params: Promise<{ id: s
                                 <div className="animate-fade-in text-center py-12">
                                     <FolderOpen className="mx-auto h-12 w-12 text-inho-muted opacity-50 mb-4" />
                                     <p className="text-inho-muted text-sm font-mono mb-4">Repositório de Documentações Secundárias</p>
-                                    <button className="bg-neon-cyan/20 border border-neon-cyan text-neon-cyan px-4 py-2 text-xs font-bold rounded-lg hover:shadow-[0_0_15px_rgba(0,255,245,0.2)] transition-shadow">
+                                    <button className="bg-neon-cyan/20 border border-neon-cyan text-neon-cyan px-4 py-2 text-xs font-bold rounded-lg hover:shadow-[0_0_15px_rgba(184,134,11,0.2)] transition-shadow">
                                         Upload S3 de Arquivo
                                     </button>
                                 </div>

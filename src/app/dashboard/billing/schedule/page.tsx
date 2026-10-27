@@ -94,7 +94,7 @@ export default function BillingSchedulePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#04060A] p-6 lg:p-8 font-mono text-white">
+    <div className="min-h-screen bg-[#F6F4EE] p-6 lg:p-8 font-sans text-[#0F172A]">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-terminal-border pb-5">
           <div>
@@ -106,7 +106,7 @@ export default function BillingSchedulePage() {
               Agendamento de Recebíveis
               <Calendar size={22} className="text-neon-green" />
             </h1>
-            <p className="text-xs text-[#8b949e] mt-1">
+            <p className="text-xs text-[#57606A] mt-1">
               Programe mensalidades, cotas de cooperados e cobranças automáticas conectadas à régua OrBrick.
             </p>
           </div>
@@ -126,9 +126,9 @@ export default function BillingSchedulePage() {
           </div>
         </div>
 
-        <div className="bg-[#080B11] border border-terminal-border rounded-2xl overflow-hidden">
+        <div className="bg-white shadow-sm border border-terminal-border rounded-2xl overflow-hidden">
           <table className="w-full text-left text-xs">
-            <thead className="bg-white/5 border-b border-terminal-border text-[#8b949e] uppercase tracking-wider">
+            <thead className="bg-[#FAF8F2] border-b border-terminal-border text-[#57606A] uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4">Descrição / Contrato</th>
                 <th className="px-6 py-4">Periodicidade</th>
@@ -143,25 +143,25 @@ export default function BillingSchedulePage() {
             <tbody className="divide-y divide-terminal-border">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-10 text-center text-[#8b949e]">
+                  <td colSpan={8} className="px-6 py-10 text-center text-[#57606A]">
                     <Loader2 className="animate-spin mx-auto mb-2" size={20} /> Carregando agendamentos...
                   </td>
                 </tr>
               ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-[#8b949e]">
+                  <td colSpan={8} className="px-6 py-12 text-center text-[#57606A]">
                     Nenhum agendamento recorrente cadastrado. Clique em &ldquo;Novo Agendamento&rdquo; para programar cobranças.
                   </td>
                 </tr>
               ) : (
                 items.map((item) => (
-                  <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 font-bold text-white">{item.description}</td>
-                    <td className="px-6 py-4 text-[#8b949e]">{freqLabel[item.frequency] || item.frequency}</td>
+                  <tr key={item.id} className="hover:bg-[#FAF8F2] transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#0F172A]">{item.description}</td>
+                    <td className="px-6 py-4 text-[#57606A]">{freqLabel[item.frequency] || item.frequency}</td>
                     <td className="px-6 py-4">
                       {new Date(item.next_due_date || item.first_due_date).toLocaleDateString('pt-BR')}
                     </td>
-                    <td className="px-6 py-4 text-[#8b949e]">
+                    <td className="px-6 py-4 text-[#57606A]">
                       {item.parcel_current}/{item.parcel_total || '∞'}
                     </td>
                     <td className="px-6 py-4">
@@ -175,8 +175,8 @@ export default function BillingSchedulePage() {
                           item.status === 'ACTIVE'
                             ? 'bg-neon-green/10 text-neon-green border-neon-green/30'
                             : item.status === 'PAUSED'
-                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                            : 'bg-red-500/10 text-red-400 border-red-500/30'
+                            ? 'bg-amber-500/10 text-amber-700 border-amber-500/30'
+                            : 'bg-red-500/10 text-red-700 border-red-500/30'
                         }`}
                       >
                         {item.status}
@@ -190,14 +190,14 @@ export default function BillingSchedulePage() {
                         <>
                           <button
                             onClick={() => toggleStatus(item)}
-                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-neon-cyan border border-terminal-border"
+                            className="p-1.5 rounded-lg bg-[#FAF8F2] hover:bg-[#FAF8F2] text-neon-cyan border border-terminal-border"
                             title={item.status === 'ACTIVE' ? 'Pausar' : 'Retomar'}
                           >
                             {item.status === 'ACTIVE' ? <Pause size={13} /> : <Play size={13} />}
                           </button>
                           <button
                             onClick={() => handleCancel(item.id)}
-                            className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-red-400 border border-terminal-border"
+                            className="p-1.5 rounded-lg bg-[#FAF8F2] hover:bg-red-500/20 text-red-700 border border-terminal-border"
                             title="Cancelar"
                           >
                             <Trash2 size={13} />
@@ -214,9 +214,9 @@ export default function BillingSchedulePage() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#0A0D14] border border-terminal-border rounded-2xl p-6 w-full max-w-md relative">
-            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-[#8b949e] hover:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white backdrop-blur-sm p-4">
+          <div className="bg-white shadow-sm border border-terminal-border rounded-2xl p-6 w-full max-w-md relative">
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-[#57606A] hover:text-[#0F172A]">
               <X size={18} />
             </button>
             <h2 className="text-base font-bold uppercase tracking-widest text-neon-green mb-4">
@@ -224,18 +224,18 @@ export default function BillingSchedulePage() {
             </h2>
             <form onSubmit={handleCreate} className="space-y-4 text-xs">
               <div>
-                <label className="block text-[#8b949e] mb-1 uppercase">Descrição da Cobrança</label>
+                <label className="block text-[#57606A] mb-1 uppercase">Descrição da Cobrança</label>
                 <input
                   required
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   placeholder="Ex: Mensalidade Cooperado / Manutenção"
-                  className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                  className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-3 py-2.5 text-[#0F172A]"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">Valor (R$)</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">Valor (R$)</label>
                   <input
                     required
                     type="number"
@@ -243,27 +243,27 @@ export default function BillingSchedulePage() {
                     value={form.amount}
                     onChange={(e) => setForm({ ...form, amount: e.target.value })}
                     placeholder="250.00"
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-3 py-2.5 text-[#0F172A]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">1º Vencimento</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">1º Vencimento</label>
                   <input
                     required
                     type="date"
                     value={form.first_due_date}
                     onChange={(e) => setForm({ ...form, first_due_date: e.target.value })}
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-3 py-2.5 text-[#0F172A]"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">Frequência</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">Frequência</label>
                   <select
                     value={form.frequency}
                     onChange={(e) => setForm({ ...form, frequency: e.target.value })}
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-2.5 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-2.5 py-2.5 text-[#0F172A]"
                   >
                     <option value="MONTHLY">Mensal</option>
                     <option value="WEEKLY">Semanal</option>
@@ -272,20 +272,20 @@ export default function BillingSchedulePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">Nº Parcelas</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">Nº Parcelas</label>
                   <input
                     type="number"
                     value={form.parcel_total}
                     onChange={(e) => setForm({ ...form, parcel_total: e.target.value })}
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-3 py-2.5 text-[#0F172A]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">Método</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">Método</label>
                   <select
                     value={form.payment_method}
                     onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-2.5 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-2.5 py-2.5 text-[#0F172A]"
                   >
                     <option value="PIX">PIX</option>
                     <option value="BOLETO">Boleto</option>
@@ -296,7 +296,7 @@ export default function BillingSchedulePage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 rounded-xl bg-neon-green text-black font-extrabold uppercase tracking-wider hover:opacity-90 transition-opacity"
+                className="w-full py-3 rounded-xl bg-neon-green text-white font-extrabold uppercase tracking-wider hover:opacity-90 transition-opacity"
               >
                 {submitting ? 'Salvando...' : 'Confirmar Agendamento'}
               </button>

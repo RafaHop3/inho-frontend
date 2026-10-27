@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, ShieldCheck, Crown, Building2 } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { useAuth } from '@/lib/AuthContext';
 import Sidebar from '@/components/Sidebar';
@@ -14,7 +14,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [canRender, setCanRender] = useState(false);
 
   useEffect(() => {
-    // Await the AuthContext rehydration mechanism
     if (isLoading) return;
 
     if (!auth.isAuthenticated() || auth.isExpired() || !user) {
@@ -31,37 +30,50 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!canRender) {
     return (
-      <div className="min-h-screen bg-terminal-bg flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-neon-cyan border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#F6F4EE] flex items-center justify-center">
+        <div className="w-9 h-9 border-2 border-[#B8860B] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-terminal-bg text-terminal-text font-mono">
+    <div className="flex min-h-screen bg-[#F6F4EE] text-[#0F172A] font-sans">
       {/* Sidebar */}
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Mobile Top Header (Sticky on Mobile only) */}
-        <header className="md:hidden flex items-center justify-between px-6 py-4 bg-terminal-surface border-b border-terminal-border sticky top-0 z-20">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-neon-cyan flex items-center justify-center shadow-[0_0_10px_rgba(0,255,245,0.4)]">
-              <span className="font-black text-terminal-bg text-[10px]">O</span>
+        {/* Executive Top Bar (Desktop & Mobile) */}
+        <header className="flex items-center justify-between px-6 py-3 bg-white/95 backdrop-blur-md border-b border-[#E5DEC9] sticky top-0 z-20 shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="md:hidden p-1.5 text-[#475569] hover:text-[#0F172A] bg-[#FAF8F2] rounded-lg border border-[#E5DEC9] hover:border-[#B8860B] transition-colors"
+            >
+              <Menu size={18} />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#FDF7E2] to-[#FAF0CA] border border-[#D4AF37]/50 text-[#7A5605] text-[10px] font-extrabold uppercase tracking-widest">
+                <Crown size={11} className="text-[#B8860B]" />
+                Padrão Executivo Ouro
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#475569] pl-2 border-l border-[#E5DEC9]">
+                <Building2 size={13} className="text-[#B8860B]" />
+                {user?.full_name || 'Instituição Cooperativa'}
+              </span>
             </div>
-            <span className="font-mono text-xs font-bold text-terminal-text tracking-widest uppercase">ORBE</span>
           </div>
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="p-1.5 text-terminal-muted hover:text-terminal-bright bg-white/5 rounded-lg border border-terminal-border hover:border-neon-cyan transition-colors"
-          >
-            <Menu size={18} />
-          </button>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#FAF8F2] border border-[#E5DEC9] text-[11px] text-[#475569] font-medium">
+              <ShieldCheck size={13} className="text-emerald-600" />
+              <span>Governança Multi-Tenant & Open Finance BACEN</span>
+            </div>
+          </div>
         </header>
 
         {/* Scrollable Page Wrapper */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto bg-[#F6F4EE]">
           {children}
         </main>
       </div>

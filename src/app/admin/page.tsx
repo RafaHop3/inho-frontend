@@ -38,17 +38,17 @@ export default function AdminDashboardPage() {
   };
 
   const kpis = [
-    { title: 'Usuários Totais', value: stats?.total_users || 0, icon: Users, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-    { title: 'Contas Ativas', value: stats?.active_accounts || 0, icon: Activity, color: 'text-green-400', bg: 'bg-green-500/10' },
-    { title: 'Volume Transacionado', value: formatCurrency(stats?.total_transactions_volume || 0), icon: Wallet, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    { title: 'Usuários Totais', value: stats?.total_users || 0, icon: Users, color: 'text-blue-700', bg: 'bg-blue-500/10' },
+    { title: 'Contas Ativas', value: stats?.active_accounts || 0, icon: Activity, color: 'text-emerald-700', bg: 'bg-green-500/10' },
+    { title: 'Volume Transacionado', value: formatCurrency(stats?.total_transactions_volume || 0), icon: Wallet, color: 'text-purple-700', bg: 'bg-purple-500/10' },
     { title: 'Volume PDV', value: formatCurrency(stats?.total_pdv_sales_volume || 0), icon: TrendingUp, color: 'text-orange-400', bg: 'bg-orange-500/10' },
   ];
 
   return (
     <div className="animate-fade-in">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Visão Global da Plataforma</h1>
-        <p className="text-gray-400">Acompanhe as métricas globais e o status do sistema.</p>
+        <h1 className="text-3xl font-bold text-[#0F172A] mb-2">Visão Global da Plataforma</h1>
+        <p className="text-[#57606A]">Acompanhe as métricas globais e o status do sistema.</p>
       </header>
 
       {/* KPI Cards */}
@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
         {kpis.map((kpi, idx) => {
           const Icon = kpi.icon;
           return (
-            <div key={idx} className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-gray-700 transition-colors">
+            <div key={idx} className="bg-white border border-[#E5DEC9] rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-[#E5DEC9] transition-colors">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Icon className={`w-24 h-24 ${kpi.color}`} />
               </div>
@@ -64,8 +64,8 @@ export default function AdminDashboardPage() {
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${kpi.bg}`}>
                   <Icon className={`w-6 h-6 ${kpi.color}`} />
                 </div>
-                <p className="text-gray-400 text-sm font-medium mb-1">{kpi.title}</p>
-                <h3 className="text-3xl font-bold text-white">{kpi.value}</h3>
+                <p className="text-[#57606A] text-sm font-medium mb-1">{kpi.title}</p>
+                <h3 className="text-3xl font-bold text-[#0F172A]">{kpi.value}</h3>
               </div>
             </div>
           );
@@ -73,9 +73,9 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Futuristic placeholder for charts */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl">
-        <h2 className="text-xl font-bold text-white mb-4">Crescimento da Base (Projeção)</h2>
-        <div className="h-64 flex items-center justify-center border border-dashed border-gray-700 rounded-xl bg-gray-900/50">
+      <div className="bg-white border border-[#E5DEC9] rounded-2xl p-6 shadow-xl">
+        <h2 className="text-xl font-bold text-[#0F172A] mb-4">Crescimento da Base (Projeção)</h2>
+        <div className="h-64 flex items-center justify-center border border-dashed border-[#E5DEC9] rounded-xl bg-white">
           <p className="text-gray-500">Gráfico Analítico Integrado com Recharts (Em breve)</p>
         </div>
       </div>

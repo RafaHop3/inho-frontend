@@ -85,7 +85,7 @@ export default function PcoDashboardPage() {
           <div className="flex items-center gap-2 text-xs font-mono">
             <span className="text-inho-muted">INHO</span>
             <span className="text-inho-muted">/</span>
-            <span className="text-purple-400 font-bold uppercase tracking-wider">Gestão Organizacional (PCO)</span>
+            <span className="text-purple-700 font-bold uppercase tracking-wider">Gestão Organizacional (PCO)</span>
           </div>
         </div>
 
@@ -110,7 +110,7 @@ export default function PcoDashboardPage() {
           <div className="glassmorphism rounded-2xl p-5 border border-purple-500/20 flex flex-col justify-between hover:border-purple-500/40 hover:shadow-inho-card transition-all">
             <div>
               <p className="text-inho-muted text-xs font-mono font-bold uppercase tracking-wider">NPS do Clima</p>
-              <p className="text-3xl font-black font-mono text-purple-400 mt-2 flex items-baseline gap-1">
+              <p className="text-3xl font-black font-mono text-purple-700 mt-2 flex items-baseline gap-1">
                 +{npsScore}
                 <span className="text-xs text-inho-muted font-normal font-sans">/ 100</span>
               </p>
@@ -122,7 +122,7 @@ export default function PcoDashboardPage() {
           <div className="glassmorphism rounded-2xl p-5 border border-purple-500/20 flex flex-col justify-between hover:border-purple-500/40 hover:shadow-inho-card transition-all">
             <div>
               <p className="text-inho-muted text-xs font-mono font-bold uppercase tracking-wider">Taxa de Adesão</p>
-              <p className="text-3xl font-black font-mono text-purple-400 mt-2">87.5%</p>
+              <p className="text-3xl font-black font-mono text-purple-700 mt-2">87.5%</p>
             </div>
             <p className="text-[10px] text-inho-muted font-mono mt-4">Meta interna: 80%</p>
           </div>
@@ -131,7 +131,7 @@ export default function PcoDashboardPage() {
           <div className="glassmorphism rounded-2xl p-5 border border-purple-500/20 flex flex-col justify-between hover:border-purple-500/40 hover:shadow-inho-card transition-all">
             <div>
               <p className="text-inho-muted text-xs font-mono font-bold uppercase tracking-wider">Total de Respostas</p>
-              <p className="text-3xl font-black font-mono text-purple-400 mt-2 flex items-center gap-2">
+              <p className="text-3xl font-black font-mono text-purple-700 mt-2 flex items-center gap-2">
                 <Users size={24} />
                 {responsesCount}
               </p>
@@ -207,7 +207,7 @@ export default function PcoDashboardPage() {
                   <div className="flex items-center gap-2.5 mb-1">
                     <h4 className="text-sm font-bold text-inho-text">{item.title}</h4>
                     {item.status === 'ACTIVE' ? (
-                      <span className="text-[9px] bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded-full font-mono uppercase font-bold">Ativa</span>
+                      <span className="text-[9px] bg-purple-500/10 text-purple-700 border border-purple-500/20 px-2 py-0.5 rounded-full font-mono uppercase font-bold">Ativa</span>
                     ) : (
                       <span className="text-[9px] bg-inho-dark text-inho-muted border border-inho-border px-2 py-0.5 rounded-full font-mono uppercase font-bold text-xs">Rascunho</span>
                     )}
@@ -219,7 +219,7 @@ export default function PcoDashboardPage() {
                   {item.status === 'ACTIVE' && (
                     <button
                       onClick={() => setShowSurveyModal(true)}
-                      className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-mono text-xs font-bold transition-colors hover:underline"
+                      className="flex items-center gap-1 text-purple-700 hover:text-purple-300 font-mono text-xs font-bold transition-colors hover:underline"
                     >
                       Responder <ArrowRight size={12} />
                     </button>
@@ -233,12 +233,12 @@ export default function PcoDashboardPage() {
         {/* Survey Modal */}
         {showSurveyModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowSurveyModal(false)} />
+            <div className="absolute inset-0 bg-white backdrop-blur-sm" onClick={() => setShowSurveyModal(false)} />
             <div className="relative bg-inho-dark border border-inho-border w-full max-w-lg rounded-2xl p-6 shadow-2xl animate-slide-up z-10 max-h-[90vh] overflow-y-auto">
 
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                  <Smile className="text-purple-400" />
+                  <Smile className="text-purple-700" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-inho-text">Questionário de Clima</h3>
@@ -265,7 +265,7 @@ export default function PcoDashboardPage() {
                             onClick={() => handleAnswerChange(q.key, val)}
                             className={`w-8 h-8 rounded-lg font-mono text-xs font-bold transition-all border ${(answers as any)[q.key] === val
                                 ? 'bg-purple-600 border-purple-400 text-inho-text scale-110'
-                                : 'bg-inho-dark/80 border-inho-border text-inho-muted hover:border-purple-500/50 hover:text-purple-400'
+                                : 'bg-inho-dark/80 border-inho-border text-inho-muted hover:border-purple-500/50 hover:text-purple-700'
                               }`}
                           >
                             {val}

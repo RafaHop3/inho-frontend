@@ -160,14 +160,14 @@ export default function SettingsPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="text-inho-muted hover:text-white transition-colors bg-inho-dark p-2 rounded-xl"
+              className="text-inho-muted hover:text-[#0F172A] transition-colors bg-inho-dark p-2 rounded-xl"
             >
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-[#0F172A] flex items-center gap-2">
                 Configurações Globais & Governança Técnica
-                <Settings size={22} className="text-gray-400" />
+                <Settings size={22} className="text-[#57606A]" />
               </h1>
               <p className="text-xs text-inho-muted mt-1">
                 Gerencie dados do Tenant, integrações bancárias (MultiFernet AES-256), Tokens SHA-256 e Telemetria APM.
@@ -176,7 +176,7 @@ export default function SettingsPage() {
           </div>
           <button
             onClick={loadSettings}
-            className="bg-white/5 hover:bg-white/10 text-white border border-white/10 p-2.5 rounded-xl transition-colors"
+            className="bg-[#FAF8F2] hover:bg-[#FAF8F2] text-[#0F172A] border border-[#E5DEC9] p-2.5 rounded-xl transition-colors"
             title="Recarregar configurações"
           >
             <RefreshCw size={16} className={loading ? 'animate-spin text-inho-teal' : ''} />
@@ -191,7 +191,7 @@ export default function SettingsPage() {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'COMPANY'
                   ? 'bg-inho-teal/10 text-inho-teal border border-inho-teal/30'
-                  : 'text-inho-muted hover:bg-white/5 hover:text-white'
+                  : 'text-inho-muted hover:bg-[#FAF8F2] hover:text-[#0F172A]'
               }`}
             >
               <Building2 size={16} /> Dados da Empresa
@@ -201,7 +201,7 @@ export default function SettingsPage() {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'BANKS'
                   ? 'bg-inho-teal/10 text-inho-teal border border-inho-teal/30'
-                  : 'text-inho-muted hover:bg-white/5 hover:text-white'
+                  : 'text-inho-muted hover:bg-[#FAF8F2] hover:text-[#0F172A]'
               }`}
             >
               <CreditCard size={16} /> Integrações Bancárias ({banks.length})
@@ -211,7 +211,7 @@ export default function SettingsPage() {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'API'
                   ? 'bg-inho-teal/10 text-inho-teal border border-inho-teal/30'
-                  : 'text-inho-muted hover:bg-white/5 hover:text-white'
+                  : 'text-inho-muted hover:bg-[#FAF8F2] hover:text-[#0F172A]'
               }`}
             >
               <Key size={16} /> Chaves de API ({tokens.length})
@@ -221,7 +221,7 @@ export default function SettingsPage() {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'TELEMETRY'
                   ? 'bg-inho-teal/10 text-inho-teal border border-inho-teal/30'
-                  : 'text-inho-muted hover:bg-white/5 hover:text-white'
+                  : 'text-inho-muted hover:bg-[#FAF8F2] hover:text-[#0F172A]'
               }`}
             >
               <Activity size={16} /> Telemetria APM & KMS
@@ -232,7 +232,7 @@ export default function SettingsPage() {
           <div className="md:col-span-3">
             {activeTab === 'COMPANY' && (
               <div className="glassmorphism p-6 rounded-2xl border border-inho-border space-y-6 animate-fade-in">
-                <h2 className="text-lg font-bold text-white border-b border-inho-border pb-3">
+                <h2 className="text-lg font-bold text-[#0F172A] border-b border-inho-border pb-3">
                   Perfil da Organização (Tenant Ativo)
                 </h2>
 
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                       type="text"
                       readOnly
                       value={business?.name || 'Orbe Systems / Cooperativa INHO'}
-                      className="w-full bg-inho-dark border border-inho-border rounded-lg p-2.5 text-sm text-white outline-none"
+                      className="w-full bg-inho-dark border border-inho-border rounded-lg p-2.5 text-sm text-[#0F172A] outline-none"
                     />
                   </div>
                   <div>
@@ -254,7 +254,7 @@ export default function SettingsPage() {
                       type="text"
                       readOnly
                       value={business?.cnpj || 'Não informado'}
-                      className="w-full bg-inho-dark border border-inho-border rounded-lg p-2.5 text-sm text-white font-mono outline-none"
+                      className="w-full bg-inho-dark border border-inho-border rounded-lg p-2.5 text-sm text-[#0F172A] font-mono outline-none"
                     />
                   </div>
                   <div>
@@ -276,7 +276,7 @@ export default function SettingsPage() {
                       type="text"
                       readOnly
                       value={business?.id || 'Ativo'}
-                      className="w-full bg-inho-dark border border-inho-border rounded-lg p-2.5 text-xs text-gray-400 font-mono outline-none"
+                      className="w-full bg-inho-dark border border-inho-border rounded-lg p-2.5 text-xs text-[#57606A] font-mono outline-none"
                     />
                   </div>
                 </div>
@@ -286,7 +286,7 @@ export default function SettingsPage() {
             {activeTab === 'BANKS' && (
               <div className="glassmorphism p-6 rounded-2xl border border-inho-border space-y-6 animate-fade-in">
                 <div>
-                  <h2 className="text-lg font-bold text-white">Integrações Bancárias & Webhooks PIX/Boleto</h2>
+                  <h2 className="text-lg font-bold text-[#0F172A]">Integrações Bancárias & Webhooks PIX/Boleto</h2>
                   <p className="text-xs text-inho-muted mt-0.5">
                     As credenciais são criptografadas com AES-256 (MultiFernet) antes de persistirem no banco.
                   </p>
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                     <select
                       value={newBankName}
                       onChange={(e) => setNewBankName(e.target.value)}
-                      className="w-full bg-black/50 border border-inho-border rounded-lg p-2 text-xs text-white outline-none focus:border-inho-teal"
+                      className="w-full bg-[#FAF8F2] border border-inho-border rounded-lg p-2 text-xs text-[#0F172A] outline-none focus:border-inho-teal"
                     >
                       <option value="BANCO_INTER">Banco Inter (PIX & Boleto)</option>
                       <option value="CORA">Banco Cora</option>
@@ -323,13 +323,13 @@ export default function SettingsPage() {
                       value={newBankKey}
                       onChange={(e) => setNewBankKey(e.target.value)}
                       placeholder="Cole a chave secreta da API bancária..."
-                      className="w-full bg-black/50 border border-inho-border rounded-lg p-2 text-xs text-white outline-none focus:border-inho-teal"
+                      className="w-full bg-[#FAF8F2] border border-inho-border rounded-lg p-2 text-xs text-[#0F172A] outline-none focus:border-inho-teal"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={creatingBank}
-                    className="bg-inho-teal hover:bg-teal-300 text-inho-black font-black px-4 py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5"
+                    className="bg-inho-teal hover:bg-[#9A6F0B] text-white font-black px-4 py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5"
                   >
                     <Plus size={14} /> {creatingBank ? 'Criptografando...' : 'Conectar Banco'}
                   </button>
@@ -347,20 +347,20 @@ export default function SettingsPage() {
                         className="p-4 rounded-xl bg-inho-dark border border-inho-border flex items-center justify-between"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-inho-teal font-black font-mono">
+                          <div className="w-10 h-10 rounded-lg bg-[#FAF8F2] flex items-center justify-center text-inho-teal font-black font-mono">
                             {b.bank_name.substring(0, 2)}
                           </div>
                           <div>
-                            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-[#0F172A] flex items-center gap-2">
                               {b.bank_name}
-                              {b.is_active && <CheckCircle2 size={14} className="text-green-400" />}
+                              {b.is_active && <CheckCircle2 size={14} className="text-emerald-700" />}
                             </h3>
                             <p className="text-[11px] text-inho-muted font-mono mt-0.5">{b.webhook_url}</p>
                           </div>
                         </div>
                         <button
                           onClick={() => handleDeleteBank(b.id)}
-                          className="text-xs text-red-400 hover:underline flex items-center gap-1"
+                          className="text-xs text-red-700 hover:underline flex items-center gap-1"
                         >
                           <Trash2 size={14} /> Desconectar
                         </button>
@@ -374,7 +374,7 @@ export default function SettingsPage() {
             {activeTab === 'API' && (
               <div className="glassmorphism p-6 rounded-2xl border border-inho-border space-y-6 animate-fade-in">
                 <div>
-                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-[#0F172A] flex items-center gap-2">
                     <Shield size={18} className="text-inho-teal" /> Chaves de API (Personal Access Tokens)
                   </h2>
                   <p className="text-xs text-inho-muted mt-0.5">
@@ -387,11 +387,11 @@ export default function SettingsPage() {
                     <p className="text-xs font-bold text-inho-teal">
                       Copie sua nova chave de API agora — por segurança ela não será exibida novamente:
                     </p>
-                    <div className="flex items-center justify-between gap-2 bg-black/60 p-2.5 rounded-lg border border-inho-teal/30">
-                      <code className="text-xs font-mono text-white break-all">{newlyCreatedPlainToken}</code>
+                    <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-inho-teal/30">
+                      <code className="text-xs font-mono text-[#0F172A] break-all">{newlyCreatedPlainToken}</code>
                       <button
                         onClick={copyPlainToken}
-                        className="px-3 py-1.5 rounded bg-inho-teal text-inho-black font-bold text-xs flex items-center gap-1 shrink-0"
+                        className="px-3 py-1.5 rounded bg-inho-teal text-white font-bold text-xs flex items-center gap-1 shrink-0"
                       >
                         {copiedToken ? <Check size={13} /> : <Copy size={13} />}
                         {copiedToken ? 'Copiado' : 'Copiar'}
@@ -407,12 +407,12 @@ export default function SettingsPage() {
                     value={newTokenName}
                     onChange={(e) => setNewTokenName(e.target.value)}
                     placeholder="Identificação do Token (Ex: Integração N8N / Contabilidade)"
-                    className="flex-1 bg-inho-dark border border-inho-border rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-inho-teal"
+                    className="flex-1 bg-inho-dark border border-inho-border rounded-xl px-4 py-2 text-xs text-[#0F172A] outline-none focus:border-inho-teal"
                   />
                   <button
                     type="submit"
                     disabled={creatingToken}
-                    className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors flex items-center gap-1.5"
+                    className="bg-[#FAF8F2] hover:bg-white/20 text-[#0F172A] font-bold px-4 py-2 rounded-xl text-xs transition-colors flex items-center gap-1.5"
                   >
                     <Plus size={14} /> {creatingToken ? 'Gerando...' : 'Gerar Novo Token'}
                   </button>
@@ -438,7 +438,7 @@ export default function SettingsPage() {
                       ) : (
                         tokens.map((t) => (
                           <tr key={t.id}>
-                            <td className="px-4 py-3 font-bold text-white">{t.name}</td>
+                            <td className="px-4 py-3 font-bold text-[#0F172A]">{t.name}</td>
                             <td className="px-4 py-3 font-mono text-inho-muted">
                               {t.token_hash.substring(0, 16)}...
                             </td>
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                             <td className="px-4 py-3 text-right">
                               <button
                                 onClick={() => handleRevokeToken(t.id)}
-                                className="text-red-400 hover:bg-red-500/10 p-1.5 rounded transition-colors"
+                                className="text-red-700 hover:bg-red-500/10 p-1.5 rounded transition-colors"
                                 title="Revogar Token"
                               >
                                 <Trash2 size={14} />
@@ -467,7 +467,7 @@ export default function SettingsPage() {
               <div className="glassmorphism p-6 rounded-2xl border border-inho-border space-y-6 animate-fade-in">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-inho-border pb-4">
                   <div>
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-[#0F172A] flex items-center gap-2">
                       <Activity size={18} className="text-inho-teal" /> Telemetria APM & Rotação MultiFernet
                     </h2>
                     <p className="text-xs text-inho-muted mt-0.5">
@@ -512,14 +512,14 @@ export default function SettingsPage() {
                       ) : (
                         telemetry.endpoints.slice(0, 15).map((ep: any) => (
                           <tr key={ep.route} className="hover:bg-white/[0.02]">
-                            <td className="px-4 py-2.5 text-white font-bold">{ep.route}</td>
+                            <td className="px-4 py-2.5 text-[#0F172A] font-bold">{ep.route}</td>
                             <td className="px-4 py-2.5 text-inho-muted">{ep.requests}</td>
                             <td className="px-4 py-2.5 text-inho-teal">{ep.avg_ms} ms</td>
-                            <td className="px-4 py-2.5 text-gray-300">{ep.max_ms} ms</td>
-                            <td className="px-4 py-2.5 text-amber-400">{ep.slow_requests_gt_500ms}</td>
+                            <td className="px-4 py-2.5 text-[#0F172A]">{ep.max_ms} ms</td>
+                            <td className="px-4 py-2.5 text-amber-700">{ep.slow_requests_gt_500ms}</td>
                             <td
                               className={`px-4 py-2.5 text-right font-bold ${
-                                ep.errors_5xx > 0 ? 'text-red-400' : 'text-green-400'
+                                ep.errors_5xx > 0 ? 'text-red-700' : 'text-emerald-700'
                               }`}
                             >
                               {ep.errors_5xx}

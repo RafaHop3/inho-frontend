@@ -73,7 +73,7 @@ export default function OnboardingPage() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-inho-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="w-full max-w-4xl relative z-10 animate-fade-in text-center">
-                <h1 className="text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight">
+                <h1 className="text-4xl lg:text-5xl font-black text-[#0F172A] mb-4 tracking-tight">
                     Setup do seu <span className="bg-inho-gold-gradient text-transparent bg-clip-text">Ecossistema</span>
                 </h1>
                 <p className="text-inho-muted max-w-xl mx-auto mb-12 text-sm lg:text-base">
@@ -81,7 +81,7 @@ export default function OnboardingPage() {
                 </p>
 
                 {error && (
-                    <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-slide-up">
+                    <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-700 text-sm animate-slide-up">
                         {error}
                     </div>
                 )}
@@ -95,7 +95,7 @@ export default function OnboardingPage() {
                             <Building2 size={28} />
                         </div>
 
-                        <h2 className="text-2xl font-bold text-white mb-2">Cooperativa Base (INHO)</h2>
+                        <h2 className="text-2xl font-bold text-[#0F172A] mb-2">Cooperativa Base (INHO)</h2>
                         <p className="text-inho-muted text-sm mb-8 flex-1">
                             Painel completo de gestão de PDVs, Contratos de Investidores Anjos e faturamento customizado.
                         </p>
@@ -107,7 +107,7 @@ export default function OnboardingPage() {
                                     <button
                                         key={b.id}
                                         onClick={() => handleSelect(b.id)}
-                                        className="flex justify-between items-center bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-inho-gold/10 hover:border-inho-gold/30 transition-all font-semibold text-white"
+                                        className="flex justify-between items-center bg-[#FAF8F2] border border-[#E5DEC9] p-4 rounded-xl hover:bg-inho-gold/10 hover:border-inho-gold/30 transition-all font-semibold text-[#0F172A]"
                                     >
                                         <span>{b.name}</span>
                                         <ArrowRight size={16} className="opacity-50" />
@@ -127,17 +127,17 @@ export default function OnboardingPage() {
                     </div>
 
                     {/* Card 2: Hotelaria (Breve) */}
-                    <div className="glassmorphism outline-none p-8 rounded-3xl border border-white/5 opacity-50 cursor-not-allowed group text-left relative overflow-hidden flex flex-col">
-                        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 text-white/40 border border-white/5">
+                    <div className="glassmorphism outline-none p-8 rounded-3xl border border-[#E5DEC9] opacity-50 cursor-not-allowed group text-left relative overflow-hidden flex flex-col">
+                        <div className="w-14 h-14 rounded-2xl bg-[#FAF8F2] flex items-center justify-center mb-6 text-[#64748B] border border-[#E5DEC9]">
                             <Hotel size={28} />
                         </div>
 
-                        <h2 className="text-2xl font-bold text-white/40 mb-2">Hotelaria / Genérico</h2>
-                        <p className="text-white/30 text-sm mb-8 flex-1">
+                        <h2 className="text-2xl font-bold text-[#64748B] mb-2">Hotelaria / Genérico</h2>
+                        <p className="text-[#64748B] text-sm mb-8 flex-1">
                             Módulo de gestão de reservas, tarifação diária e check-ins temporários. Este módulo ainda não foi implementado.
                         </p>
 
-                        <button disabled className="mt-auto w-full py-4 text-sm font-semibold rounded-xl bg-white/5 text-white/30 border border-white/10 uppercase tracking-widest text-[10px]">
+                        <button disabled className="mt-auto w-full py-4 text-sm font-semibold rounded-xl bg-[#FAF8F2] text-[#64748B] border border-[#E5DEC9] uppercase tracking-widest text-[10px]">
                             Em Breve
                         </button>
                     </div>

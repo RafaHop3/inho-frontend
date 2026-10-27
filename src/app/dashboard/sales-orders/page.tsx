@@ -82,7 +82,7 @@ export default function SalesOrdersPage() {
     { label: 'Total Pedidos', value: records.length, color: 'text-inho-gold', icon: ShoppingCart },
     { label: 'Confirmados', value: records.filter(r => r.status === 'CONFIRMED').length, color: 'text-inho-blue', icon: CheckCircle2 },
     { label: 'Faturados', value: records.filter(r => r.status === 'INVOICED').length, color: 'text-inho-green', icon: FileText },
-    { label: 'Cancelados', value: records.filter(r => r.status === 'CANCELLED').length, color: 'text-red-400', icon: XCircle },
+    { label: 'Cancelados', value: records.filter(r => r.status === 'CANCELLED').length, color: 'text-red-700', icon: XCircle },
   ];
 
   const inputCls = 'w-full bg-inho-dark border border-inho-border p-2.5 rounded-lg text-inho-text text-sm focus:border-inho-gold outline-none transition-colors';
@@ -104,7 +104,7 @@ export default function SalesOrdersPage() {
           </div>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 bg-inho-gold text-inho-black font-bold px-5 py-2.5 rounded-xl hover:-translate-y-0.5 transition-transform text-sm"
+            className="flex items-center gap-2 bg-inho-gold text-white font-bold px-5 py-2.5 rounded-xl hover:-translate-y-0.5 transition-transform text-sm"
           >
             <Plus size={16} /> Novo Pedido
           </button>
@@ -149,7 +149,7 @@ export default function SalesOrdersPage() {
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <p className="font-mono text-[10px] text-inho-muted">#{r.id?.slice(0, 8)?.toUpperCase()}</p>
                         {invoicedOrders.has(r.id) && (
-                          <span className="flex items-center gap-1 text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold">
+                          <span className="flex items-center gap-1 text-[10px] bg-green-500/20 text-emerald-700 px-2 py-0.5 rounded-full font-bold">
                             <BadgeCheck size={10} /> AUTHORIZED
                           </span>
                         )}
@@ -163,7 +163,7 @@ export default function SalesOrdersPage() {
                       )}
                       {invoicedOrders.has(r.id) && (
                         <div className="mt-2 p-2 bg-green-500/10 border border-green-500/20 rounded-lg">
-                          <p className="text-[9px] text-green-400 font-mono break-all">
+                          <p className="text-[9px] text-emerald-700 font-mono break-all">
                             Chave: {r.id?.replace(/-/g, '').padEnd(44, '0').slice(0, 44)}
                           </p>
                         </div>
@@ -181,7 +181,7 @@ export default function SalesOrdersPage() {
                             <button
                               onClick={() => cancel(r.id)}
                               disabled={actioning === r.id}
-                              className="flex items-center gap-1 text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded-lg hover:bg-red-500/20 transition-colors font-semibold disabled:opacity-50"
+                              className="flex items-center gap-1 text-[10px] bg-red-500/10 text-red-700 border border-red-500/20 px-2 py-1 rounded-lg hover:bg-red-500/20 transition-colors font-semibold disabled:opacity-50"
                             >
                               <XCircle size={10} /> Cancelar
                             </button>
@@ -191,7 +191,7 @@ export default function SalesOrdersPage() {
                           <button
                             onClick={() => invoice(r.id)}
                             disabled={actioning === r.id}
-                            className="flex items-center gap-1 text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-lg hover:bg-green-500/20 transition-colors font-semibold disabled:opacity-50"
+                            className="flex items-center gap-1 text-[10px] bg-green-500/10 text-emerald-700 border border-green-500/20 px-2 py-1 rounded-lg hover:bg-green-500/20 transition-colors font-semibold disabled:opacity-50"
                           >
                             <TrendingUp size={10} /> Emitir NF-e
                           </button>
@@ -208,7 +208,7 @@ export default function SalesOrdersPage() {
 
       {/* Modal – Novo Pedido */}
       {showCreate && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-white backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="glassmorphism rounded-2xl p-8 border border-inho-gold/20 w-full max-w-lg animate-slide-up overflow-y-auto max-h-[90vh]">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-inho-text flex items-center gap-2">
@@ -216,7 +216,7 @@ export default function SalesOrdersPage() {
               </h2>
               <button onClick={() => setShowCreate(false)} className="text-inho-muted hover:text-inho-text transition-colors"><X size={20} /></button>
             </div>
-            {error && <div className="text-red-400 text-xs mb-4 p-3 bg-red-400/10 rounded-lg border border-red-400/20">{error}</div>}
+            {error && <div className="text-red-700 text-xs mb-4 p-3 bg-red-400/10 rounded-lg border border-red-400/20">{error}</div>}
             <form onSubmit={handleCreate} className="flex flex-col gap-4">
               <div>
                 <label className="text-inho-muted text-xs mb-1 block">Conta</label>
@@ -255,7 +255,7 @@ export default function SalesOrdersPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl border border-inho-border text-inho-muted hover:text-inho-text transition-colors text-sm font-semibold">Cancelar</button>
-                <button disabled={submitting} className="flex-1 py-3 rounded-xl bg-inho-gold text-inho-black font-bold hover:-translate-y-0.5 transition-transform disabled:opacity-50 text-sm">
+                <button disabled={submitting} className="flex-1 py-3 rounded-xl bg-inho-gold text-white font-bold hover:-translate-y-0.5 transition-transform disabled:opacity-50 text-sm">
                   {submitting ? 'Criando...' : 'Criar Pedido'}
                 </button>
               </div>

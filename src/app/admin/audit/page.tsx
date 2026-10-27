@@ -37,52 +37,52 @@ export default function AdminAuditPage() {
   };
 
   const getActionColor = (action: string) => {
-    if (action.includes('DELETE') || action.includes('FAILED')) return 'text-red-400 bg-red-400/10 border-red-400/20';
-    if (action.includes('CREATE')) return 'text-green-400 bg-green-400/10 border-green-400/20';
+    if (action.includes('DELETE') || action.includes('FAILED')) return 'text-red-700 bg-red-400/10 border-red-400/20';
+    if (action.includes('CREATE')) return 'text-emerald-700 bg-green-400/10 border-green-400/20';
     if (action.includes('UPDATE')) return 'text-orange-400 bg-orange-400/10 border-orange-400/20';
-    return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+    return 'text-blue-700 bg-blue-400/10 border-blue-400/20';
   };
 
   return (
     <div className="animate-fade-in">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
-          <Activity className="text-purple-400" /> Trilha de Auditoria
+        <h1 className="text-3xl font-bold text-[#0F172A] mb-2 flex items-center gap-2">
+          <Activity className="text-purple-700" /> Trilha de Auditoria
         </h1>
-        <p className="text-gray-400">Log imutável de todas as ações de segurança ocorridas no sistema.</p>
+        <p className="text-[#57606A]">Log imutável de todas as ações de segurança ocorridas no sistema.</p>
       </header>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl p-6">
-        <div className="flex items-center gap-3 bg-gray-950 border border-gray-800 rounded-xl px-4 py-2 mb-6 focus-within:border-purple-500/50 transition-colors">
+      <div className="bg-white border border-[#E5DEC9] rounded-2xl overflow-hidden shadow-xl p-6">
+        <div className="flex items-center gap-3 bg-white border border-[#E5DEC9] rounded-xl px-4 py-2 mb-6 focus-within:border-purple-500/50 transition-colors">
           <Search className="w-5 h-5 text-gray-500" />
           <input 
             type="text" 
             placeholder="Buscar por ID de usuário ou recurso... (Simulação Visual)"
-            className="bg-transparent border-none outline-none text-white w-full placeholder-gray-600"
+            className="bg-transparent border-none outline-none text-[#0F172A] w-full placeholder-gray-600"
             disabled
           />
         </div>
 
         {loading ? (
-          <div className="text-gray-400">Extraindo blocos de auditoria...</div>
+          <div className="text-[#57606A]">Extraindo blocos de auditoria...</div>
         ) : (
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
             {logs.map((log) => (
-              <div key={log.id} className="p-4 bg-gray-950 border border-gray-800 rounded-xl hover:border-gray-700 transition-colors">
+              <div key={log.id} className="p-4 bg-white border border-[#E5DEC9] rounded-xl hover:border-[#E5DEC9] transition-colors">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center gap-3">
                     <span className={`px-2 py-1 rounded text-xs font-mono border ${getActionColor(log.action)}`}>
                       {log.action}
                     </span>
-                    <span className="text-sm text-gray-300 font-mono">{log.resource || 'SYSTEM'}</span>
+                    <span className="text-sm text-[#0F172A] font-mono">{log.resource || 'SYSTEM'}</span>
                   </div>
                   <span className="text-xs text-gray-500">{formatDate(log.created_at)}</span>
                 </div>
-                <p className="text-sm text-gray-400 mb-2">
+                <p className="text-sm text-[#57606A] mb-2">
                   <span className="text-gray-500">Actor:</span> {log.user_id || 'System Anonymous'}
                 </p>
                 {log.details && (
-                  <div className="bg-gray-900 rounded p-3 text-xs font-mono text-gray-400 border border-gray-800">
+                  <div className="bg-white rounded p-3 text-xs font-mono text-[#57606A] border border-[#E5DEC9]">
                     {log.details}
                   </div>
                 )}

@@ -109,14 +109,14 @@ export default function HomePage() {
 
           {/* Headline */}
           <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight mb-8 animate-slide-up drop-shadow-2xl">
-            <span className="text-white">Finanças com</span>
+            <span className="text-[#0F172A]">Finanças com</span>
             <br />
             <AuroraText text="Propósito Global" />
           </h1>
 
           {/* Sub */}
-          <p className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-300 leading-relaxed mb-12 animate-fade-in drop-shadow-md">
-            Uma plataforma de gestão financeira construída para <strong className="text-white">alta disponibilidade</strong>,
+          <p className="max-w-2xl mx-auto text-lg sm:text-xl text-[#0F172A] leading-relaxed mb-12 animate-fade-in drop-shadow-md">
+            Uma plataforma de gestão financeira construída para <strong className="text-[#0F172A]">alta disponibilidade</strong>,
             <strong className="text-inho-gold"> máxima segurança</strong> e impacto social
             <strong className="text-inho-green"> mensurável e global</strong>.
           </p>
@@ -127,7 +127,7 @@ export default function HomePage() {
               Assinatura Premium
               <ArrowRight size={18} />
             </GlassButton>
-            <GlassButton glowColor="blue" onClick={() => window.location.href = '#about'} className="w-full sm:w-auto min-w-[200px] justify-center text-gray-300 border-white/20">
+            <GlassButton glowColor="blue" onClick={() => window.location.href = '#about'} className="w-full sm:w-auto min-w-[200px] justify-center text-[#0F172A] border-[#E5DEC9]">
               Conhecer a visão
               <ChevronRight size={18} />
             </GlassButton>

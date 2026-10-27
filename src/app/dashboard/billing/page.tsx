@@ -189,13 +189,13 @@ export default function BillingPage() {
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'PAID':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-1"><CheckCircle2 size={12} /> Pago</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-500/10 text-emerald-700 border border-green-500/20 flex items-center gap-1"><CheckCircle2 size={12} /> Pago</span>;
             case 'OVERDUE':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1"><AlertTriangle size={12} /> Atrasado</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-700 border border-red-500/20 flex items-center gap-1"><AlertTriangle size={12} /> Atrasado</span>;
             case 'PENDING':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-1"><Clock size={12} /> Pendente</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-amber-700 border border-yellow-500/20 flex items-center gap-1"><Clock size={12} /> Pendente</span>;
             default:
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/10 text-gray-400 border border-gray-500/20">{status}</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/10 text-[#57606A] border border-gray-500/20">{status}</span>;
         }
     };
 
@@ -210,7 +210,7 @@ export default function BillingPage() {
                             <ArrowLeft size={20} />
                         </Link>
                         <div>
-                            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                            <h1 className="text-3xl font-bold text-[#0F172A] flex items-center gap-3">
                                 <BellRing className="text-inho-gold w-8 h-8" />
                                 Gestão de Cobranças & Avisos
                             </h1>
@@ -225,7 +225,7 @@ export default function BillingPage() {
                             <button
                                 onClick={handleBatchSettle}
                                 disabled={batchSettling}
-                                className="flex items-center gap-2 bg-green-500 text-inho-black font-bold px-4 py-3 rounded-xl hover:bg-emerald-400 transition-colors text-xs"
+                                className="flex items-center gap-2 bg-green-500 text-white font-bold px-4 py-3 rounded-xl hover:bg-emerald-400 transition-colors text-xs"
                             >
                                 <CheckCircle2 size={16} />
                                 {batchSettling ? 'Liquidando Lote...' : `Baixar Lote (${selectedIds.length})`}
@@ -233,7 +233,7 @@ export default function BillingPage() {
                         )}
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex items-center gap-2 bg-inho-gold text-inho-black font-bold px-5 py-3 rounded-xl hover:-translate-y-0.5 transition-transform text-sm shadow-glow-gold"
+                            className="flex items-center gap-2 bg-inho-gold text-white font-bold px-5 py-3 rounded-xl hover:-translate-y-0.5 transition-transform text-sm shadow-glow-gold"
                         >
                             <Plus size={18} /> Nova Cobrança
                         </button>
@@ -245,9 +245,9 @@ export default function BillingPage() {
                     <div className="glassmorphism rounded-2xl p-5 border border-inho-border relative overflow-hidden">
                         <div className="flex items-center justify-between mb-2">
                             <p className="text-inho-muted text-xs font-mono uppercase">A Receber (Pendente)</p>
-                            <Clock size={18} className="text-yellow-400" />
+                            <Clock size={18} className="text-amber-700" />
                         </div>
-                        <p className="text-2xl font-black font-mono text-yellow-400">
+                        <p className="text-2xl font-black font-mono text-amber-700">
                             {fmtCurrency(stats?.pending_amount || 0)}
                         </p>
                     </div>
@@ -255,9 +255,9 @@ export default function BillingPage() {
                     <div className="glassmorphism rounded-2xl p-5 border border-inho-border relative overflow-hidden">
                         <div className="flex items-center justify-between mb-2">
                             <p className="text-inho-muted text-xs font-mono uppercase">Em Atraso (Urgente)</p>
-                            <AlertTriangle size={18} className="text-red-400" />
+                            <AlertTriangle size={18} className="text-red-700" />
                         </div>
-                        <p className="text-2xl font-black font-mono text-red-400">
+                        <p className="text-2xl font-black font-mono text-red-700">
                             {fmtCurrency(stats?.overdue_amount || 0)}
                         </p>
                     </div>
@@ -265,9 +265,9 @@ export default function BillingPage() {
                     <div className="glassmorphism rounded-2xl p-5 border border-inho-border relative overflow-hidden">
                         <div className="flex items-center justify-between mb-2">
                             <p className="text-inho-muted text-xs font-mono uppercase">Total Cobrado (Pago)</p>
-                            <CheckCircle2 size={18} className="text-green-400" />
+                            <CheckCircle2 size={18} className="text-emerald-700" />
                         </div>
-                        <p className="text-2xl font-black font-mono text-green-400">
+                        <p className="text-2xl font-black font-mono text-emerald-700">
                             {fmtCurrency(stats?.paid_amount || 0)}
                         </p>
                     </div>
@@ -297,8 +297,8 @@ export default function BillingPage() {
                                 key={t.id}
                                 onClick={() => setActiveTab(t.id)}
                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${activeTab === t.id
-                                    ? 'bg-inho-gold text-inho-black'
-                                    : 'bg-inho-dark text-inho-muted hover:text-white border border-inho-border'
+                                    ? 'bg-inho-gold text-white'
+                                    : 'bg-inho-dark text-inho-muted hover:text-[#0F172A] border border-inho-border'
                                     }`}
                             >
                                 {t.label}
@@ -314,7 +314,7 @@ export default function BillingPage() {
                             placeholder="Buscar por cliente ou descrição..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-transparent text-sm text-white outline-none w-full placeholder-inho-muted"
+                            className="bg-transparent text-sm text-[#0F172A] outline-none w-full placeholder-inho-muted"
                         />
                     </div>
                 </div>
@@ -358,7 +358,7 @@ export default function BillingPage() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-bold text-white">{inv.customer_name}</p>
+                                                <p className="font-bold text-[#0F172A]">{inv.customer_name}</p>
                                                 <p className="text-xs text-inho-muted truncate max-w-[200px]">
                                                     {inv.description || 'Cobrança Avulsa'}
                                                 </p>
@@ -378,7 +378,7 @@ export default function BillingPage() {
                                                 {fmtCurrency(inv.amount)}
                                             </td>
 
-                                            <td className="px-6 py-4 font-mono text-xs text-white">
+                                            <td className="px-6 py-4 font-mono text-xs text-[#0F172A]">
                                                 {fmtDate(inv.due_date)}
                                             </td>
 
@@ -398,7 +398,7 @@ export default function BillingPage() {
                                                     <button
                                                         onClick={() => handleSendWhatsApp(inv)}
                                                         disabled={notifyingId === inv.id}
-                                                        className="p-2 rounded-xl bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors"
+                                                        className="p-2 rounded-xl bg-green-500/10 text-emerald-700 border border-green-500/20 hover:bg-green-500/20 transition-colors"
                                                         title="Disparar Lembrete por WhatsApp"
                                                     >
                                                         <Send size={16} />
@@ -408,7 +408,7 @@ export default function BillingPage() {
                                                     <button
                                                         onClick={() => handleSendEmail(inv)}
                                                         disabled={notifyingId === inv.id}
-                                                        className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
+                                                        className="p-2 rounded-xl bg-blue-500/10 text-blue-700 border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
                                                         title="Disparar Aviso por E-mail"
                                                     >
                                                         <Mail size={16} />
@@ -436,7 +436,7 @@ export default function BillingPage() {
                                                             </button>
                                                             <button
                                                                 onClick={() => handleMarkAsPaid(inv.id)}
-                                                                className="px-3 py-1.5 rounded-xl bg-green-500 text-inho-black font-bold text-xs hover:bg-emerald-400 transition-colors flex items-center gap-1"
+                                                                className="px-3 py-1.5 rounded-xl bg-green-500 text-white font-bold text-xs hover:bg-emerald-400 transition-colors flex items-center gap-1"
                                                             >
                                                                 <Check size={14} /> Dar Baixa
                                                             </button>
@@ -456,19 +456,19 @@ export default function BillingPage() {
 
             {/* Modal: Nova Cobrança */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-white backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="glassmorphism rounded-2xl p-6 border border-inho-border w-full max-w-lg animate-slide-up">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-[#0F172A] flex items-center gap-2">
                                 <Plus className="text-inho-gold" size={20} /> Criar Nova Cobrança
                             </h2>
-                            <button onClick={() => setShowCreateModal(false)} className="text-inho-muted hover:text-white">
+                            <button onClick={() => setShowCreateModal(false)} className="text-inho-muted hover:text-[#0F172A]">
                                 <X size={20} />
                             </button>
                         </div>
 
                         {formError && (
-                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl">
+                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-700 text-xs rounded-xl">
                                 {formError}
                             </div>
                         )}
@@ -482,7 +482,7 @@ export default function BillingPage() {
                                     placeholder="Ex: João da Silva / Acme Corp"
                                     value={form.customer_name}
                                     onChange={(e) => setForm({ ...form, customer_name: e.target.value })}
-                                    className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-inho-gold"
+                                    className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-[#0F172A] outline-none focus:border-inho-gold"
                                 />
                             </div>
 
@@ -494,7 +494,7 @@ export default function BillingPage() {
                                         placeholder="5511999999999"
                                         value={form.customer_phone}
                                         onChange={(e) => setForm({ ...form, customer_phone: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-inho-gold"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-[#0F172A] outline-none focus:border-inho-gold"
                                     />
                                 </div>
 
@@ -505,7 +505,7 @@ export default function BillingPage() {
                                         placeholder="cliente@email.com"
                                         value={form.customer_email}
                                         onChange={(e) => setForm({ ...form, customer_email: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-inho-gold"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-[#0F172A] outline-none focus:border-inho-gold"
                                     />
                                 </div>
                             </div>
@@ -520,7 +520,7 @@ export default function BillingPage() {
                                         placeholder="150,00"
                                         value={form.amount}
                                         onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-inho-gold font-mono"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-[#0F172A] outline-none focus:border-inho-gold font-mono"
                                     />
                                 </div>
 
@@ -531,7 +531,7 @@ export default function BillingPage() {
                                         required
                                         value={form.due_date}
                                         onChange={(e) => setForm({ ...form, due_date: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-inho-gold font-mono [color-scheme:dark]"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-[#0F172A] outline-none focus:border-inho-gold font-mono [color-scheme:dark]"
                                     />
                                 </div>
                             </div>
@@ -543,7 +543,7 @@ export default function BillingPage() {
                                     placeholder="Ex: Mensalidade Consultoria TI"
                                     value={form.description}
                                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                    className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-inho-gold"
+                                    className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-2.5 text-sm text-[#0F172A] outline-none focus:border-inho-gold"
                                 />
                             </div>
 
@@ -551,14 +551,14 @@ export default function BillingPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowCreateModal(false)}
-                                    className="flex-1 py-3 rounded-xl border border-inho-border text-inho-muted font-semibold hover:text-white"
+                                    className="flex-1 py-3 rounded-xl border border-inho-border text-inho-muted font-semibold hover:text-[#0F172A]"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="flex-1 py-3 rounded-xl bg-inho-gold text-inho-black font-bold hover:shadow-glow-gold transition-all disabled:opacity-50"
+                                    className="flex-1 py-3 rounded-xl bg-inho-gold text-white font-bold hover:shadow-glow-gold transition-all disabled:opacity-50"
                                 >
                                     {submitting ? 'Gerando...' : 'Gerar Cobrança & PIX'}
                                 </button>
@@ -570,18 +570,18 @@ export default function BillingPage() {
 
             {/* Drawer Modal: PIX QR Code & Copia e Cola */}
             {activePixInvoice && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-white backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="glassmorphism rounded-2xl p-6 border border-inho-gold/30 w-full max-w-md animate-slide-up text-center">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                            <h3 className="text-lg font-bold text-[#0F172A] flex items-center gap-2">
                                 <QrCode className="text-inho-gold" size={20} /> Dados do Pagamento PIX
                             </h3>
-                            <button onClick={() => setActivePixInvoice(null)} className="text-inho-muted hover:text-white">
+                            <button onClick={() => setActivePixInvoice(null)} className="text-inho-muted hover:text-[#0F172A]">
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <p className="text-xs text-inho-muted mb-2">Cliente: <span className="text-white font-bold">{activePixInvoice.customer_name}</span></p>
+                        <p className="text-xs text-inho-muted mb-2">Cliente: <span className="text-[#0F172A] font-bold">{activePixInvoice.customer_name}</span></p>
                         <p className="text-2xl font-black font-mono text-inho-gold mb-6">{fmtCurrency(activePixInvoice.amount)}</p>
 
                         {/* QR Code Image */}
@@ -595,7 +595,7 @@ export default function BillingPage() {
                         {/* PIX Copy Code */}
                         <div className="bg-inho-dark border border-inho-border rounded-xl p-3 text-left mb-6">
                             <p className="text-[10px] text-inho-muted font-mono uppercase mb-1">Chave PIX Copia e Cola</p>
-                            <p className="text-xs font-mono text-gray-300 break-all bg-black/40 p-2 rounded border border-inho-border">
+                            <p className="text-xs font-mono text-[#0F172A] break-all bg-[#FAF8F2] p-2 rounded border border-inho-border">
                                 {activePixInvoice.pix_code}
                             </p>
                         </div>
@@ -603,7 +603,7 @@ export default function BillingPage() {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => copyPixCode(activePixInvoice.pix_code || '')}
-                                className="flex-1 py-3 rounded-xl bg-inho-gold text-inho-black font-bold flex items-center justify-center gap-2 hover:shadow-glow-gold"
+                                className="flex-1 py-3 rounded-xl bg-inho-gold text-white font-bold flex items-center justify-center gap-2 hover:shadow-glow-gold"
                             >
                                 <Copy size={16} /> {copiedPix ? 'Copiado!' : 'Copiar Chave PIX'}
                             </button>
@@ -613,7 +613,7 @@ export default function BillingPage() {
                                     handleMarkAsPaid(activePixInvoice.id);
                                     setActivePixInvoice(null);
                                 }}
-                                className="py-3 px-4 rounded-xl bg-green-500/20 text-green-400 border border-green-500/30 font-bold hover:bg-green-500/30"
+                                className="py-3 px-4 rounded-xl bg-green-500/20 text-emerald-700 border border-green-500/30 font-bold hover:bg-green-500/30"
                             >
                                 Confirmar Baixa
                             </button>

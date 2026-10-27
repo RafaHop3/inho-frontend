@@ -67,7 +67,7 @@ export default function NfsePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#04060A] p-6 lg:p-8 font-mono text-white">
+    <div className="min-h-screen bg-[#F6F4EE] p-6 lg:p-8 font-sans text-[#0F172A]">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-terminal-border pb-5">
           <div>
@@ -79,7 +79,7 @@ export default function NfsePage() {
               Notas Fiscais de Serviço (NFS-e)
               <FileText size={22} className="text-neon-green" />
             </h1>
-            <p className="text-xs text-[#8b949e] mt-1">
+            <p className="text-xs text-[#57606A] mt-1">
               Emissão de RPS/NFS-e vinculada às faturas com cálculo automático de retenção fiscal (ISS 5% e IRRF 1,5%).
             </p>
           </div>
@@ -88,9 +88,9 @@ export default function NfsePage() {
           </div>
         </div>
 
-        <div className="bg-[#080B11] border border-terminal-border rounded-2xl overflow-hidden">
+        <div className="bg-white shadow-sm border border-terminal-border rounded-2xl overflow-hidden">
           <table className="w-full text-left text-xs">
-            <thead className="bg-white/5 border-b border-terminal-border text-[#8b949e] uppercase tracking-wider">
+            <thead className="bg-[#FAF8F2] border-b border-terminal-border text-[#57606A] uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4">Tomador</th>
                 <th className="px-6 py-4">Competência</th>
@@ -104,13 +104,13 @@ export default function NfsePage() {
             <tbody className="divide-y divide-terminal-border">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-[#8b949e]">
+                  <td colSpan={7} className="px-6 py-10 text-center text-[#57606A]">
                     <Loader2 className="animate-spin mx-auto mb-2" size={20} /> Carregando faturas...
                   </td>
                 </tr>
               ) : invoices.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[#8b949e]">
+                  <td colSpan={7} className="px-6 py-12 text-center text-[#57606A]">
                     Nenhuma fatura disponível para emissão de NFS-e.
                   </td>
                 </tr>
@@ -121,16 +121,16 @@ export default function NfsePage() {
                   const net = gross - ret;
                   const rps = emittedIds[inv.id];
                   return (
-                    <tr key={inv.id} className="hover:bg-white/5 transition-colors">
+                    <tr key={inv.id} className="hover:bg-[#FAF8F2] transition-colors">
                       <td className="px-6 py-4">
-                        <div className="font-bold text-white">{inv.customer_name}</div>
-                        <div className="text-[10px] text-[#8b949e]">{inv.customer_doc || 'CPF/CNPJ sob consulta'}</div>
+                        <div className="font-bold text-[#0F172A]">{inv.customer_name}</div>
+                        <div className="text-[10px] text-[#57606A]">{inv.customer_doc || 'CPF/CNPJ sob consulta'}</div>
                       </td>
                       <td className="px-6 py-4">{new Date(inv.due_date).toLocaleDateString('pt-BR')}</td>
                       <td className="px-6 py-4 text-right font-bold">
                         R$ {gross.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
-                      <td className="px-6 py-4 text-right text-amber-400">
+                      <td className="px-6 py-4 text-right text-amber-700">
                         - R$ {ret.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="px-6 py-4 text-right font-bold text-neon-green">
@@ -142,7 +142,7 @@ export default function NfsePage() {
                             <CheckCircle2 size={11} /> {rps}
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded bg-white/5 text-[#8b949e] border border-terminal-border font-bold text-[10px]">
+                          <span className="px-2 py-0.5 rounded bg-[#FAF8F2] text-[#57606A] border border-terminal-border font-bold text-[10px]">
                             AGUARDANDO RPS
                           </span>
                         )}

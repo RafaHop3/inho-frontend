@@ -100,13 +100,13 @@ function ContactsContent() {
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 bg-inho-dark border border-inho-border hover:bg-inho-dark/80 text-white px-4 py-2 rounded-xl transition-all font-bold text-xs">
+                        <button className="flex items-center gap-2 bg-inho-dark border border-inho-border hover:bg-inho-dark/80 text-[#0F172A] px-4 py-2 rounded-xl transition-all font-bold text-xs">
                             <FileSpreadsheet size={16} />
                             Importar CSV
                         </button>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className="flex items-center gap-2 bg-neon-cyan/20 border border-neon-cyan/50 hover:bg-neon-cyan/30 text-neon-cyan px-4 py-2 rounded-xl transition-all font-bold text-xs shadow-[0_0_15px_rgba(0,255,245,0.2)]">
+                            className="flex items-center gap-2 bg-neon-cyan/20 border border-neon-cyan/50 hover:bg-neon-cyan/30 text-neon-cyan px-4 py-2 rounded-xl transition-all font-bold text-xs shadow-[0_0_15px_rgba(184,134,11,0.2)]">
                             <Plus size={16} />
                             Novo Cadastro
                         </button>
@@ -123,7 +123,7 @@ function ContactsContent() {
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${activeTab === tab.id
                                     ? 'bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30'
-                                    : 'text-inho-muted hover:text-white hover:bg-white/5 border border-transparent'
+                                    : 'text-inho-muted hover:text-[#0F172A] hover:bg-[#FAF8F2] border border-transparent'
                                     }`}
                             >
                                 {tab.label}
@@ -138,7 +138,7 @@ function ContactsContent() {
                             placeholder="Buscar por nome ou documento..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-black/50 border border-inho-border rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/50 transition-all placeholder:text-inho-muted"
+                            className="w-full bg-[#FAF8F2] border border-inho-border rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#0F172A] focus:outline-none focus:border-neon-cyan/50 focus:ring-1 focus:ring-neon-cyan/50 transition-all placeholder:text-inho-muted"
                         />
                     </div>
                 </div>
@@ -173,13 +173,13 @@ function ContactsContent() {
                                     filteredContacts.map((c) => (
                                         <tr key={c.id} className="hover:bg-inho-dark/40 transition-colors group">
                                             <td className="px-6 py-4">
-                                                <p className="font-bold text-white text-sm">{c.name}</p>
+                                                <p className="font-bold text-[#0F172A] text-sm">{c.name}</p>
                                             </td>
                                             <td className="px-6 py-4 font-mono text-xs text-inho-muted">
                                                 {c.document || '-'}
                                             </td>
                                             <td className="px-6 py-4 text-xs">
-                                                <p className="text-white">{c.email || '-'}</p>
+                                                <p className="text-[#0F172A]">{c.email || '-'}</p>
                                                 <p className="text-inho-muted">{c.phone || '-'}</p>
                                             </td>
                                             <td className="px-6 py-4">
@@ -190,7 +190,7 @@ function ContactsContent() {
                                             <td className="px-6 py-4 text-right">
                                                 <Link
                                                     href={`/dashboard/contacts/${c.id}`}
-                                                    className="px-3 py-1.5 opacity-0 group-hover:opacity-100 bg-white/5 border border-white/10 hover:border-neon-cyan/50 hover:text-neon-cyan rounded-lg text-xs font-bold transition-all inline-block"
+                                                    className="px-3 py-1.5 opacity-0 group-hover:opacity-100 bg-[#FAF8F2] border border-[#E5DEC9] hover:border-neon-cyan/50 hover:text-neon-cyan rounded-lg text-xs font-bold transition-all inline-block"
                                                 >
                                                     Dossiê Completo
                                                 </Link>
@@ -207,14 +207,14 @@ function ContactsContent() {
 
             {/* Create Contact Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white backdrop-blur-sm p-4">
                     <div className="bg-inho-black border border-inho-border rounded-2xl w-full max-w-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden">
                         <div className="p-6 border-b border-inho-border flex items-center justify-between bg-inho-dark/50">
-                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                            <h2 className="text-lg font-bold text-[#0F172A] flex items-center gap-2">
                                 <Users size={20} className="text-neon-cyan" />
                                 Cadastrar Contato
                             </h2>
-                            <button onClick={() => setIsModalOpen(false)} className="text-inho-muted hover:text-white transition-colors">
+                            <button onClick={() => setIsModalOpen(false)} className="text-inho-muted hover:text-[#0F172A] transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
@@ -227,7 +227,7 @@ function ContactsContent() {
                                     required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                                    className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-neon-cyan/50 transition-colors"
                                     placeholder="Ex: Minha Empresa LTDA"
                                 />
                             </div>
@@ -238,7 +238,7 @@ function ContactsContent() {
                                     <select
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-cyan/50 transition-colors appearance-none"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-neon-cyan/50 transition-colors appearance-none"
                                     >
                                         <option value="CUSTOMER">Cliente</option>
                                         <option value="SUPPLIER">Fornecedor</option>
@@ -252,7 +252,7 @@ function ContactsContent() {
                                         type="text"
                                         value={formData.document}
                                         onChange={(e) => setFormData({ ...formData, document: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-neon-cyan/50 transition-colors"
                                         placeholder="Opcional"
                                     />
                                 </div>
@@ -265,7 +265,7 @@ function ContactsContent() {
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-neon-cyan/50 transition-colors"
                                         placeholder="contato@..."
                                     />
                                 </div>
@@ -275,7 +275,7 @@ function ContactsContent() {
                                         type="text"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-cyan/50 transition-colors"
+                                        className="w-full bg-inho-dark border border-inho-border rounded-xl px-4 py-3 text-sm text-[#0F172A] focus:outline-none focus:border-neon-cyan/50 transition-colors"
                                         placeholder="(11) 9..."
                                     />
                                 </div>
@@ -285,7 +285,7 @@ function ContactsContent() {
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="flex items-center gap-2 bg-neon-cyan text-inho-black hover:bg-neon-cyan/90 font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-neon-cyan/20 disabled:opacity-50"
+                                    className="flex items-center gap-2 bg-neon-cyan text-white hover:bg-neon-cyan/90 font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-neon-cyan/20 disabled:opacity-50"
                                 >
                                     {submitting ? <Loader2 className="animate-spin" size={18} /> : 'Cadastrar e Salvar'}
                                 </button>
@@ -300,7 +300,7 @@ function ContactsContent() {
 
 export default function ContactsPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-inho-black p-8 text-inho-muted font-mono text-xs">Carregando contatos...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-inho-black p-8 text-inho-muted font-sans text-xs">Carregando contatos...</div>}>
             <ContactsContent />
         </Suspense>
     );

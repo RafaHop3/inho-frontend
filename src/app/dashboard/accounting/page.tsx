@@ -59,7 +59,7 @@ export default function AccountingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#04060A] p-6 lg:p-8 font-mono text-white">
+    <div className="min-h-screen bg-[#F6F4EE] p-6 lg:p-8 font-sans text-[#0F172A]">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-terminal-border pb-5">
           <div>
@@ -71,7 +71,7 @@ export default function AccountingPage() {
               Fechamento Contábil Mensal
               <Lock size={22} className="text-neon-cyan" />
             </h1>
-            <p className="text-xs text-[#8b949e] mt-1">
+            <p className="text-xs text-[#57606A] mt-1">
               Lacre criptográfico (SHA-256) das competências mensais e exportação auditada para o Contador.
             </p>
           </div>
@@ -83,9 +83,9 @@ export default function AccountingPage() {
           </button>
         </div>
 
-        <div className="bg-[#080B11] border border-terminal-border rounded-2xl overflow-hidden">
+        <div className="bg-white shadow-sm border border-terminal-border rounded-2xl overflow-hidden">
           <table className="w-full text-left text-xs">
-            <thead className="bg-white/5 border-b border-terminal-border text-[#8b949e] uppercase tracking-wider">
+            <thead className="bg-[#FAF8F2] border-b border-terminal-border text-[#57606A] uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4">Competência</th>
                 <th className="px-6 py-4">Responsável pelo Lacre</th>
@@ -98,13 +98,13 @@ export default function AccountingPage() {
             <tbody className="divide-y divide-terminal-border">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-10 text-center text-[#8b949e]">
+                  <td colSpan={6} className="px-6 py-10 text-center text-[#57606A]">
                     <Loader2 className="animate-spin mx-auto mb-2" size={20} /> Carregando fechamentos...
                   </td>
                 </tr>
               ) : closes.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#8b949e]">
+                  <td colSpan={6} className="px-6 py-12 text-center text-[#57606A]">
                     Nenhuma competência lacrada ainda. Clique em &ldquo;Lacrar Competência Mensal&rdquo; para consolidar um mês.
                   </td>
                 </tr>
@@ -115,27 +115,27 @@ export default function AccountingPage() {
                     summary = JSON.parse(c.summary_json || '{}');
                   } catch {}
                   return (
-                    <tr key={c.id} className="hover:bg-white/5 transition-colors">
+                    <tr key={c.id} className="hover:bg-[#FAF8F2] transition-colors">
                       <td className="px-6 py-4 font-extrabold text-neon-cyan text-sm">
                         {String(c.period_month).padStart(2, '0')}/{c.period_year}
                       </td>
-                      <td className="px-6 py-4 text-white">{c.closed_by_name}</td>
+                      <td className="px-6 py-4 text-[#0F172A]">{c.closed_by_name}</td>
                       <td className="px-6 py-4">
                         <span className="text-neon-green font-bold">
                           +R$ {Number(summary.total_revenue || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </span>{' '}
                         /{' '}
-                        <span className="text-red-400 font-bold">
+                        <span className="text-red-700 font-bold">
                           -R$ {Number(summary.total_cost || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-1 rounded bg-white/5 border border-terminal-border text-[10px] text-[#8b949e] inline-flex items-center gap-1.5">
+                        <span className="px-2 py-1 rounded bg-[#FAF8F2] border border-terminal-border text-[10px] text-[#57606A] inline-flex items-center gap-1.5">
                           <ShieldCheck size={12} className="text-neon-green" />
                           {c.checksum.slice(0, 16)}...
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-[#8b949e]">
+                      <td className="px-6 py-4 text-[#57606A]">
                         {new Date(c.closed_at).toLocaleString('pt-BR')}
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -156,9 +156,9 @@ export default function AccountingPage() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#0A0D14] border border-terminal-border rounded-2xl p-6 w-full max-w-md relative">
-            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-[#8b949e] hover:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white backdrop-blur-sm p-4">
+          <div className="bg-white shadow-sm border border-terminal-border rounded-2xl p-6 w-full max-w-md relative">
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-[#57606A] hover:text-[#0F172A]">
               <X size={18} />
             </button>
             <h2 className="text-base font-bold uppercase tracking-widest text-neon-cyan mb-4">
@@ -167,7 +167,7 @@ export default function AccountingPage() {
             <form onSubmit={handleCloseMonth} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">Mês (1-12)</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">Mês (1-12)</label>
                   <input
                     required
                     type="number"
@@ -175,11 +175,11 @@ export default function AccountingPage() {
                     max="12"
                     value={form.period_month}
                     onChange={(e) => setForm({ ...form, period_month: e.target.value })}
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-3 py-2.5 text-[#0F172A]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#8b949e] mb-1 uppercase">Ano</label>
+                  <label className="block text-[#57606A] mb-1 uppercase">Ano</label>
                   <input
                     required
                     type="number"
@@ -187,14 +187,14 @@ export default function AccountingPage() {
                     max="2035"
                     value={form.period_year}
                     onChange={(e) => setForm({ ...form, period_year: e.target.value })}
-                    className="w-full bg-[#04060A] border border-terminal-border rounded-xl px-3 py-2.5 text-white"
+                    className="w-full bg-[#F6F4EE] border border-terminal-border rounded-xl px-3 py-2.5 text-[#0F172A]"
                   />
                 </div>
               </div>
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 rounded-xl bg-neon-cyan text-black font-extrabold uppercase tracking-wider"
+                className="w-full py-3 rounded-xl bg-neon-cyan text-white font-extrabold uppercase tracking-wider"
               >
                 {submitting ? 'Gerando Checksum SHA-256...' : 'Confirmar Fechamento Imutável'}
               </button>

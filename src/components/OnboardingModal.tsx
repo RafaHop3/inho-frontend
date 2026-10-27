@@ -53,7 +53,7 @@ export default function OnboardingModal({ isOpen, onComplete, userName }: Onboar
                 </div>
 
                 {errorMsg && (
-                    <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl text-sm font-bold shadow-lg">
+                    <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-700 p-3 rounded-xl text-sm font-bold shadow-lg">
                         {errorMsg}
                     </div>
                 )}
@@ -106,7 +106,7 @@ export default function OnboardingModal({ isOpen, onComplete, userName }: Onboar
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-4 flex items-center justify-center gap-2 py-4 rounded-xl font-black uppercase text-sm tracking-widest text-white transition-all
+                        className="w-full mt-4 flex items-center justify-center gap-2 py-4 rounded-xl font-black uppercase text-sm tracking-widest text-[#0F172A] transition-all
                        bg-gradient-to-r from-inho-blue to-inho-green hover:shadow-[0_0_20px_rgba(14,165,233,0.3)] disabled:opacity-50"
                     >
                         {loading ? 'Inicializando Infraestrutura...' : (

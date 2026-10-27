@@ -52,7 +52,7 @@ export default function Header() {
                 key={href}
                 href={href}
                 id={`nav-${label.toLowerCase()}`}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-inho-muted hover:text-inho-text hover:bg-white/5 transition-all duration-200 text-sm font-medium uppercase tracking-wider"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-inho-muted hover:text-inho-text hover:bg-[#FAF8F2] transition-all duration-200 text-sm font-medium uppercase tracking-wider"
               >
                 <Icon size={14} />
                 {label}
@@ -72,7 +72,7 @@ export default function Header() {
             <Link
               href="https://orbesystems.com.br"
               id="header-register"
-              className="px-5 py-2.5 bg-inho-gold-gradient text-inho-black font-bold text-sm rounded-xl hover:shadow-inho-gold transition-all duration-300 hover:-translate-y-0.5"
+              className="px-5 py-2.5 bg-inho-gold-gradient text-white font-bold text-sm rounded-xl hover:shadow-inho-gold transition-all duration-300 hover:-translate-y-0.5"
             >
               Assinar Premium
             </Link>
@@ -103,7 +103,7 @@ export default function Header() {
               key={href}
               href={href}
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-inho-muted hover:text-inho-gold hover:bg-white/5 transition-all text-sm font-medium uppercase tracking-wider"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-inho-muted hover:text-inho-gold hover:bg-[#FAF8F2] transition-all text-sm font-medium uppercase tracking-wider"
             >
               <Icon size={16} />
               {label}
@@ -116,7 +116,7 @@ export default function Header() {
               Entrar
             </Link>
             <Link href="https://orbesystems.com.br" id="mobile-register"
-              className="px-4 py-3 text-center bg-inho-gold-gradient text-inho-black font-bold text-sm rounded-xl"
+              className="px-4 py-3 text-center bg-inho-gold-gradient text-white font-bold text-sm rounded-xl"
             >
               Assinar Premium
             </Link>

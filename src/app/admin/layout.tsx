@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [router]);
 
   if (isAdmin === null) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Carregando painel...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-white text-[#0F172A]">Carregando painel...</div>;
   }
 
   const menuItems = [
@@ -44,12 +44,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex h-screen bg-gray-950 text-gray-100 font-sans">
+    <div className="flex h-screen bg-white text-gray-100 font-sans">
       {/* Sidebar (Admin Theme) */}
-      <aside className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
+      <aside className="w-64 bg-white border-r border-[#E5DEC9] flex flex-col">
         <div className="p-6">
           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500 flex items-center gap-2">
-            <Globe className="w-6 h-6 text-purple-400" />
+            <Globe className="w-6 h-6 text-purple-700" />
             INHO Admin
           </h1>
         </div>
@@ -63,8 +63,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 key={item.path}
                 href={item.path}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
-                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                  ? 'bg-purple-500/20 text-purple-700 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]'
+                  : 'text-[#57606A] hover:bg-white hover:text-[#0F172A]'
                   }`}
               >
                 <Icon className="w-5 h-5" />
@@ -74,10 +74,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-800">
+        <div className="p-4 border-t border-[#E5DEC9]">
           <Link
             href="/dashboard"
-            className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white transition-colors rounded-xl hover:bg-gray-800"
+            className="flex items-center gap-3 px-4 py-3 text-[#57606A] hover:text-[#0F172A] transition-colors rounded-xl hover:bg-white"
           >
             <LogOut className="w-5 h-5" />
             <span>Sair do Admin</span>

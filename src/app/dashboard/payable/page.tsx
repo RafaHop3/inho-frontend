@@ -163,20 +163,20 @@ export default function PayablePage() {
   const getStatusBadge = (p: AccountPayableOut) => {
     if (p.status === 'PAID') {
       return (
-        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-1 w-max">
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-500/10 text-emerald-700 border border-green-500/20 flex items-center gap-1 w-max">
           <CheckCircle2 size={12} /> Pago
         </span>
       );
     }
     if (isOverdue(p)) {
       return (
-        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1 w-max">
+        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-700 border border-red-500/20 flex items-center gap-1 w-max">
           <AlertTriangle size={12} /> Atrasado
         </span>
       );
     }
     return (
-      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-1 w-max">
+      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-amber-700 border border-yellow-500/20 flex items-center gap-1 w-max">
         <Clock size={12} /> Pendente
       </span>
     );
@@ -194,14 +194,14 @@ export default function PayablePage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="text-inho-muted hover:text-white transition-colors bg-inho-dark p-2 rounded-xl"
+              className="text-inho-muted hover:text-[#0F172A] transition-colors bg-inho-dark p-2 rounded-xl"
             >
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-[#0F172A] flex items-center gap-2">
                 Contas a Pagar
-                <FileText size={22} className="text-purple-400" />
+                <FileText size={22} className="text-purple-700" />
               </h1>
               <p className="text-xs text-inho-muted mt-1">
                 Centralize fornecedores, repasses a sócios, impostos e despesas operacionais em tempo real.
@@ -211,9 +211,9 @@ export default function PayablePage() {
           <div className="flex items-center gap-2">
             <Link
               href="/dashboard/payable/schedule"
-              className="flex items-center gap-2 bg-white/5 border border-white/10 hover:border-purple-500/40 text-gray-300 font-bold px-3.5 py-2 rounded-xl transition-all text-xs"
+              className="flex items-center gap-2 bg-[#FAF8F2] border border-[#E5DEC9] hover:border-purple-500/40 text-[#0F172A] font-bold px-3.5 py-2 rounded-xl transition-all text-xs"
             >
-              <CalendarClock size={15} className="text-purple-400" /> Agendar Recorrência
+              <CalendarClock size={15} className="text-purple-700" /> Agendar Recorrência
             </Link>
             <button
               onClick={() => setShowModal(true)}
@@ -228,26 +228,26 @@ export default function PayablePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="glassmorphism p-5 rounded-2xl border border-inho-border relative overflow-hidden">
             <div className="flex gap-2 items-center mb-2">
-              <Clock size={16} className="text-yellow-400" />
+              <Clock size={16} className="text-amber-700" />
               <p className="text-xs uppercase text-inho-muted font-mono tracking-wider">A Vencer (Em Aberto)</p>
             </div>
-            <p className="text-2xl font-black font-mono text-yellow-400">{fmtCurrency(pendingTotal)}</p>
+            <p className="text-2xl font-black font-mono text-amber-700">{fmtCurrency(pendingTotal)}</p>
           </div>
 
           <div className="glassmorphism p-5 rounded-2xl border border-red-500/20 relative overflow-hidden">
             <div className="flex gap-2 items-center mb-2">
-              <AlertTriangle size={16} className="text-red-400" />
+              <AlertTriangle size={16} className="text-red-700" />
               <p className="text-xs uppercase text-inho-muted font-mono tracking-wider">Despesas Atrasadas</p>
             </div>
-            <p className="text-2xl font-black font-mono text-red-400">{fmtCurrency(overdueTotal)}</p>
+            <p className="text-2xl font-black font-mono text-red-700">{fmtCurrency(overdueTotal)}</p>
           </div>
 
           <div className="glassmorphism p-5 rounded-2xl border border-inho-border relative overflow-hidden">
             <div className="flex gap-2 items-center mb-2">
-              <CheckCircle2 size={16} className="text-green-400" />
+              <CheckCircle2 size={16} className="text-emerald-700" />
               <p className="text-xs uppercase text-inho-muted font-mono tracking-wider">Total Liquidado (Pago)</p>
             </div>
-            <p className="text-2xl font-black font-mono text-green-400">{fmtCurrency(paidTotal)}</p>
+            <p className="text-2xl font-black font-mono text-emerald-700">{fmtCurrency(paidTotal)}</p>
           </div>
         </div>
 
@@ -259,7 +259,7 @@ export default function PayablePage() {
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'ALL'
                   ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
-                  : 'text-inho-muted hover:text-white'
+                  : 'text-inho-muted hover:text-[#0F172A]'
               }`}
             >
               Todas ({payables.length})
@@ -269,7 +269,7 @@ export default function PayablePage() {
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'OPEN'
                   ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
-                  : 'text-inho-muted hover:text-white'
+                  : 'text-inho-muted hover:text-[#0F172A]'
               }`}
             >
               Em Aberto ({payables.filter((p) => p.status !== 'PAID').length})
@@ -279,7 +279,7 @@ export default function PayablePage() {
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'PAID'
                   ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
-                  : 'text-inho-muted hover:text-white'
+                  : 'text-inho-muted hover:text-[#0F172A]'
               }`}
             >
               Concluídos ({payables.filter((p) => p.status === 'PAID').length})
@@ -294,7 +294,7 @@ export default function PayablePage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar fornecedor, descrição ou doc..."
-                className="bg-black/40 border border-inho-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-white outline-none focus:border-purple-500 w-full"
+                className="bg-[#FAF8F2] border border-inho-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-[#0F172A] outline-none focus:border-purple-500 w-full"
               />
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function PayablePage() {
         {selectedIds.length > 0 && (
           <div className="bg-purple-900/30 border border-purple-500/50 p-4 rounded-xl flex items-center justify-between animate-fade-in shadow-xl backdrop-blur-md">
             <p className="text-sm font-bold text-purple-100 flex items-center gap-2">
-              <ShieldCheck size={18} className="text-purple-400" />
+              <ShieldCheck size={18} className="text-purple-700" />
               {selectedIds.length} item(s) selecionado(s) — Total:{' '}
               <span className="font-mono text-purple-300">{fmtCurrency(totalSelectedAmount)}</span>
             </p>
@@ -357,20 +357,20 @@ export default function PayablePage() {
                         />
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-bold text-white text-sm">
+                        <p className="font-bold text-[#0F172A] text-sm">
                           {p.description || p.supplier_name || 'Despesa Operacional'}
                         </p>
                         {p.notes && <p className="text-xs text-inho-muted font-mono mt-0.5">{p.notes}</p>}
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300">
+                        <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#FAF8F2] border border-[#E5DEC9] text-[#0F172A]">
                           {p.payment_method || 'PIX'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 font-mono text-xs text-white">
+                      <td className="px-6 py-4 font-mono text-xs text-[#0F172A]">
                         {new Date(p.due_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
                       </td>
-                      <td className="px-6 py-4 font-bold font-mono text-white">{fmtCurrency(p.amount)}</td>
+                      <td className="px-6 py-4 font-bold font-mono text-[#0F172A]">{fmtCurrency(p.amount)}</td>
                       <td className="px-6 py-4">{getStatusBadge(p)}</td>
                       <td className="px-6 py-4 text-right space-x-2">
                         {p.status !== 'PAID' && (
@@ -383,7 +383,7 @@ export default function PayablePage() {
                         )}
                         <button
                           onClick={() => handleDelete(p.id)}
-                          className="text-xs text-gray-500 hover:text-red-400 p-1.5 rounded-lg transition-colors inline-flex items-center"
+                          className="text-xs text-gray-500 hover:text-red-700 p-1.5 rounded-lg transition-colors inline-flex items-center"
                           title="Excluir despesa"
                         >
                           <Trash2 size={14} />
@@ -399,14 +399,14 @@ export default function PayablePage() {
 
         {/* Modal Nova Despesa */}
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-            <div className="bg-[#0b0e14] border border-purple-500/30 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <FileText size={18} className="text-purple-400" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white backdrop-blur-sm p-4">
+            <div className="bg-[#FAF8F2] border border-purple-500/30 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-[#E5DEC9] pb-3">
+                <h2 className="text-lg font-bold text-[#0F172A] flex items-center gap-2">
+                  <FileText size={18} className="text-purple-700" />
                   Nova Conta a Pagar
                 </h2>
-                <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white">
+                <button onClick={() => setShowModal(false)} className="text-[#57606A] hover:text-[#0F172A]">
                   <X size={18} />
                 </button>
               </div>
@@ -414,43 +414,43 @@ export default function PayablePage() {
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Fornecedor / Favorecido *</label>
+                    <label className="text-xs text-[#57606A] block mb-1">Fornecedor / Favorecido *</label>
                     <input
                       type="text"
                       required
                       value={form.supplier_name}
                       onChange={(e) => setForm({ ...form, supplier_name: e.target.value })}
                       placeholder="Ex: AWS Brasil / Cooperado"
-                      className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                      className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">CPF / CNPJ / Documento</label>
+                    <label className="text-xs text-[#57606A] block mb-1">CPF / CNPJ / Documento</label>
                     <input
                       type="text"
                       value={form.document}
                       onChange={(e) => setForm({ ...form, document: e.target.value })}
                       placeholder="00.000.000/0001-00"
-                      className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                      className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs text-gray-400 block mb-1">Descrição da Despesa *</label>
+                  <label className="text-xs text-[#57606A] block mb-1">Descrição da Despesa *</label>
                   <input
                     type="text"
                     required
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                     placeholder="Ex: Servidores Cloud Outubro / Liquidação Cotas"
-                    className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                    className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Valor (R$) *</label>
+                    <label className="text-xs text-[#57606A] block mb-1">Valor (R$) *</label>
                     <input
                       type="number"
                       step="0.01"
@@ -458,25 +458,25 @@ export default function PayablePage() {
                       value={form.amount}
                       onChange={(e) => setForm({ ...form, amount: e.target.value })}
                       placeholder="450.00"
-                      className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                      className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Vencimento *</label>
+                    <label className="text-xs text-[#57606A] block mb-1">Vencimento *</label>
                     <input
                       type="date"
                       required
                       value={form.due_date}
                       onChange={(e) => setForm({ ...form, due_date: e.target.value })}
-                      className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                      className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Meio de Pagamento</label>
+                    <label className="text-xs text-[#57606A] block mb-1">Meio de Pagamento</label>
                     <select
                       value={form.payment_method}
                       onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
-                      className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                      className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                     >
                       <option value="PIX">PIX</option>
                       <option value="BOLETO">Boleto</option>
@@ -488,11 +488,11 @@ export default function PayablePage() {
 
                 {categories.length > 0 && (
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Categoria (Plano de Contas)</label>
+                    <label className="text-xs text-[#57606A] block mb-1">Categoria (Plano de Contas)</label>
                     <select
                       value={form.category_id}
                       onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-                      className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500"
+                      className="w-full bg-[#FAF8F2] border border-[#E5DEC9] rounded-xl px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-purple-500"
                     >
                       <option value="">Sem categoria específica</option>
                       {categories.map((c) => (
@@ -504,11 +504,11 @@ export default function PayablePage() {
                   </div>
                 )}
 
-                <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
+                <div className="flex justify-end gap-2 pt-3 border-t border-[#E5DEC9]">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2 rounded-xl text-xs text-gray-400 hover:text-white"
+                    className="px-4 py-2 rounded-xl text-xs text-[#57606A] hover:text-[#0F172A]"
                   >
                     Cancelar
                   </button>

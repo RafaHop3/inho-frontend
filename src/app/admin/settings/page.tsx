@@ -20,10 +20,10 @@ export default function AdminSettings() {
 
     if (!isAdmin) {
         return (
-            <div className="min-h-screen bg-terminal-bg p-8 flex items-center justify-center font-mono">
+            <div className="min-h-screen bg-terminal-bg p-8 flex items-center justify-center font-sans">
                 <div className="text-center">
                     <Shield size={48} className="mx-auto text-red-500 mb-4" />
-                    <h2 className="text-xl font-bold text-red-400">Acesso Negado</h2>
+                    <h2 className="text-xl font-bold text-red-700">Acesso Negado</h2>
                     <p className="text-terminal-muted mt-2">Você não possui permissões administrativas.</p>
                 </div>
             </div>
@@ -31,7 +31,7 @@ export default function AdminSettings() {
     }
 
     return (
-        <div className="min-h-screen bg-terminal-bg p-8 font-mono">
+        <div className="min-h-screen bg-terminal-bg p-8 font-sans">
             <div className="max-w-5xl mx-auto">
                 <div className="flex items-center gap-4 mb-8 border-b border-terminal-border pb-6">
                     <Link href="/dashboard" className="p-2 bg-terminal-dark/50 hover:bg-terminal-dark rounded-xl border border-terminal-border transition-colors">

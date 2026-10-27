@@ -24,7 +24,7 @@ const StatusBadge = ({ status }: { status: SalesOrderStatus }) => {
         DRAFT: 'text-inho-blue bg-inho-blue/10 border-inho-blue/30',
         CONFIRMED: 'text-inho-gold bg-inho-gold/10 border-inho-gold/30',
         INVOICED: 'text-inho-green bg-inho-green/10 border-inho-green/30',
-        CANCELLED: 'text-red-400 bg-red-400/10 border-red-400/30',
+        CANCELLED: 'text-red-700 bg-red-400/10 border-red-400/30',
     };
     const labels: Record<SalesOrderStatus, string> = {
         DRAFT: 'Rascunho',
@@ -51,10 +51,10 @@ const StateTimeline = ({ currentStatus }: { currentStatus: SalesOrderStatus }) =
     if (currentStatus === 'CANCELLED') {
         return (
             <div className="flex items-center gap-3 p-4 bg-red-400/10 border border-red-500/30 rounded-xl mb-6">
-                <Ban size={24} className="text-red-400" />
+                <Ban size={24} className="text-red-700" />
                 <div>
-                    <h4 className="text-red-400 font-bold">Pedido Cancelado</h4>
-                    <p className="text-red-400/70 text-xs font-mono mt-0.5">Operação interrompida permanentemente.</p>
+                    <h4 className="text-red-700 font-bold">Pedido Cancelado</h4>
+                    <p className="text-red-700/70 text-xs font-mono mt-0.5">Operação interrompida permanentemente.</p>
                 </div>
             </div>
         );
@@ -75,7 +75,7 @@ const StateTimeline = ({ currentStatus }: { currentStatus: SalesOrderStatus }) =
                 const state = getStepState(step.id, idx);
                 return (
                     <div key={step.id} className="relative z-10 flex flex-col items-center gap-2">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${state === 'completed' ? 'bg-inho-green border-inho-green text-inho-black' :
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${state === 'completed' ? 'bg-inho-green border-inho-green text-white' :
                                 state === 'active' ? 'bg-inho-black border-inho-gold text-inho-gold shadow-glow-gold' :
                                     'bg-inho-dark border-inho-border text-inho-muted'
                             }`}>
@@ -304,7 +304,7 @@ export default function SalesOrdersPage() {
                 {/* State Machine Modal / Drawer */}
                 {isOpen && (
                     <div className="fixed inset-0 z-50 flex justify-end">
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !submitting && setIsOpen(false)} />
+                        <div className="absolute inset-0 bg-white backdrop-blur-sm" onClick={() => !submitting && setIsOpen(false)} />
 
                         <div className="relative w-full max-w-2xl min-h-screen bg-inho-dark border-l border-inho-border shadow-2xl p-6 lg:p-8 flex flex-col justify-between animate-slide-left overflow-y-auto">
 
@@ -316,7 +316,7 @@ export default function SalesOrdersPage() {
                                         </h2>
                                         <p className="text-xs font-mono text-inho-muted mt-1">ID: {activeOrder?.id || '—'}</p>
                                     </div>
-                                    <button onClick={() => !submitting && setIsOpen(false)} className="text-inho-muted hover:text-inho-text bg-white/5 p-2 rounded-xl">
+                                    <button onClick={() => !submitting && setIsOpen(false)} className="text-inho-muted hover:text-inho-text bg-[#FAF8F2] p-2 rounded-xl">
                                         <ArrowRight size={20} />
                                     </button>
                                 </div>
@@ -325,7 +325,7 @@ export default function SalesOrdersPage() {
                                 {activeOrder && <StateTimeline currentStatus={activeOrder.status} />}
 
                                 {error && (
-                                    <div className="mb-6 p-3 bg-red-400/10 border border-red-500/30 rounded-xl text-xs font-mono text-red-400 flex items-center gap-2">
+                                    <div className="mb-6 p-3 bg-red-400/10 border border-red-500/30 rounded-xl text-xs font-mono text-red-700 flex items-center gap-2">
                                         <Ban size={14} /> {error}
                                     </div>
                                 )}
@@ -418,7 +418,7 @@ export default function SalesOrdersPage() {
                                 {activeOrder?.status === 'DRAFT' && (
                                     <div className="flex gap-3">
                                         <button onClick={() => handleAction('cancel')} disabled={submitting} className="flex-1 py-3 bg-rinho-dark text-red-500 border border-red-500/20 rounded-xl font-bold hover:bg-red-500/10">Cancelar (Drop)</button>
-                                        <button onClick={() => handleAction('confirm')} disabled={submitting} className="flex-2 w-full py-3 bg-inho-blue text-white rounded-xl font-bold flex justify-center gap-2 hover:bg-blue-400 shadow-lg shadow-inho-blue/20">
+                                        <button onClick={() => handleAction('confirm')} disabled={submitting} className="flex-2 w-full py-3 bg-inho-blue text-[#0F172A] rounded-xl font-bold flex justify-center gap-2 hover:bg-blue-400 shadow-lg shadow-inho-blue/20">
                                             Aprovar Venda (Firmar) <CheckCircle2 size={18} />
                                         </button>
                                     </div>
@@ -428,7 +428,7 @@ export default function SalesOrdersPage() {
                                 {activeOrder?.status === 'CONFIRMED' && (
                                     <div className="flex gap-3">
                                         <button onClick={() => handleAction('cancel')} disabled={submitting} className="flex-1 py-3 bg-rinho-dark text-red-500 border border-red-500/20 rounded-xl font-bold hover:bg-red-500/10 hover:border-red-500">Cancelar Venda</button>
-                                        <button onClick={() => handleAction('invoice')} disabled={submitting} className="flex-2 w-full py-3 bg-inho-green text-inho-black rounded-xl font-bold flex justify-center gap-2 hover:bg-emerald-400 shadow-lg shadow-inho-green/20">
+                                        <button onClick={() => handleAction('invoice')} disabled={submitting} className="flex-2 w-full py-3 bg-inho-green text-white rounded-xl font-bold flex justify-center gap-2 hover:bg-emerald-400 shadow-lg shadow-inho-green/20">
                                             Faturar / NF-e <Receipt size={18} />
                                         </button>
                                     </div>
@@ -437,10 +437,10 @@ export default function SalesOrdersPage() {
                                 {/* 3. INVOICED Actions */}
                                 {activeOrder?.status === 'INVOICED' && (
                                     <div className="flex gap-3">
-                                        <button className="w-full flex-1 py-3 text-inho-text border border-inho-border rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-white/5 opacity-80 cursor-not-allowed">
+                                        <button className="w-full flex-1 py-3 text-inho-text border border-inho-border rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-[#FAF8F2] opacity-80 cursor-not-allowed">
                                             Baixar XML (em breve) <FileText size={16} />
                                         </button>
-                                        <button className="w-full flex-1 py-3 text-inho-text border border-inho-border rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-white/5 opacity-80 cursor-not-allowed">
+                                        <button className="w-full flex-1 py-3 text-inho-text border border-inho-border rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-[#FAF8F2] opacity-80 cursor-not-allowed">
                                             Visualizar DANFE
                                         </button>
                                     </div>

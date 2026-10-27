@@ -78,7 +78,7 @@ export default function MFAModal({ isOpen, onClose }: MFAModalProps) {
         : '';
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white backdrop-blur-sm p-4">
             <div className="bg-inho-dark border border-inho-border rounded-3xl p-6 md:p-8 max-w-md w-full relative shadow-2xl max-h-[90vh] overflow-y-auto">
                 <button
                     onClick={onClose}
@@ -98,7 +98,7 @@ export default function MFAModal({ isOpen, onClose }: MFAModalProps) {
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs flex items-center gap-2 font-mono">
+                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-700 text-xs flex items-center gap-2 font-mono">
                         <AlertCircle size={16} /> {error}
                     </div>
                 )}
@@ -114,7 +114,7 @@ export default function MFAModal({ isOpen, onClose }: MFAModalProps) {
                         </p>
                         <button
                             onClick={onClose}
-                            className="w-full py-3 bg-inho-green text-black font-black uppercase tracking-wider rounded-xl text-sm hover:bg-green-400 transition-colors"
+                            className="w-full py-3 bg-inho-green text-white font-black uppercase tracking-wider rounded-xl text-sm hover:bg-green-400 transition-colors"
                         >
                             Concluir
                         </button>
@@ -127,7 +127,7 @@ export default function MFAModal({ isOpen, onClose }: MFAModalProps) {
                         <button
                             onClick={handleStartSetup}
                             disabled={loading}
-                            className="w-full py-3 bg-inho-gold text-black font-black uppercase tracking-wider rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 transition-colors"
+                            className="w-full py-3 bg-inho-gold text-white font-black uppercase tracking-wider rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 transition-colors"
                         >
                             {loading ? <Loader2 size={18} className="animate-spin" /> : <QrCode size={18} />}
                             Gerar QR Code de Segurança
@@ -164,14 +164,14 @@ export default function MFAModal({ isOpen, onClose }: MFAModalProps) {
                                     <button
                                         type="button"
                                         onClick={() => navigator.clipboard.writeText(mfaData.backup_codes?.join('\n') || '')}
-                                        className="text-[9px] uppercase tracking-wider font-bold bg-inho-gold/20 text-inho-gold px-2 py-0.5 rounded hover:bg-inho-gold hover:text-black transition-colors"
+                                        className="text-[9px] uppercase tracking-wider font-bold bg-inho-gold/20 text-inho-gold px-2 py-0.5 rounded hover:bg-inho-gold hover:text-[#0F172A] transition-colors"
                                     >
                                         Copiar Todos
                                     </button>
                                 </div>
-                                <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-300">
+                                <div className="grid grid-cols-2 gap-1 text-[11px] font-mono text-[#0F172A]">
                                     {mfaData.backup_codes.map((c, idx) => (
-                                        <div key={idx} className="bg-black/40 px-2 py-1 rounded text-center border border-white/5">
+                                        <div key={idx} className="bg-[#FAF8F2] px-2 py-1 rounded text-center border border-[#E5DEC9]">
                                             {c}
                                         </div>
                                     ))}
@@ -198,7 +198,7 @@ export default function MFAModal({ isOpen, onClose }: MFAModalProps) {
                             <button
                                 type="submit"
                                 disabled={verifying || code.length !== 6}
-                                className="w-full py-3 bg-inho-blue text-white font-black uppercase tracking-wider rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-blue-400 disabled:opacity-50 transition-colors"
+                                className="w-full py-3 bg-inho-blue text-[#0F172A] font-black uppercase tracking-wider rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-blue-400 disabled:opacity-50 transition-colors"
                             >
                                 {verifying ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}
                                 Confirmar e Ativar 2FA
