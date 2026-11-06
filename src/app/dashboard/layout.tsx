@@ -6,6 +6,7 @@ import { Menu, ShieldCheck, Crown, Building2 } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { useAuth } from '@/lib/AuthContext';
 import Sidebar from '@/components/Sidebar';
+import OrbeAssistantRoot from '@/components/OrbeAssistantRoot';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -77,6 +78,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+
+      {/* Orbe Assistant AI — Super-Operador com Poder ROOT (Universal) */}
+      <OrbeAssistantRoot />
     </div>
   );
 }
