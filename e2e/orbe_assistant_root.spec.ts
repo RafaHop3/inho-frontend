@@ -107,14 +107,14 @@ test.describe('Orbe Systems & INHO ERP — Homologação E2E no Navegador', () =
     }, MOCK_JWT);
 
     // 3. Acessa o Dashboard
-    await page.goto('https://inho.orbesystems.com.br/dashboard', { waitUntil: 'domcontentloaded' });
+    await page.goto('https://inho.orbesystems.com.br/dashboard', { waitUntil: 'networkidle' });
 
     // 4. Valida se o launcher da Orbe AI está visível no canto inferior direito
     const launcher = page.locator('[data-testid="orbe-assistant-launcher"]');
     await expect(launcher).toBeVisible({ timeout: 10000 });
 
-    // 5. Aciona a HUD pressionando o atalho global Alt + A
-    await page.keyboard.press('Alt+A');
+    // 5. Aciona a HUD via Clique no Launcher (RT-01)
+    await launcher.click();
 
     // 6. Valida se o modal HUD do assistente abriu instantaneamente
     const hudModal = page.locator('[data-testid="orbe-assistant-hud"]');
@@ -125,7 +125,19 @@ test.describe('Orbe Systems & INHO ERP — Homologação E2E no Navegador', () =
     await expect(rootBadge).toBeVisible();
     await expect(rootBadge).toContainText('ROOT PRIVILEGE');
 
-    // 8. Pressiona Alt + A novamente para fechar e valida fechamento
+    // 8. Fecha a HUD via botão de fechar ou atalho Alt+A (RT-02)
+    const closeBtn = page.locator('button[title="Fechar (Alt+A)"]');
+    if (await closeBtn.isVisible()) {
+      await closeBtn.click();
+      await expect(hudModal).not.toBeVisible({ timeout: 5000 });
+    }
+
+    // 9. Reabre e testa o atalho global Alt+A
+    await page.focus('body');
+    await page.keyboard.press('Alt+A');
+    await expect(hudModal).toBeVisible({ timeout: 5000 });
+
+    // 10. Fecha novamente via Alt+A
     await page.keyboard.press('Alt+A');
     await expect(hudModal).not.toBeVisible({ timeout: 5000 });
   });
