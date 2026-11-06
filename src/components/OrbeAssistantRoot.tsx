@@ -230,6 +230,7 @@ Privilégio ROOT ativo localmente. Resposta de emergência para **"${query}"**:
       {!isOpen && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 group">
           <button
+            data-testid="orbe-assistant-launcher"
             onClick={() => setIsOpen(true)}
             className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950/90 text-white border-2 border-amber-500/60 shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] hover:border-amber-400 hover:scale-105 active:scale-95 transition-all duration-300"
             title="Orbe Assistant AI (Poder ROOT) — Alt+A"
@@ -259,6 +260,7 @@ Privilégio ROOT ativo localmente. Resposta de emergência para **"${query}"**:
       {/* Floating ROOT Assistant Modal */}
       {isOpen && (
         <div
+          data-testid="orbe-assistant-hud"
           className={`fixed z-50 transition-all duration-300 shadow-2xl flex flex-col ${
             isExpanded
               ? 'inset-4 md:inset-10 rounded-2xl'
@@ -276,7 +278,7 @@ Privilégio ROOT ativo localmente. Resposta de emergência para **"${query}"**:
                   <h3 className="font-extrabold text-sm tracking-wide text-white flex items-center gap-1.5">
                     ORBE ASSISTANT AI
                   </h3>
-                  <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <span data-testid="root-status-badge" className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                     ROOT PRIVILEGE
                   </span>
                 </div>
