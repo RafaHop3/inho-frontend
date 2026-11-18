@@ -859,6 +859,43 @@ export const crmApi = {
     apiFetch<{ status: string; id: string }>(`/api/v1/crm/cbm/ai-knowledge/${encodeURIComponent(chunkId)}`, {
       method: 'DELETE',
     }),
+
+  getAiPolicy: () =>
+    apiFetch<{
+      exists: boolean;
+      status: string;
+      draft_rules: {
+        max_installments?: number | null;
+        max_discount_pct?: number | null;
+        max_extension_days?: number | null;
+        tone_of_voice?: string;
+      };
+      approved_rules: {
+        max_installments?: number | null;
+        max_discount_pct?: number | null;
+        max_extension_days?: number | null;
+        tone_of_voice?: string;
+      };
+      source_excerpts: { rule: string; value: string; title: string; excerpt: string }[];
+      has_conflict: boolean;
+      conflict_notes?: string | null;
+      approved_by_name?: string | null;
+      approved_at?: string | null;
+    }>('/api/v1/crm/cbm/ai-policy'),
+
+  extractAiPolicy: () =>
+    apiFetch<any>('/api/v1/crm/cbm/ai-policy/extract', { method: 'POST' }),
+
+  approveAiPolicy: (payload: {
+    max_installments?: number | null;
+    max_discount_pct?: number | null;
+    max_extension_days?: number | null;
+    tone_of_voice?: string;
+  }) =>
+    apiFetch<any>('/api/v1/crm/cbm/ai-policy/approve', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
 };
 
 // ── Cooperados (Módulo Cooperativismo) ───────────────────────────────
@@ -1614,4 +1651,75 @@ export const orbejobsApi = {
     apiFetch<{ status: string; lgpd_art_18: boolean }>('/api/v1/orbejobs/lgpd/purge', {
       method: 'DELETE',
     }),
+};
+
+
+// ── INHO Turismo Vertical (AI-First / Human-Last · NYDROBS Pilot) ──────
+export const turismoApi = {
+  getOverview: () => apiFetch<any>('/api/v1/turismo/overview'),
+  listQuotes: () => apiFetch<any[]>('/api/v1/turismo/quotes'),
+  createQuote: (payload: {
+    client_name: string;
+    origin: string;
+    destination: string;
+    departure_date?: string;
+    return_date?: string;
+    passengers?: number;
+    airline_program?: string;
+    cash_price_brl: number;
+    miles_required?: number;
+    mile_cost_per_k_brl?: number;
+    tax_fees_brl?: number;
+    is_public_offer?: boolean;
+  }) =>
+    apiFetch<any>('/api/v1/turismo/quotes', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  importPnr: (payload: { pnr_raw_text: string; client_name?: string; cash_price_brl?: number; miles_required?: number }) =>
+    apiFetch<any>('/api/v1/turismo/quotes/import-pnr', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  getPublicProposta: (slug: string) =>
+    apiFetch<any>(`/api/v1/turismo/public/proposta/${encodeURIComponent(slug)}`),
+  selectPublicProposta: (slug: string, selected_option: 'A' | 'B' | 'C') =>
+    apiFetch<any>(`/api/v1/turismo/public/proposta/${encodeURIComponent(slug)}/select`, {
+      method: 'POST',
+      body: JSON.stringify({ selected_option }),
+    }),
+  listMiles: () => apiFetch<any[]>('/api/v1/turismo/miles'),
+  createMiles: (payload: {
+    program_name: string;
+    holder_name: string;
+    holder_document: string;
+    miles_balance: number;
+    cpfs_used_year: number;
+    cpfs_limit_year?: number;
+  }) =>
+    apiFetch<any>('/api/v1/turismo/miles', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  useMilesCpf: (id: string) =>
+    apiFetch<any>(`/api/v1/turismo/miles/${encodeURIComponent(id)}/use-cpf`, { method: 'PATCH' }),
+  getDre: () => apiFetch<any>('/api/v1/turismo/dre'),
+  runBoardingRadar: () => apiFetch<any>('/api/v1/turismo/boarding-radar/run', { method: 'POST' }),
+  listGroups: () => apiFetch<any[]>('/api/v1/turismo/groups'),
+  createGroup: (payload: { group_name: string; destination: string; price_per_person_brl: number }) =>
+    apiFetch<any>('/api/v1/turismo/groups', { method: 'POST', body: JSON.stringify(payload) }),
+  listClub: () => apiFetch<any[]>('/api/v1/turismo/club'),
+  createClubMember: (payload: { member_name: string; member_email: string; telegram_chat_id?: string }) =>
+    apiFetch<any>('/api/v1/turismo/club', { method: 'POST', body: JSON.stringify(payload) }),
+  broadcastClub: (payload: { title: string; message: string }) =>
+    apiFetch<any>('/api/v1/turismo/club/broadcast', { method: 'POST', body: JSON.stringify(payload) }),
+  getChannels: () => apiFetch<any>('/api/v1/turismo/channels'),
+  saveChannels: (payload: any) =>
+    apiFetch<any>('/api/v1/turismo/channels', { method: 'POST', body: JSON.stringify(payload) }),
+  testOmnichannelInbound: (payload: {
+    channel: 'WHATSAPP' | 'INSTAGRAM' | 'TELEGRAM';
+    sender_ref: string;
+    message_text: string;
+  }) =>
+    apiFetch<any>('/api/v1/turismo/omnichannel/inbound', { method: 'POST', body: JSON.stringify(payload) }),
 };

@@ -58,6 +58,70 @@ export default function OrBrickRagCard({ className = '', onUpdate }: OrBrickRagC
   const [uploadSummary, setUploadSummary] = useState<any | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // PolicyEngine Fase 5A/5B state
+  const [policyData, setPolicyData] = useState<any | null>(null);
+  const [extractingPolicy, setExtractingPolicy] = useState(false);
+  const [approvingPolicy, setApprovingPolicy] = useState(false);
+  const [polMaxInst, setPolMaxInst] = useState<string>('3');
+  const [polMaxDisc, setPolMaxDisc] = useState<string>('10');
+  const [polMaxDays, setPolMaxDays] = useState<string>('15');
+
+  const loadPolicy = useCallback(async () => {
+    try {
+      const pol = await crmApi.getAiPolicy();
+      setPolicyData(pol);
+      const src = pol.status === 'APPROVED' ? pol.approved_rules : pol.draft_rules;
+      if (src?.max_installments) setPolMaxInst(String(src.max_installments));
+      if (src?.max_discount_pct) setPolMaxDisc(String(src.max_discount_pct));
+      if (src?.max_extension_days) setPolMaxDays(String(src.max_extension_days));
+    } catch {
+      // ignore initial policy load failure
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPolicy();
+  }, [loadPolicy]);
+
+  const handleExtractPolicy = async () => {
+    setExtractingPolicy(true);
+    try {
+      const pol = await crmApi.extractAiPolicy();
+      setPolicyData(pol);
+      if (pol?.draft_rules?.max_installments) setPolMaxInst(String(pol.draft_rules.max_installments));
+      if (pol?.draft_rules?.max_discount_pct) setPolMaxDisc(String(pol.draft_rules.max_discount_pct));
+      if (pol?.draft_rules?.max_extension_days) setPolMaxDays(String(pol.draft_rules.max_extension_days));
+      showBanner(
+        pol?.has_conflict ? 'err' : 'ok',
+        pol?.has_conflict
+          ? `Conflito detectado nas regras: ${pol.conflict_notes}. Revise os valores antes de aprovar.`
+          : 'Regras extraídas do RAG! Confira e clique em Aprovar Política para ativar o PolicyEngine.'
+      );
+    } catch (err: any) {
+      showBanner('err', err?.message || 'Erro ao extrair política do RAG.');
+    } finally {
+      setExtractingPolicy(false);
+    }
+  };
+
+  const handleApprovePolicy = async () => {
+    setApprovingPolicy(true);
+    try {
+      const pol = await crmApi.approveAiPolicy({
+        max_installments: polMaxInst ? Number(polMaxInst) : null,
+        max_discount_pct: polMaxDisc ? Number(polMaxDisc) : null,
+        max_extension_days: polMaxDays ? Number(polMaxDays) : null,
+        tone_of_voice: 'acolhedor_simples',
+      });
+      setPolicyData(pol);
+      showBanner('ok', 'Política aprovada e travada no PolicyEngine determinístico com sucesso!');
+    } catch (err: any) {
+      showBanner('err', err?.message || 'Erro ao aprovar política.');
+    } finally {
+      setApprovingPolicy(false);
+    }
+  };
+
   const showBanner = (type: 'ok' | 'err', text: string) => {
     setFeedback({ type, text });
     setTimeout(() => setFeedback(null), 7000);
@@ -536,6 +600,112 @@ export default function OrBrickRagCard({ className = '', onUpdate }: OrBrickRagC
                     <CheckCircle2 size={11} /> Ativo no RAG
                   </span>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* PolicyEngine Determinístico (Fase 5A/5B - Revisão & Aprovação Humana) */}
+      <div className="mt-6 pt-5 border-t border-[#E2E8F0]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+          <div>
+            <h3 className="text-sm font-extrabold text-[#0F172A] flex items-center gap-2">
+              <ShieldCheck size={16} className="text-emerald-700" />
+              Motor de Políticas Determinístico (PolicyEngine · Alçada Máx. R$ 5.000)
+            </h3>
+            <p className="text-[11px] text-[#64748B]">
+              Extraia limites numéricos dos documentos RAG e aprove manualmente antes de liberar autonomia à OrBrick-IA.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span
+              className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border ${
+                policyData?.status === 'APPROVED'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : policyData?.has_conflict
+                  ? 'bg-red-50 text-red-700 border-red-200'
+                  : 'bg-amber-50 text-amber-800 border-amber-200'
+              }`}
+            >
+              {policyData?.status === 'APPROVED'
+                ? 'Política Aprovada'
+                : policyData?.has_conflict
+                ? 'Conflito Detectado'
+                : policyData?.status || 'Pendente Aprovação'}
+            </span>
+            <button
+              onClick={handleExtractPolicy}
+              disabled={extractingPolicy}
+              className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition-colors disabled:opacity-50"
+            >
+              {extractingPolicy ? 'Extraindo...' : 'Extrair do RAG'}
+            </button>
+          </div>
+        </div>
+
+        {policyData?.conflict_notes && (
+          <div className="mb-3 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-900 font-medium">
+            ⚠️ {policyData.conflict_notes}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end bg-[#F8FAFC] p-3.5 rounded-xl border border-[#E2E8F0]">
+          <div>
+            <label className="block text-[10px] font-bold uppercase text-slate-600 mb-1">
+              Máx. Parcelas (x)
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={48}
+              value={polMaxInst}
+              onChange={(e) => setPolMaxInst(e.target.value)}
+              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-900 bg-white"
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold uppercase text-slate-600 mb-1">
+              Desconto Máx. (% · Teto 50%)
+            </label>
+            <input
+              type="number"
+              min={0}
+              max={50}
+              step="0.5"
+              value={polMaxDisc}
+              onChange={(e) => setPolMaxDisc(e.target.value)}
+              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-900 bg-white"
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold uppercase text-slate-600 mb-1">
+              Prorrogação Máx. (dias)
+            </label>
+            <input
+              type="number"
+              min={0}
+              max={180}
+              value={polMaxDays}
+              onChange={(e) => setPolMaxDays(e.target.value)}
+              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-900 bg-white"
+            />
+          </div>
+          <button
+            onClick={handleApprovePolicy}
+            disabled={approvingPolicy}
+            className="px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold uppercase tracking-wider shadow-sm transition-all disabled:opacity-50"
+          >
+            {approvingPolicy ? 'Aprovando...' : 'Aprovar Política'}
+          </button>
+        </div>
+
+        {Array.isArray(policyData?.source_excerpts) && policyData.source_excerpts.length > 0 && (
+          <div className="mt-2.5 space-y-1">
+            <p className="text-[10px] font-bold uppercase text-slate-500">Trechos de origem auditados:</p>
+            {policyData.source_excerpts.slice(0, 3).map((ex: any, i: number) => (
+              <div key={i} className="text-[11px] text-slate-600 bg-white px-2.5 py-1.5 rounded border border-slate-200">
+                <strong className="text-slate-800">{ex.title}</strong> ({ex.rule}: {ex.value}): &ldquo;{ex.excerpt}&rdquo;
               </div>
             ))}
           </div>

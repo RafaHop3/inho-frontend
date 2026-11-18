@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/AuthContext';
 import {
     Users2, Building, Store, Utensils,
-    PlusCircle, Lock, ArrowRight, ArrowUpRight, LayoutTemplate, Crown, ShieldCheck, Landmark, Briefcase, Sparkles
+    PlusCircle, Lock, ArrowRight, ArrowUpRight, LayoutTemplate, Crown, ShieldCheck, Landmark, Briefcase, Sparkles, Plane
 } from 'lucide-react';
 
 export default function DashboardHub() {
@@ -44,6 +44,14 @@ export default function DashboardHub() {
             description: 'Frente de Caixa rápida com leitor de código de barras, balança nacional, Copilot IA e Maquininha Stripe Terminal (Smart POS).',
             status: 'active',
             href: '/dashboard/pdv',
+        },
+        {
+            id: 'turismo',
+            title: 'INHO Turismo (AI-First)',
+            icon: Plane,
+            description: 'Cotador Híbrido Dinheiro vs Milhas, Proposta Viva A/B/C, Cofre de Milhas & Semáforo CPF, DRE Agência e Omnichannel Custo Zero (WA/IG/TG).',
+            status: 'active',
+            href: '/dashboard/turismo',
         },
         {
             id: 'restaurante',

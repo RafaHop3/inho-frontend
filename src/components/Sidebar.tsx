@@ -121,10 +121,13 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen = () => {} }
                 { label: 'FORNECEDORES', href: '/dashboard/contacts?category=SUPPLIER', cat: 'SUPPLIER' },
                 { label: 'FUNCIONÁRIOS', href: '/dashboard/contacts?category=EMPLOYEE', cat: 'EMPLOYEE' },
                 { label: 'SÓCIOS', href: '/dashboard/cooperativa', cat: 'COOPERADO' },
+                { label: 'INHO TURISMO', href: '/dashboard/turismo', cat: 'TURISMO' },
               ].map((item) => {
                 const isActive =
                   item.cat === 'COOPERADO'
                     ? pathname.startsWith('/dashboard/cooperativa')
+                    : item.cat === 'TURISMO'
+                    ? pathname.startsWith('/dashboard/turismo')
                     : pathname === '/dashboard/contacts' && activeCategory === item.cat;
                 return (
                   <Link
