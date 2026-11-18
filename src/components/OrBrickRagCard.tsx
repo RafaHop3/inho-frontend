@@ -141,8 +141,8 @@ export default function OrBrickRagCard({ className = '', onUpdate }: OrBrickRagC
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const ext = file.name.split('.').pop()?.toLowerCase();
-      if (!['pdf', 'docx', 'txt'].includes(ext || '')) {
-        showBanner('err', 'Formato não suportado. Por favor anexe um arquivo .pdf, .docx ou .txt.');
+      if (!['pdf', 'docx', 'txt', 'md'].includes(ext || '')) {
+        showBanner('err', 'Formato não suportado. Por favor anexe um arquivo .pdf, .docx, .txt ou .md.');
         return;
       }
       if (file.size > 15 * 1024 * 1024) {
@@ -292,14 +292,14 @@ export default function OrBrickRagCard({ className = '', onUpdate }: OrBrickRagC
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
               <label className="block text-[11px] font-extrabold uppercase text-emerald-900 mb-1">
-                Arquivo do Documento * (.pdf, .docx, .txt até 15MB)
+                Arquivo do Documento * (.pdf, .docx, .txt ou .md até 15MB)
               </label>
               <div className="flex items-center gap-3 p-3 bg-white border border-emerald-200 rounded-xl">
                 <input
                   ref={fileInputRef}
                   type="file"
                   required
-                  accept=".pdf,.docx,.txt"
+                  accept=".pdf,.docx,.txt,.md"
                   onChange={handleFileChange}
                   className="w-full text-xs text-slate-700 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-emerald-100 file:text-emerald-800 hover:file:bg-emerald-200 cursor-pointer"
                 />

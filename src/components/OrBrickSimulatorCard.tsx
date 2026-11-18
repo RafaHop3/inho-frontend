@@ -279,7 +279,11 @@ export default function OrBrickSimulatorCard({
                 Handoff Humano Solicitado
               </span>
               <div className="text-xs font-bold mt-1 text-slate-700">
-                {result.requires_human_handoff ? 'SIM (Encaminhado)' : 'NÃO (Resolvido pela IA)'}
+                {result.status === 'HUMAN_HANDOFF_ACTIVE' || result.ai_responded === false
+                  ? 'EM HANDOFF HUMANO (IA silenciada)'
+                  : result.requires_human_handoff
+                  ? 'SIM (Encaminhado)'
+                  : 'NÃO (Resolvido pela IA)'}
               </div>
             </div>
           </div>
