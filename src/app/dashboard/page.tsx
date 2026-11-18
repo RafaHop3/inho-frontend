@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/AuthContext';
 import {
     Users2, Building, Store, Utensils,
-    PlusCircle, Lock, ArrowRight, ArrowUpRight, LayoutTemplate, Crown, ShieldCheck, Landmark
+    PlusCircle, Lock, ArrowRight, ArrowUpRight, LayoutTemplate, Crown, ShieldCheck, Landmark, Briefcase, Sparkles
 } from 'lucide-react';
 
 export default function DashboardHub() {
@@ -145,6 +145,33 @@ export default function DashboardHub() {
                         </Link>
                     </div>
                 </div>
+
+                {/* OrbeJobs Hero Card de Destaque */}
+                <Link
+                    href="/dashboard/orbejobs"
+                    className="block relative overflow-hidden rounded-3xl border border-[#D4AF37]/80 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] p-7 lg:p-8 text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all group"
+                >
+                    <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#FDE68A] to-[#10B981]" />
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+                        <div className="space-y-2 max-w-3xl">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-[11px] font-extrabold uppercase tracking-widest">
+                                <Sparkles size={13} className="text-amber-300" />
+                                Destaque Orbe IA • Módulo Ativo
+                            </div>
+                            <h2 className="text-2xl lg:text-3xl font-black tracking-tight">
+                                OrbeJobs — Esteira Kanban, Living CV &amp; Envio Seguro
+                            </h2>
+                            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                Coleta híbrida ATS (Greenhouse, Lever e RSS), ranqueamento vetorial <strong>pgvector</strong>, adaptação pela <strong>Orbe IA</strong>, cofre MultiFernet AES-256, validação DNS MX, Human-in-the-Loop e trilha LGPD.
+                            </p>
+                        </div>
+                        <div className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-slate-950 font-black text-xs uppercase tracking-wider shrink-0 group-hover:brightness-110 transition-all">
+                            <Briefcase size={16} />
+                            <span>Acessar OrbeJobs</span>
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                    </div>
+                </Link>
 
                 {/* Segments Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
