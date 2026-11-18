@@ -1427,3 +1427,191 @@ export const copilotApi = {
       body: JSON.stringify(payload),
     }),
 };
+
+
+export interface OrbeJobsLivingCV {
+  id: string;
+  business_id: string;
+  user_id: string;
+  full_name: string;
+  headline?: string;
+  target_roles: string[];
+  json_resume: {
+    basics: { name: string; label: string; email: string; summary: string };
+    work: Array<{ name: string; position: string; startDate?: string; summary?: string }>;
+    education: Array<Record<string, any>>;
+    certificates: Array<{ name: string; issuer: string; date?: string }>;
+    skills: Array<{ name: string; keywords: string[] }>;
+    languages: Array<{ language: string; fluency: string }>;
+  };
+  human_in_the_loop: boolean;
+  daily_send_limit: number;
+  kill_switch_active: boolean;
+  whatsapp_source_phone?: string;
+  last_pdf_sha256?: string;
+  updated_at?: string;
+}
+
+export interface OrbeJobsApplication {
+  id: string;
+  job_url_hash: string;
+  company_name: string;
+  job_title: string;
+  job_url: string;
+  recipient_email?: string;
+  stage: string;
+  match_score: number;
+  tailored_cover_letter?: string;
+  ai_provider_used?: string;
+  requires_approval: boolean;
+  approved_by_human: boolean;
+  applied_at?: string;
+  updated_at?: string;
+}
+
+export const orbejobsApi = {
+  getDashboard: () =>
+    apiFetch<{
+      business_id: string;
+      profile: OrbeJobsLivingCV;
+      daily_quota: { sent_today: number; daily_send_limit: number; hard_cap: number; remaining_today: number };
+      oauth_vault: { connected: boolean; provider: string; account_email?: string; scopes?: string; cipher_algorithm: string };
+      listings_count: number;
+      stage_counts: Record<string, number>;
+      applications: OrbeJobsApplication[];
+      queue: Array<{
+        id: string;
+        application_id: string;
+        recipient_email: string;
+        subject: string;
+        mx_valid: boolean;
+        status: string;
+        jitter_seconds: number;
+        error_message?: string;
+        sent_at?: string;
+      }>;
+    }>('/api/v1/orbejobs/dashboard'),
+
+  updateLivingCv: (payload: {
+    full_name?: string;
+    headline?: string;
+    target_roles?: string[];
+    json_resume?: Record<string, any>;
+    human_in_the_loop?: boolean;
+    daily_send_limit?: number;
+  }) =>
+    apiFetch<OrbeJobsLivingCV>('/api/v1/orbejobs/living-cv', {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),
+
+  whatsappUpdate: (payload: { message: string; phone?: string }) =>
+    apiFetch<{ actions: string[]; profile: OrbeJobsLivingCV }>('/api/v1/orbejobs/living-cv/whatsapp-update', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  uploadPdf: (file: File) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    return apiFetch<{ filename: string; pdf_sha256: string; extracted_chars: number; profile: OrbeJobsLivingCV }>(
+      '/api/v1/orbejobs/living-cv/upload-pdf',
+      { method: 'POST', body: fd }
+    );
+  },
+
+  triggerScrape: (payload: {
+    greenhouse_boards?: string[];
+    lever_companies?: string[];
+    rss_feeds?: string[];
+    manual_jobs?: Array<{
+      company_name: string;
+      title: string;
+      job_url: string;
+      recipient_email?: string;
+      description_text?: string;
+    }>;
+  }) =>
+    apiFetch<{ scraped_total: number; inserted_listings: number; created_kanban_cards: number }>(
+      '/api/v1/orbejobs/scrape',
+      { method: 'POST', body: JSON.stringify(payload) }
+    ),
+
+  createApplication: (payload: {
+    company_name: string;
+    job_title: string;
+    job_url: string;
+    recipient_email?: string;
+    description_text?: string;
+  }) =>
+    apiFetch<OrbeJobsApplication>('/api/v1/orbejobs/applications', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  updateApplicationStage: (
+    appId: string,
+    payload: { stage?: string; approved_by_human?: boolean; recipient_email?: string }
+  ) =>
+    apiFetch<OrbeJobsApplication>(`/api/v1/orbejobs/applications/${appId}/stage`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+
+  tailorApplication: (appId: string) =>
+    apiFetch<{ application: OrbeJobsApplication; ai_provider: string; cache_hit: boolean; pgvector_score: number }>(
+      `/api/v1/orbejobs/applications/${appId}/tailor`,
+      { method: 'POST', body: JSON.stringify({ simulate_offline: false }) }
+    ),
+
+  saveGmailVault: (payload: { account_email: string; access_token: string; refresh_token?: string }) =>
+    apiFetch<{ connected: boolean; provider: string; account_email: string; cipher_algorithm: string }>(
+      '/api/v1/orbejobs/oauth/gmail/vault',
+      { method: 'POST', body: JSON.stringify(payload) }
+    ),
+
+  checkDnsMx: (email: string) =>
+    apiFetch<{ email: string; mx_valid: boolean; mx_hosts: string[]; error?: string }>(
+      '/api/v1/orbejobs/dns-mx/check',
+      { method: 'POST', body: JSON.stringify({ email }) }
+    ),
+
+  enqueueSend: (payload: { application_id: string; recipient_email?: string; auto_dispatch?: boolean }) =>
+    apiFetch<{ queue_id: string; status: string; mx_valid: boolean; jitter_seconds: number }>(
+      '/api/v1/orbejobs/queue/enqueue',
+      { method: 'POST', body: JSON.stringify(payload) }
+    ),
+
+  dispatchQueueItem: (queueId: string) =>
+    apiFetch<{ status: string; gmail_message_id?: string; detail?: string }>(
+      `/api/v1/orbejobs/queue/${queueId}/dispatch`,
+      { method: 'POST' }
+    ),
+
+  toggleKillSwitch: (active: boolean, reason?: string) =>
+    apiFetch<{ kill_switch_active: boolean; reason: string }>('/api/v1/orbejobs/kill-switch', {
+      method: 'POST',
+      body: JSON.stringify({ active, reason }),
+    }),
+
+  getLgpdAudit: () =>
+    apiFetch<{
+      send_logs: Array<{
+        id: string;
+        recipient_email: string;
+        gmail_message_id?: string;
+        mx_host?: string;
+        status: string;
+        latency_ms: number;
+        lgpd_audit_hash: string;
+        detail?: string;
+        created_at: string;
+      }>;
+      audit_events: Array<{ id: string; entity: string; action: string; detail?: string; timestamp: string }>;
+    }>('/api/v1/orbejobs/lgpd/audit'),
+
+  purgeLgpdData: () =>
+    apiFetch<{ status: string; lgpd_art_18: boolean }>('/api/v1/orbejobs/lgpd/purge', {
+      method: 'DELETE',
+    }),
+};
