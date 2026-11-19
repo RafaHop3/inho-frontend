@@ -37,12 +37,13 @@ interface ChatMessage {
 }
 
 const QUICK_PROMPTS = [
+  { label: 'INHO Turismo & Milhas', icon: Sparkles, query: 'Como usar o módulo INHO Turismo, Cotador de Milhas, Proposta Viva e Cofre de CPF?' },
+  { label: 'QR Code WA/IG/TG & Policy', icon: MessageSquare, query: 'Como conectar WhatsApp, Instagram e Telegram por QR Code e aprovar políticas no PolicyEngine?' },
+  { label: 'OrbeJobs & Living CV', icon: Zap, query: 'Como usar o módulo OrbeJobs, Living CV e busca ATS de vagas?' },
   { label: 'Maquininha Stripe (POS)', icon: CreditCard, query: 'Como parear e usar a maquininha física Stripe Terminal WisePOS E?' },
   { label: 'Balança PLU & EAN-13', icon: Scale, query: 'Qual a tabela de PLU rápida e como funciona o decodificador de balança pesável?' },
   { label: 'Trava Dual-Control (> R$ 5k)', icon: ShieldAlert, query: 'Como funciona a aprovação de despesas acima de R$ 5.000,00 no Contas a Pagar?' },
   { label: 'Cooperativa & Retenções', icon: Wheat, query: 'Quais são as retenções de INSS Funrural e FATES pela Lei 5.764?' },
-  { label: 'WhatsApp & Régua OrBrick', icon: MessageSquare, query: 'Como funciona a régua de cobrança automática e anti-prompt injection no WhatsApp?' },
-  { label: 'Fechamento Cego de Caixa', icon: Lock, query: 'Como é feita a conferência cega e auditoria IA de quebra de caixa no PDV?' },
 ];
 
 export default function OrbeAssistantRoot() {
@@ -62,7 +63,7 @@ export default function OrbeAssistantRoot() {
 
 Olá, Operador! Sou seu co-piloto de inteligência operacional com **Poder ROOT** em todo o ecossistema INHO ERP.
 
-Tenho domínio integral dos **30 Manuais de Arquitetura**, fluxos de PDV, maquininhas Stripe Terminal, balanças, regras fiscais de cooperativismo e governança financeira.
+Tenho domínio integral dos **38 Manuais de Arquitetura**, incluindo **INHO Turismo & Milhas**, **OrbeJobs**, **OrBrick QR Multi-Tenant & PolicyEngine**, **PDV & Maquininhas Stripe Terminal**, **Cooperativismo (Lei 5.764)** e **Governança Financeira**.
 
 *Escolha uma ação rápida abaixo ou faça qualquer pergunta operacional.*`,
       shortcuts: [
@@ -119,6 +120,7 @@ Tenho domínio integral dos **30 Manuais de Arquitetura**, fluxos de PDV, maquin
         body: JSON.stringify({
           query,
           context_screen: pathname || 'dashboard',
+          history: messages.slice(-6).map((m) => ({ role: m.sender, content: m.text })),
         }),
       });
 
