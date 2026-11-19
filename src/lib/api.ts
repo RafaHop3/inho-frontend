@@ -182,6 +182,12 @@ export const authApi = {
   /** Clears the HttpOnly refresh cookie server-side */
   logout: () =>
     apiFetch<void>('/api/v1/auth/logout', { method: 'POST' }),
+
+  enrollConfirmMfa: (mfa_enrollment_token: string, code: string) =>
+    apiFetch<TokenResponse>('/api/v1/auth/mfa/enroll-confirm', {
+      method: 'POST',
+      body: JSON.stringify({ mfa_enrollment_token, code: code.trim() }),
+    }),
 };
 
 // ── Users endpoints ────────────────────────────────────────────────

@@ -27,6 +27,7 @@ interface AuthContextValue {
     isLoading: boolean;
     /** Call this after login to record the new token and load the user */
     login: (payload: LoginPayload) => Promise<UserMe | null>;
+    enrollConfirmMfa: (token: string, code: string) => Promise<UserMe | null>;
     /** Clears the token (memory + HttpOnly cookie via /auth/logout) */
     logout: () => Promise<void>;
     /** Re-fetches /users/me and updates the in-memory user state */
@@ -137,6 +138,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return await refreshUser();
     }, [refreshUser]);
 
+    const enrollConfirmMfa = useCallback(async (token: string, code: string) => {
+        const data = await authApi.enrollConfirmMfa(token, code);
+        auth.setAccessToken(data.access_token);
+        return await refreshUser();
+    }, [refreshUser]);
+
     const logout = useCallback(async () => {
         try {
             await authApi.logout(); // clears the HttpOnly cookie server-side
@@ -150,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, logout, refreshUser, activeBusinessId, setActiveBusinessId }}>
+        <AuthContext.Provider value={{ user, isLoading, login, enrollConfirmMfa, logout, refreshUser, activeBusinessId, setActiveBusinessId }}>
             {children}
         </AuthContext.Provider>
     );

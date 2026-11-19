@@ -3,17 +3,25 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, ArrowRight, Users, Crown, MessageSquare, CreditCard, Sparkles } from 'lucide-react';
+import QRCode from 'qrcode';
 import { useAuth } from '@/lib/AuthContext';
 import { addLoginLog } from '@/lib/loginLog';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { login, enrollConfirmMfa } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });
   const [showMfa, setShowMfa] = useState(false);
   const [mfaCode, setMfaCode] = useState('');
+  const [mfaEnrollData, setMfaEnrollData] = useState<{
+    mfa_enrollment_token: string;
+    secret: string;
+    provisioning_uri: string;
+    backup_codes: string[];
+    qrDataUrl: string;
+  } | null>(null);
   const [loginMode, setLoginMode] = useState<'selection' | 'colaborador' | 'proprietario'>('selection');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,33 +36,73 @@ function LoginContent() {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mfaEnrollData) {
+      if (!mfaCode || mfaCode.trim().length < 6) {
+        setError('Digite o código de 6 dígitos exibido no seu Authenticator App.');
+        return;
+      }
+      setLoading(true);
+      setError('');
+      try {
+        const loggedUser = await enrollConfirmMfa(mfaEnrollData.mfa_enrollment_token, mfaCode);
+        if (loggedUser && (loggedUser.role === 'admin' || loggedUser.role === 'super_admin')) {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
+        }
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Código 2FA inválido.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     if (!form.email || !form.password) {
       setError('Preencha e-mail e senha.');
       return;
     }
-    if (showMfa && (!mfaCode || mfaCode.length !== 6)) {
-      setError('Digite o código de 6 dígitos do seu Authenticator.');
+    if (showMfa && (!mfaCode || mfaCode.trim().length < 6)) {
+      setError('Digite o código de 6 dígitos do seu Authenticator ou um código de backup.');
       return;
     }
     setLoading(true);
     setError('');
-    const payload = { email: form.email, password: form.password, ...(showMfa && mfaCode ? { mfa_code: mfaCode } : {}) };
+    const payload = { email: form.email, password: form.password, ...(showMfa && mfaCode ? { mfa_code: mfaCode.trim() } : {}) };
     try {
       const loggedUser = await login(payload);
       await addLoginLog({ timestamp: new Date().toISOString(), payload, result: loggedUser });
       if (loggedUser && (loggedUser.role === 'admin' || loggedUser.role === 'super_admin')) {
         router.push('/admin');
-      } else if (loggedUser && loggedUser.role === 'operator') {
-        router.push('/dashboard');
       } else {
         router.push('/dashboard');
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       await addLoginLog({ timestamp: new Date().toISOString(), payload, error: err });
+      if (msg.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(msg);
+          if (parsed?.code === 'MFA_ENROLLMENT_REQUIRED' && parsed?.provisioning_uri) {
+            const qrDataUrl = await QRCode.toDataURL(parsed.provisioning_uri, { width: 196, margin: 1 });
+            setMfaEnrollData({
+              mfa_enrollment_token: parsed.mfa_enrollment_token,
+              secret: parsed.secret,
+              provisioning_uri: parsed.provisioning_uri,
+              backup_codes: Array.isArray(parsed.backup_codes) ? parsed.backup_codes : [],
+              qrDataUrl,
+            });
+            setMfaCode('');
+            setError('Primeiro acesso seguro: escaneie o QR Code no Google/Microsoft Authenticator e digite o código de 6 dígitos.');
+            return;
+          }
+        } catch {
+          // ignore JSON parse fallback
+        }
+      }
       if (msg.includes('MFA_REQUIRED') || msg.includes('2FA')) {
         setShowMfa(true);
-        setError('Autenticação de 2 fatores ativada! Digite o código do seu aplicativo Authenticator.');
+        setError('Protocolo de Segurança Ativo: digite o código de 6 dígitos do seu Authenticator App.');
       } else {
         setError(msg || 'Credenciais inválidas ou acesso não autorizado.');
       }
@@ -180,6 +228,44 @@ function LoginContent() {
                     className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-xl px-4 py-3.5 text-[#0F172A] text-sm focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
                   />
                 </div>
+                {mfaEnrollData && (
+                  <div className="space-y-3 p-4 rounded-2xl bg-amber-50/80 border border-amber-300 animate-fade-in">
+                    <div className="text-xs font-extrabold text-[#8B6508] uppercase flex items-center gap-1.5">
+                      <ShieldCheck size={15} /> Configurar Authenticator App (Obrigatório)
+                    </div>
+                    <div className="flex flex-col items-center gap-2 bg-white p-3 rounded-xl border border-amber-200">
+                      <img src={mfaEnrollData.qrDataUrl} alt="QR Code Authenticator" className="w-44 h-44" />
+                      <div className="text-[10px] font-mono text-slate-600 break-all text-center">
+                        Chave manual: <strong className="text-slate-900">{mfaEnrollData.secret}</strong>
+                      </div>
+                    </div>
+                    {mfaEnrollData.backup_codes.length > 0 && (
+                      <div className="bg-white p-2.5 rounded-xl border border-slate-200">
+                        <p className="text-[10px] font-bold uppercase text-slate-600 mb-1">
+                          Códigos de Emergência (uso único — guarde em local seguro):
+                        </p>
+                        <div className="grid grid-cols-2 gap-1 font-mono text-[10px] text-slate-800">
+                          {mfaEnrollData.backup_codes.map((c) => (
+                            <span key={c} className="px-1.5 py-0.5 bg-slate-100 rounded text-center">{c}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div>
+                      <label className="text-[#8B6508] text-[11px] font-extrabold uppercase tracking-wider pl-1 block mb-1">
+                        Código de 6 dígitos do App
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={mfaCode}
+                        onChange={e => setMfaCode(e.target.value.replace(/\D/g, ''))}
+                        placeholder="000000"
+                        className="w-full text-center text-xl font-mono tracking-[0.4em] font-black bg-white border border-[#D4AF37] rounded-xl py-2.5 text-[#0F172A] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
                 {showMfa && (
                   <div className="space-y-1.5 pt-1 animate-fade-in">
                     <label className="text-[#8B6508] text-[11px] font-extrabold uppercase tracking-wider pl-1 flex items-center gap-1">
@@ -187,9 +273,9 @@ function LoginContent() {
                     </label>
                     <input
                       type="text"
-                      maxLength={6}
+                      maxLength={9}
                       value={mfaCode}
-                      onChange={e => setMfaCode(e.target.value.replace(/\D/g, ''))}
+                      onChange={e => setMfaCode(e.target.value.trim())}
                       placeholder="000000"
                       className="w-full text-center text-xl font-mono tracking-[0.4em] font-black bg-[#F1F5F9] border border-[#D4AF37] rounded-xl py-3 text-[#0F172A] focus:outline-none focus:border-[#B8860B]"
                     />
