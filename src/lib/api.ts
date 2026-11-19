@@ -1685,7 +1685,7 @@ export const orbejobsApi = {
 };
 
 
-// ── INHO Turismo Vertical (AI-First / Human-Last · NYDROBS Pilot) ──────
+// ── INHO Turismo Vertical (AI-First / Human-Last · Orbe Systems) ──────
 export const turismoApi = {
   getOverview: () => apiFetch<any>('/api/v1/turismo/overview'),
   listQuotes: () => apiFetch<any[]>('/api/v1/turismo/quotes'),

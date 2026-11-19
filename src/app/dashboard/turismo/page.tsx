@@ -155,7 +155,7 @@ export default function TurismoDashboardPage() {
               <Plane size={13} /> INHO Turismo · AI-First / Human-Last · Custo Zero
             </div>
             <h1 className="text-2xl font-extrabold text-slate-900 mt-2">
-              Central Operacional de Turismo &amp; Milhas (Piloto NYDROBS)
+              Central Operacional de Turismo &amp; Milhas (Orbe INHO)
             </h1>
             <p className="text-xs text-slate-600 mt-1">
               Cotador Híbrido Dinheiro vs Milhas, Proposta Viva A/B/C, Cofre de Milhas (zero senhas), DRE Intermediação e Omnichannel WhatsApp/Instagram/Telegram.
@@ -196,7 +196,7 @@ export default function TurismoDashboardPage() {
             { id: 'quotes', label: 'Cotador & Proposta Viva', icon: Calculator },
             { id: 'miles', label: 'Cofre de Milhas & Semáforo CPF', icon: ShieldCheck },
             { id: 'dre', label: 'DRE Agência & Radar Embarque', icon: TrendingUp },
-            { id: 'groups', label: 'Grupos & NYDROBS Club', icon: Users },
+            { id: 'groups', label: 'Grupos & INHO Club VIP', icon: Users },
             { id: 'omnichannel', label: 'Omnichannel AI-First (WA/IG/TG)', icon: MessageSquare },
           ].map((t) => {
             const Icon = t.icon;
@@ -498,7 +498,7 @@ export default function TurismoDashboardPage() {
             </div>
 
             <div className="bg-white p-5 rounded-2xl border border-slate-200 space-y-3">
-              <h2 className="text-sm font-extrabold text-slate-900 uppercase">NYDROBS Club (VIP 50% OFF + Telegram)</h2>
+              <h2 className="text-sm font-extrabold text-slate-900 uppercase">INHO Club VIP (50% OFF + Telegram Orbe Systems)</h2>
               <div className="grid grid-cols-3 gap-2">
                 <input
                   placeholder="Nome VIP"
@@ -526,7 +526,7 @@ export default function TurismoDashboardPage() {
                 }}
                 className="w-full py-2 rounded-lg bg-amber-600 text-white text-xs font-extrabold uppercase"
               >
-                Adicionar Membro NYDROBS Club ({club.length} ativos)
+                Adicionar Membro INHO Club VIP ({club.length} ativos)
               </button>
               <div className="pt-3 border-t border-slate-200 flex gap-2">
                 <input

@@ -67,7 +67,7 @@ const INHO_VERTICALS: VerticalConfig[] = [
     category: 'TURISMO',
     matchCategories: ['TURISMO'],
     title: 'INHO Turismo, Agências & Milhas (AI-First)',
-    badge: 'NOVO · PILOTO NYDROBS',
+    badge: 'NOVO · ORBE INHO TURISMO',
     description:
       'Cotador Híbrido Dinheiro vs Milhas, Proposta Viva A/B/C, Smart Import PNR, Cofre de Milhas & Semáforo CPF (sem senhas), DRE de Intermediação, Radar de Embarque e Omnichannel Custo Zero.',
     defaultName: 'Agência INHO Turismo',
