@@ -295,7 +295,7 @@ export default function OnboardingPage() {
                           <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
                           <>
-                            <Plus size={14} /> Inicializar {v.title.split(' ')[0]}
+                            <Plus size={14} /> Inicializar {v.title.split(' ')[0].replace(',', '')}
                           </>
                         )}
                       </GlassButton>
