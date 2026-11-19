@@ -80,14 +80,14 @@ const INHO_VERTICALS: VerticalConfig[] = [
     key: 'servicos',
     category: 'SERVICOS',
     matchCategories: ['SERVICOS', 'OUTROS'],
-    title: 'Serviços, ERP Corporativo & OrbeJobs',
-    badge: 'ERP & ORBEJOBS ATIVO',
+    title: 'Serviços & ERP Corporativo (B2B)',
+    badge: 'ERP B2B ATIVO',
     description:
-      'Contratos B2B, NFS-e, Contas a Pagar Dual-Control (> R$ 5.000), Funil CRM, Contabilidade DRE/Balancete e esteira autônoma de recrutamento e carreira OrbeJobs.',
-    defaultName: 'Matriz Serviços & OrbeJobs',
-    targetHref: '/dashboard/orbejobs',
+      'Contratos B2B, emissão de NFS-e, Contas a Pagar Dual-Control (> R$ 5.000), Funil Comercial CRM e Contabilidade DRE/Balancete.',
+    defaultName: 'Matriz Serviços B2B',
+    targetHref: '/dashboard/contracts',
     icon: Briefcase,
-    accentClass: 'text-orange-700 border-orange-300 bg-orange-50/70',
+    accentClass: 'text-indigo-700 border-indigo-300 bg-indigo-50/70',
     active: true,
   },
   {
@@ -193,7 +193,7 @@ export default function OnboardingPage() {
             Escolha o <span className="bg-inho-gold-gradient text-transparent bg-clip-text">Módulo &amp; Tipo de Negócio</span>
           </h1>
           <p className="text-[#475569] max-w-2xl mx-auto text-sm sm:text-base">
-            Selecione uma matriz existente ou inicialize um novo ambiente operacional (Cooperativismo, Mercados &amp; PDV, Turismo &amp; Milhas ou Serviços &amp; OrbeJobs) com isolamento estrito por tenant.
+            Selecione uma matriz existente ou inicialize um novo ambiente operacional (Cooperativismo, Mercados &amp; PDV, Turismo &amp; Milhas ou Serviços Corporativos B2B) com isolamento estrito por tenant.
           </p>
 
           {businesses.length > 0 && (

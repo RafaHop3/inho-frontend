@@ -154,44 +154,6 @@ export default function DashboardHub() {
                     </div>
                 </div>
 
-                {/* OrbeJobs Hero Card — Estilo Neon Laranja */}
-                <Link
-                    href="/dashboard/orbejobs"
-                    className="block relative overflow-hidden rounded-3xl border border-[#FF6B1A]/50 bg-[#090503] p-7 lg:p-8 text-white shadow-[0_0_45px_rgba(255,107,26,0.18)] hover:shadow-[0_0_60px_rgba(255,107,26,0.3)] hover:-translate-y-0.5 transition-all group"
-                >
-                    <div className="absolute -top-16 left-1/4 h-48 w-80 rounded-full bg-[#FF6B1A]/20 blur-[80px] pointer-events-none" />
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-                        <div className="space-y-2.5 max-w-3xl">
-                            <div className="flex items-center gap-3">
-                                <Sparkles size={26} className="text-[#FFD2A6] drop-shadow-[0_0_10px_rgba(255,107,26,0.95)]" />
-                                <span
-                                    className="text-3xl lg:text-4xl font-medium tracking-tight text-[#FFF2E5]"
-                                    style={{
-                                        textShadow:
-                                            '0 0 8px rgba(255,140,50,0.95), 0 0 20px rgba(255,107,26,0.85), 0 0 38px rgba(255,80,0,0.5)',
-                                    }}
-                                >
-                                    OrbeJobs
-                                </span>
-                                <span className="px-2.5 py-0.5 rounded-full bg-[#FF6B1A]/15 border border-[#FF6B1A]/45 text-[#FFB380] text-[10px] font-mono uppercase tracking-widest">
-                                    Orbe IA Nativa
-                                </span>
-                            </div>
-                            <h2 className="text-lg lg:text-xl font-bold tracking-tight text-white">
-                                Introducing OrbeJobs — Esteira Kanban, Living CV &amp; Envio Seguro
-                            </h2>
-                            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                                Coleta híbrida ATS (Greenhouse, Lever e RSS), ranqueamento vetorial <strong>pgvector</strong>, adaptação pela <strong>Orbe IA</strong>, cofre MultiFernet AES-256, validação DNS MX, Human-in-the-Loop e trilha LGPD.
-                            </p>
-                        </div>
-                        <div className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF6B1A] to-[#FF8C32] text-white font-bold text-xs uppercase tracking-wider shrink-0 shadow-[0_0_24px_rgba(255,107,26,0.4)] group-hover:brightness-110 transition-all">
-                            <Briefcase size={16} />
-                            <span>Acessar OrbeJobs</span>
-                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </div>
-                </Link>
-
                 {/* Segments Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {segments.map((segment) => {

@@ -249,7 +249,6 @@ export default function Sidebar({ mobileOpen = false, setMobileOpen = () => {} }
                 { label: 'GESTÃO DE CONTATOS', href: '/dashboard/contacts', icon: Users },
                 { label: 'WHATSAPP (ORBRICK)', href: '/dashboard/whatsapp', icon: MessageSquare },
                 { label: 'INTELIGÊNCIA CBM (IA)', href: '/dashboard/crm', icon: TrendingUp },
-                { label: 'ORBEJOBS (CARREIRA IA)', href: '/dashboard/orbejobs', icon: Briefcase },
                 { label: 'FUNIL DE VENDAS', href: '/dashboard/funnel', icon: TrendingUp },
                 { label: 'PROPOSTAS & ORÇAM.', href: '/dashboard/proposals', icon: FileCheck },
                 { label: 'PEDIDOS DE VENDA', href: '/dashboard/sales-orders', icon: ShoppingCart },

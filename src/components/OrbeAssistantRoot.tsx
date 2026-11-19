@@ -39,7 +39,6 @@ interface ChatMessage {
 const QUICK_PROMPTS = [
   { label: 'INHO Turismo & Milhas', icon: Sparkles, query: 'Como usar o módulo INHO Turismo, Cotador de Milhas, Proposta Viva e Cofre de CPF?' },
   { label: 'QR Code WA/IG/TG & Policy', icon: MessageSquare, query: 'Como conectar WhatsApp, Instagram e Telegram por QR Code e aprovar políticas no PolicyEngine?' },
-  { label: 'OrbeJobs & Living CV', icon: Zap, query: 'Como usar o módulo OrbeJobs, Living CV e busca ATS de vagas?' },
   { label: 'Maquininha Stripe (POS)', icon: CreditCard, query: 'Como parear e usar a maquininha física Stripe Terminal WisePOS E?' },
   { label: 'Balança PLU & EAN-13', icon: Scale, query: 'Qual a tabela de PLU rápida e como funciona o decodificador de balança pesável?' },
   { label: 'Trava Dual-Control (> R$ 5k)', icon: ShieldAlert, query: 'Como funciona a aprovação de despesas acima de R$ 5.000,00 no Contas a Pagar?' },
@@ -63,7 +62,7 @@ export default function OrbeAssistantRoot() {
 
 Olá, Operador! Sou seu co-piloto de inteligência operacional com **Poder ROOT** em todo o ecossistema INHO ERP.
 
-Tenho domínio integral dos **38 Manuais de Arquitetura**, incluindo **INHO Turismo & Milhas**, **OrbeJobs**, **OrBrick QR Multi-Tenant & PolicyEngine**, **PDV & Maquininhas Stripe Terminal**, **Cooperativismo (Lei 5.764)** e **Governança Financeira**.
+Tenho domínio integral dos **38 Manuais de Arquitetura**, incluindo **INHO Turismo & Milhas**, **OrBrick QR Multi-Tenant & PolicyEngine**, **PDV & Maquininhas Stripe Terminal**, **Cooperativismo (Lei 5.764)** e **Governança Financeira**.
 
 *Escolha uma ação rápida abaixo ou faça qualquer pergunta operacional.*`,
       shortcuts: [
