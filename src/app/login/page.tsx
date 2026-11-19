@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, ArrowRight, Users, Crown, MessageSquare, CreditCard, Sparkles } from 'lucide-react';
 import QRCode from 'qrcode';
 import { useAuth } from '@/lib/AuthContext';
+import { authApi } from '@/lib/api';
 import { addLoginLog } from '@/lib/loginLog';
 
 function LoginContent() {
@@ -15,6 +16,10 @@ function LoginContent() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [showMfa, setShowMfa] = useState(false);
   const [mfaCode, setMfaCode] = useState('');
+  const [mustChangePassword, setMustChangePassword] = useState(false);
+  const [pendingRedirectUser, setPendingRedirectUser] = useState<any>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [mfaEnrollData, setMfaEnrollData] = useState<{
     mfa_enrollment_token: string;
     secret: string;
@@ -36,6 +41,33 @@ function LoginContent() {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mustChangePassword) {
+      if (newPassword.trim().length < 8) {
+        setError('A nova senha deve ter pelo menos 8 caracteres.');
+        return;
+      }
+      if (newPassword !== confirmNewPassword) {
+        setError('As senhas não coincidem. Confira e tente novamente.');
+        return;
+      }
+      setLoading(true);
+      setError('');
+      try {
+        await authApi.changePassword(form.password, newPassword.trim());
+        const u = pendingRedirectUser;
+        if (u && (u.role === 'admin' || u.role === 'super_admin')) {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
+        }
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Erro ao atualizar senha.');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     if (mfaEnrollData) {
       if (!mfaCode || mfaCode.trim().length < 6) {
         setError('Digite o código de 6 dígitos exibido no seu Authenticator App.');
@@ -44,7 +76,15 @@ function LoginContent() {
       setLoading(true);
       setError('');
       try {
-        const loggedUser = await enrollConfirmMfa(mfaEnrollData.mfa_enrollment_token, mfaCode);
+        const res = await enrollConfirmMfa(mfaEnrollData.mfa_enrollment_token, mfaCode);
+        if (res.requiresPasswordChange) {
+          setMfaEnrollData(null);
+          setPendingRedirectUser(res.user);
+          setMustChangePassword(true);
+          setError('Authenticator ativado! Agora defina sua nova senha pessoal para concluir o primeiro acesso.');
+          return;
+        }
+        const loggedUser = res.user;
         if (loggedUser && (loggedUser.role === 'admin' || loggedUser.role === 'super_admin')) {
           router.push('/admin');
         } else {
@@ -228,6 +268,37 @@ function LoginContent() {
                     className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-xl px-4 py-3.5 text-[#0F172A] text-sm focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
                   />
                 </div>
+                {mustChangePassword && (
+                  <div className="space-y-3 p-4 rounded-2xl bg-emerald-50/80 border border-emerald-300 animate-fade-in">
+                    <div className="text-xs font-extrabold text-emerald-800 uppercase flex items-center gap-1.5">
+                      <ShieldCheck size={15} /> Troca Obrigatória de Senha (Primeiro Acesso)
+                    </div>
+                    <div>
+                      <label className="text-slate-700 text-[11px] font-bold uppercase tracking-wider pl-1 block mb-1">
+                        Nova Senha Pessoal (mín. 8 caracteres)
+                      </label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={e => setNewPassword(e.target.value)}
+                        placeholder="Digite sua nova senha"
+                        className="w-full bg-white border border-emerald-300 rounded-xl px-4 py-2.5 text-[#0F172A] text-sm focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-700 text-[11px] font-bold uppercase tracking-wider pl-1 block mb-1">
+                        Confirmar Nova Senha
+                      </label>
+                      <input
+                        type="password"
+                        value={confirmNewPassword}
+                        onChange={e => setConfirmNewPassword(e.target.value)}
+                        placeholder="Repita a nova senha"
+                        className="w-full bg-white border border-emerald-300 rounded-xl px-4 py-2.5 text-[#0F172A] text-sm focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
                 {mfaEnrollData && (
                   <div className="space-y-3 p-4 rounded-2xl bg-amber-50/80 border border-amber-300 animate-fade-in">
                     <div className="text-xs font-extrabold text-[#8B6508] uppercase flex items-center gap-1.5">

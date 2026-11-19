@@ -183,8 +183,14 @@ export const authApi = {
   logout: () =>
     apiFetch<void>('/api/v1/auth/logout', { method: 'POST' }),
 
+  changePassword: (current_password: string, new_password: string) =>
+    apiFetch<{ status: string; message: string }>('/api/v1/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ current_password, new_password }),
+    }),
+
   enrollConfirmMfa: (mfa_enrollment_token: string, code: string) =>
-    apiFetch<TokenResponse>('/api/v1/auth/mfa/enroll-confirm', {
+    apiFetch<TokenResponse & { requires_password_change?: boolean }>('/api/v1/auth/mfa/enroll-confirm', {
       method: 'POST',
       body: JSON.stringify({ mfa_enrollment_token, code: code.trim() }),
     }),
