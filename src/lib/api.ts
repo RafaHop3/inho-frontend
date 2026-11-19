@@ -872,6 +872,25 @@ export const crmApi = {
       method: 'DELETE',
     }),
 
+  getOrbrickChannelsQrHub: () =>
+    apiFetch<any>('/api/v1/crm/orbrick/channels/qr-hub'),
+
+  connectOrbrickChannel: (payload: {
+    channel: 'WHATSAPP' | 'INSTAGRAM' | 'TELEGRAM';
+    handle_or_id?: string;
+    access_token?: string;
+  }) =>
+    apiFetch<any>('/api/v1/crm/orbrick/channels/connect', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  disconnectOrbrickChannel: (channel: 'WHATSAPP' | 'INSTAGRAM' | 'TELEGRAM') =>
+    apiFetch<any>('/api/v1/crm/orbrick/channels/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({ channel }),
+    }),
+
   getAiPolicy: () =>
     apiFetch<{
       exists: boolean;

@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { turismoApi } from '@/lib/api';
+import OrBrickChannelsQrCard from '@/components/OrBrickChannelsQrCard';
 
 type TabKey = 'quotes' | 'miles' | 'dre' | 'groups' | 'omnichannel';
 
@@ -549,7 +550,9 @@ export default function TurismoDashboardPage() {
         )}
 
         {tab === 'omnichannel' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <OrBrickChannelsQrCard />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-5 rounded-2xl border border-slate-200 space-y-3">
               <h2 className="text-sm font-extrabold text-slate-900 uppercase">Canais Custo Zero Conectados</h2>
               <div className="space-y-2 text-xs">
@@ -605,6 +608,7 @@ export default function TurismoDashboardPage() {
                   <div className="text-slate-700 whitespace-pre-line">{omniResult.reply_text}</div>
                 </div>
               )}
+            </div>
             </div>
           </div>
         )}

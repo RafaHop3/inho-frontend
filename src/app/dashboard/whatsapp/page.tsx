@@ -10,10 +10,12 @@ import {
 import { crmApi } from '@/lib/api';
 import OrBrickRagCard from '@/components/OrBrickRagCard';
 import OrBrickSimulatorCard from '@/components/OrBrickSimulatorCard';
+import OrBrickChannelsQrCard from '@/components/OrBrickChannelsQrCard';
+import { QrCode } from 'lucide-react';
 import { BookOpen } from 'lucide-react';
 
 export default function WhatsAppCentralPage() {
-    const [activeTab, setActiveTab] = useState<'CHAT' | 'RAG' | 'SIMULATOR'>('CHAT');
+    const [activeTab, setActiveTab] = useState<'CHAT' | 'CHANNELS' | 'RAG' | 'SIMULATOR'>('CHAT');
     const [messageInput, setMessageInput] = useState("");
     const [messages, setMessages] = useState([
         { id: 1, sender: "Sistema", text: "Você entrou no canal Omnichannel. Faça uma busca para iniciar uma comunicação (Orbe Baileys WhatsApp Proxy).", time: "--:--", isOut: false }
@@ -316,6 +318,16 @@ export default function WhatsAppCentralPage() {
                     >
                         <ShieldAlert size={13} /> Simulador Cyber Safety
                     </button>
+                    <button
+                        onClick={() => setActiveTab('CHANNELS')}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-extrabold uppercase transition-all ${
+                            activeTab === 'CHANNELS'
+                                ? 'bg-emerald-100 text-emerald-800 shadow-sm'
+                                : 'text-[#64748B] hover:text-[#0F172A]'
+                        }`}
+                    >
+                        <QrCode size={13} /> Canais & QR Code (WA/IG/TG)
+                    </button>
                 </div>
 
                 {/* Status da IA em Tempo Real + Botão de Pânico (Kill-Switch) */}
@@ -379,6 +391,12 @@ export default function WhatsAppCentralPage() {
             {activeTab === 'SIMULATOR' && (
                 <div className="flex-1 overflow-y-auto max-w-6xl w-full mx-auto space-y-6 pb-8">
                     <OrBrickSimulatorCard />
+                </div>
+            )}
+
+            {activeTab === 'CHANNELS' && (
+                <div className="flex-1 overflow-y-auto max-w-6xl w-full mx-auto space-y-6 pb-8">
+                    <OrBrickChannelsQrCard />
                 </div>
             )}
 
