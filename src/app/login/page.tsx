@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, ArrowRight, Users, Crown, MessageSquare, CreditCard, Sparkles } from 'lucide-react';
 import QRCode from 'qrcode';
@@ -304,6 +305,23 @@ function LoginContent() {
                     <div className="text-xs font-extrabold text-[#8B6508] uppercase flex items-center gap-1.5">
                       <ShieldCheck size={15} /> Configurar Authenticator App (Obrigatório)
                     </div>
+                    <div className="bg-white/95 p-3 rounded-xl border border-amber-200/80 text-[11px] text-slate-600 leading-relaxed space-y-1.5">
+                      <p>
+                        <strong className="text-slate-900">Por que exigimos o Authenticator App no primeiro acesso?</strong>{' '}
+                        Para proteger seus dados financeiros, emissões fiscais, movimentações PIX e sigilo LGPD contra invasões. Com a autenticação em duas etapas (2FA), mesmo que sua senha seja descoberta, ninguém consegue acessar sua conta sem o código temporário gerado offline no seu próprio celular — garantindo muito mais segurança, privacidade e tranquilidade para você e sua empresa.
+                      </p>
+                      <p className="pt-0.5">
+                        Ainda não tem um aplicativo autenticador ou quer ver o passo a passo ilustrado?{' '}
+                        <Link
+                          href="/tutorial-authenticator"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-extrabold text-[#B8860B] hover:text-[#8B6508] underline decoration-2 underline-offset-2"
+                        >
+                          Acesse aqui o Tutorial Completo do Authenticator App e veja os principais aplicativos recomendados →
+                        </Link>
+                      </p>
+                    </div>
                     <div className="flex flex-col items-center gap-2 bg-white p-3 rounded-xl border border-amber-200">
                       <img src={mfaEnrollData.qrDataUrl} alt="QR Code Authenticator" className="w-44 h-44" />
                       <div className="text-[10px] font-mono text-slate-600 break-all text-center">
@@ -341,6 +359,14 @@ function LoginContent() {
                   <div className="space-y-1.5 pt-1 animate-fade-in">
                     <label className="text-[#8B6508] text-[11px] font-extrabold uppercase tracking-wider pl-1 flex items-center gap-1">
                       <ShieldCheck size={14} /> Código 2FA Authenticator (6 dígitos)
+                      <Link
+                        href="/tutorial-authenticator"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-auto text-[10px] font-bold text-[#B8860B] hover:text-[#8B6508] underline normal-case tracking-normal"
+                      >
+                        Dúvidas? Ver tutorial do Authenticator →
+                      </Link>
                     </label>
                     <input
                       type="text"
