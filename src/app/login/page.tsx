@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ShieldCheck, ArrowRight, Users, Crown, MessageSquare, CreditCard, Sparkles } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Users, Crown, MessageSquare, CreditCard, Sparkles, Eye, EyeOff } from 'lucide-react';
 import QRCode from 'qrcode';
 import { useAuth } from '@/lib/AuthContext';
 import { authApi } from '@/lib/api';
@@ -15,6 +15,7 @@ function LoginContent() {
   const { login, enrollConfirmMfa } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [showMfa, setShowMfa] = useState(false);
   const [mfaCode, setMfaCode] = useState('');
   const [mustChangePassword, setMustChangePassword] = useState(false);
@@ -103,13 +104,9 @@ function LoginContent() {
       setError('Preencha e-mail e senha.');
       return;
     }
-    if (showMfa && (!mfaCode || mfaCode.trim().length < 6)) {
-      setError('Digite o código de 6 dígitos do seu Authenticator ou um código de backup.');
-      return;
-    }
     setLoading(true);
     setError('');
-    const payload = { email: form.email, password: form.password, ...(showMfa && mfaCode ? { mfa_code: mfaCode.trim() } : {}) };
+    const payload = { email: form.email, password: form.password };
     try {
       const loggedUser = await login(payload);
       await addLoginLog({ timestamp: new Date().toISOString(), payload, result: loggedUser });
@@ -121,32 +118,7 @@ function LoginContent() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       await addLoginLog({ timestamp: new Date().toISOString(), payload, error: err });
-      if (msg.startsWith('{')) {
-        try {
-          const parsed = JSON.parse(msg);
-          if (parsed?.code === 'MFA_ENROLLMENT_REQUIRED' && parsed?.provisioning_uri) {
-            const qrDataUrl = await QRCode.toDataURL(parsed.provisioning_uri, { width: 196, margin: 1 });
-            setMfaEnrollData({
-              mfa_enrollment_token: parsed.mfa_enrollment_token,
-              secret: parsed.secret,
-              provisioning_uri: parsed.provisioning_uri,
-              backup_codes: Array.isArray(parsed.backup_codes) ? parsed.backup_codes : [],
-              qrDataUrl,
-            });
-            setMfaCode('');
-            setError('Primeiro acesso seguro: escaneie o QR Code no Google/Microsoft Authenticator e digite o código de 6 dígitos.');
-            return;
-          }
-        } catch {
-          // ignore JSON parse fallback
-        }
-      }
-      if (msg.includes('MFA_REQUIRED') || msg.includes('2FA')) {
-        setShowMfa(true);
-        setError('Protocolo de Segurança Ativo: digite o código de 6 dígitos do seu Authenticator App.');
-      } else {
-        setError(msg || 'Credenciais inválidas ou acesso não autorizado.');
-      }
+      setError(msg || 'Credenciais inválidas ou acesso não autorizado.');
     } finally {
       setLoading(false);
     }
@@ -260,14 +232,25 @@ function LoginContent() {
                 </div>
                 <div className="space-y-1.5 pt-1">
                   <label className="text-[#475569] text-[11px] font-extrabold uppercase tracking-wider pl-1">Senha de Segurança</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={form.password}
-                    onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                    placeholder="Sua senha secreta"
-                    className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-xl px-4 py-3.5 text-[#0F172A] text-sm focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={form.password}
+                      onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                      placeholder="Sua senha secreta"
+                      className="w-full bg-[#F1F5F9] border border-[#E2E8F0] rounded-xl pl-4 pr-11 py-3.5 text-[#0F172A] text-sm focus:outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(prev => !prev)}
+                      aria-label={showPassword ? 'Ocultar senha' : 'Ver senha'}
+                      title={showPassword ? 'Ocultar senha' : 'Ver senha'}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-[#64748B] hover:text-[#0F172A] transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
                 {mustChangePassword && (
                   <div className="space-y-3 p-4 rounded-2xl bg-emerald-50/80 border border-emerald-300 animate-fade-in">

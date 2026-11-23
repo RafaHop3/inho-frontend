@@ -32,6 +32,16 @@ export default function WhatsAppCentralPage() {
     const [contactHumanActive, setContactHumanActive] = useState<boolean>(false);
     const [aiStatusBanner, setAiStatusBanner] = useState<string | null>(null);
 
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab')?.toUpperCase();
+            if (tab === 'CHANNELS' || tab === 'RAG' || tab === 'SIMULATOR' || tab === 'CHAT') {
+                setActiveTab(tab as any);
+            }
+        }
+    }, []);
+
     const loadAiStatus = React.useCallback(async (contactId?: string) => {
         try {
             const st = await crmApi.getWhatsappAiStatus(contactId);
