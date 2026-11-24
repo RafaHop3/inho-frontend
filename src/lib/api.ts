@@ -499,9 +499,91 @@ export const accountsApi = {
 };
 
 // ── CRM Cooperativa (Orbe Inho) ───────────────────────────────────────
+export interface ContactPhoneEntry {
+  number: string;
+  type?: string; // PROPRIO | MAE | PAI | RECADO | WHATSAPP | COMERCIAL | RESIDENCIAL | OUTRO
+  label?: string;
+  is_whatsapp?: boolean;
+  is_primary?: boolean;
+}
+
+export interface ContactEmailEntry {
+  email: string;
+  type?: string; // PRINCIPAL | PESSOAL | CORPORATIVO | FINANCEIRO | SECUNDARIO | OUTRO
+  label?: string;
+  is_primary?: boolean;
+}
+
+export interface ContactBankAccountEntry {
+  bank_code?: string;
+  bank_name?: string;
+  agency?: string;
+  account?: string;
+  account_type?: string; // CONTA_CORRENTE | CONTA_POUPANCA | CONTA_CAPITAL_COOP | CONTA_SALARIO | CONTA_PAGAMENTO
+  pix_key_type?: string;
+  pix_key?: string;
+  holder_name?: string;
+  is_primary?: boolean;
+}
+
+export const BRAZILIAN_BANKS_CATALOG: { code: string; name: string }[] = [
+  { code: '001', name: 'Banco do Brasil' },
+  { code: '756', name: 'Sicoob' },
+  { code: '748', name: 'Sicredi' },
+  { code: '341', name: 'Itaú Unibanco' },
+  { code: '237', name: 'Bradesco' },
+  { code: '104', name: 'Caixa Econômica Federal' },
+  { code: '033', name: 'Santander' },
+  { code: '260', name: 'Nubank' },
+  { code: '077', name: 'Banco Inter' },
+  { code: '136', name: 'Unicred' },
+  { code: '133', name: 'Cresol' },
+  { code: '085', name: 'Ailos / Viacredi' },
+  { code: '041', name: 'Banrisul' },
+  { code: '336', name: 'C6 Bank' },
+  { code: '403', name: 'Cora' },
+  { code: '208', name: 'BTG Pactual' },
+  { code: '422', name: 'Banco Safra' },
+  { code: '290', name: 'PagBank' },
+  { code: '323', name: 'Mercado Pago' },
+];
+
+export function resolveBankNameByCode(code?: string): string {
+  if (!code) return '';
+  const clean = code.trim().padStart(3, '0');
+  const found = BRAZILIAN_BANKS_CATALOG.find((b) => b.code === clean || b.code === code.trim());
+  return found ? found.name : '';
+}
 export interface CRMContactCreate {
   name: string;
-  category: 'COOPERADO' | 'EMPLOYEE' | 'SUPPLIER' | 'CUSTOMER';
+  category: 'COOPERADO' | 'EMPLOYEE' | 'SUPPLIER' | 'CUSTOMER' | 'PARTNER';
+  birth_date?: string;
+  filiation?: string;
+  mother_name?: string;
+  father_name?: string;
+  bank_code?: string;
+  bank_name?: string;
+  bank_agency?: string;
+  bank_account?: string;
+  bank_account_type?: string;
+  pix_key_type?: string;
+  pix_key?: string;
+  phones?: ContactPhoneEntry[];
+  emails?: ContactEmailEntry[];
+  bank_accounts?: ContactBankAccountEntry[];
+  nis?: string;
+  correios_matricula?: string;
+  address?: string;
+  street?: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  zip_code?: string;
+  role_title?: string;
+  created_at?: string;
+  updated_at?: string;
   document?: string;
   email?: string;
   phone?: string;
@@ -549,6 +631,36 @@ export interface AccountPayableOut {
 
 export const crmApi = {
   getContacts: (category?: string) => {
+    const cat = category === 'COOPERADO' ? 'PARTNER' : category;
+    return apiFetch<CRMContactOut[]>(`/api/v1/crm/contacts/${cat ? `?category=${cat}` : ''}`);
+  },
+
+  getContact: (id: string) =>
+    apiFetch<CRMContactOut>(`/api/v1/crm/contacts/${encodeURIComponent(id)}`),
+
+  updateContact: (id: string, payload: Partial<CRMContactCreate>) =>
+    apiFetch<CRMContactOut>(`/api/v1/crm/contacts/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        ...payload,
+        category: payload.category === 'COOPERADO' ? 'PARTNER' : payload.category,
+      }),
+    }),
+
+  deleteContact: (id: string) =>
+    apiFetch<void>(`/api/v1/crm/contacts/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    }),
+
+  getContactTimeline: (id: string) =>
+    apiFetch<{
+      contact_id: string;
+      upcoming_receivables: { id: string; amount: number; due_date: string; status: string; description?: string }[];
+      last_received: { id: string; amount: number; due_date: string; status: string; description?: string }[];
+      open_balance: number;
+    }>(`/api/v1/crm/contacts/${encodeURIComponent(id)}/timeline`),
+
+  _legacyGetContacts: (category?: string) => {
     const cat = category === 'COOPERADO' ? 'PARTNER' : category;
     return apiFetch<CRMContactOut[]>(`/api/v1/crm/contacts/${cat ? `?category=${cat}` : ''}`);
   },
@@ -931,6 +1043,20 @@ export const crmApi = {
 
 // ── Cooperados (Módulo Cooperativismo) ───────────────────────────────
 export interface CooperadoItem {
+  birth_date?: string;
+  filiation?: string;
+  mother_name?: string;
+  father_name?: string;
+  bank_code?: string;
+  bank_name?: string;
+  bank_agency?: string;
+  bank_account?: string;
+  bank_account_type?: string;
+  pix_key_type?: string;
+  pix_key?: string;
+  phones?: ContactPhoneEntry[];
+  emails?: ContactEmailEntry[];
+  bank_accounts?: ContactBankAccountEntry[];
   id: string;
   business_id: string;
   name: string;
@@ -974,9 +1100,23 @@ export const cooperadosApi = {
   create: (payload: {
     name: string;
     document: string;
+    birth_date?: string;
+    filiation?: string;
+    mother_name?: string;
+    father_name?: string;
     email?: string;
     phone?: string;
+    bank_code?: string;
+    bank_name?: string;
+    bank_agency?: string;
+    bank_account?: string;
+    bank_account_type?: string;
+    pix_key_type?: string;
+    pix_key?: string;
     bank_details?: string;
+    phones?: ContactPhoneEntry[];
+    emails?: ContactEmailEntry[];
+    bank_accounts?: ContactBankAccountEntry[];
     notes?: string;
     status?: string;
   }) =>
